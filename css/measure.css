@@ -1,0 +1,101 @@
+/* 도움 없이 해 보는 자리: 문제 안의 안내(먼저 해 보기), 본문 밖 문항 묶음(시작 전·며칠 뒤), 정리 화면의 구역. */
+
+/* 문제 블록 안의 안내 */
+.unaided-notice { margin: 0 0 12px; padding: 10px 12px; border-left: 4px solid var(--control); border-radius: 0 8px 8px 0; background: var(--sunk); }
+.unaided-notice.is-open { border-left-color: var(--ok); }
+.unaided-text { font-size: 0.9375rem; line-height: 1.6; color: var(--ink-2); word-break: keep-all; }
+.unaided-status { margin-top: 4px; font-size: 0.9375rem; font-weight: 600; word-break: keep-all; }
+
+/* 본문 밖 문항 묶음이 열려 있는 동안 본문·끝 화면·조작 줄·이어 보기 안내를 가린다(js/ui/app.js 가 data-gate 를 붙인다). */
+.reader[data-gate="open"] > .flow,
+.reader[data-gate="open"] > .end,
+.reader[data-gate="open"] > .controls,
+.reader[data-gate="open"] > .resume,
+.reader[data-gate="open"] > .selection-bar,
+.reader[data-gate="open"] .prereq,
+.reader[data-gate="open"] .review-line { display: none; } /* 선수지식 목록의 예시 문장이 시작 전 문항의 답을 알려 주지 않게 */
+
+/* 처음 시작할 때는 한 가지만 보인다(사용자 2026-11-07 「처음 시작할때는 한개만 보이도록 하는게 낫다」). 안내 · 시작 전 문항 같은 앞 묶음이 열려 있는 동안
+   머리말(종류 · 중심 질문 · 선수지식)은 화면에서만 빼고(화면 읽기에는 남긴다), 노트 칸과 '처음부터' 단추도 가린다. 묶음이 닫히면 본문과 함께 나타난다. */
+.reader[data-gate="open"] > .module-head { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.layout:has(.reader[data-gate="open"]) .note { display: none; }
+.layout:has(.reader[data-gate="open"]) .columns { grid-template-columns: minmax(0, 1fr); }
+.layout:has(.reader[data-gate="open"]) .topbar-restart { display: none; }
+.reader[data-gate="open"] > .rec-notice { padding: 20px; border-radius: 16px; border-color: var(--control); flex-direction: column; align-items: stretch; justify-content: flex-start; margin-bottom: 24px; }
+.reader[data-gate="open"] > .rec-notice .rec-notice-text { flex: 0 0 auto; font-size: 1rem; color: var(--ink); }
+
+.probe { margin: 0 0 24px; padding: 20px; border: 1.5px solid var(--control); border-radius: 16px; background: var(--surface); scroll-margin-top: calc(var(--topbar-h) + 12px); }
+.probe-title { font-size: 1.3125rem; line-height: 1.4; margin-bottom: 12px; }
+.probe-title:focus { outline: none; }
+.probe-lead { margin-bottom: 10px; word-break: keep-all; }
+.probe-intro { margin-bottom: 10px; color: var(--ink-2); word-break: keep-all; }
+.probe .prompt { margin-bottom: 4px; }
+/* 규칙 설명을 접는 '자세히'(K04 A123 D) */
+.probe-more { margin: 0 0 var(--gap-in); }
+.probe-more summary { min-height: var(--hit); display: flex; align-items: center; cursor: pointer; font-weight: 600; color: var(--muted); }
+.probe-more[open] summary { margin-bottom: 4px; }
+.probe-more > p + p { margin-top: var(--gap-in); }
+.probe-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.probe-results { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 12px; }
+.probe-result { padding: 12px 14px; border: 1.5px solid var(--hair); border-radius: 10px; background: var(--bg); display: grid; gap: 6px; }
+.probe-result-prompt { font-weight: 600; word-break: keep-all; }
+.probe-solution { color: var(--ink-2); word-break: keep-all; }
+
+/* 정리 화면의 구역 */
+.measure { margin: 0 0 20px; padding-top: 16px; border-top: 1px solid var(--hair); }
+.measure .help-sub { margin-bottom: 4px; }
+.first-table { margin-bottom: 8px; }
+.first-detail { margin-bottom: 8px; }
+.first-detail summary { min-height: var(--hit); display: flex; align-items: center; cursor: pointer; font-weight: 600; }
+.first-list { margin: 0 0 8px; padding-left: 1.2em; font-size: 0.9375rem; color: var(--ink-2); }
+.first-list li { margin-bottom: 4px; word-break: keep-all; }
+.measure-line { margin-top: 12px; word-break: keep-all; }
+
+/* 건너뛰기 확인(js/ui/skip.js)과 건너뛴 장면(js/ui/reader.js). 새 색·새 글꼴 없이 기존 토큰만 쓴다. */
+.skip-goal { margin-bottom: 10px; color: var(--ink-2); word-break: keep-all; }
+.skip-rows { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; }
+.skip-pick { margin: 16px 0 0; padding: 10px 12px; border: 1.5px solid var(--hair); border-radius: 10px; }
+.skip-pick-row { display: flex; align-items: center; gap: 8px; min-height: var(--hit); word-break: keep-all; }
+.skip-banner { margin: 6px 0; padding: 8px 12px; border-left: 4px solid var(--control); border-radius: 0 8px 8px 0; background: var(--sunk); font-size: 0.9375rem; color: var(--ink-2); word-break: keep-all; }
+.skip-jump-note { margin: 6px 0; padding: 8px 12px; border-left: 4px solid var(--ok); border-radius: 0 8px 8px 0; background: var(--sunk); font-size: 0.9375rem; word-break: keep-all; }
+.skip-fold { margin-top: 12px; width: 100%; justify-content: flex-start; text-align: left; }
+.scene:not(.is-folded) > .skip-fold { display: none; }
+.scene.is-folded > .scene-head, .scene.is-folded > .scene-body { display: none; }
+.skip-return { margin: 0 0 12px; display: grid; gap: 8px; }
+.skip-return-item { padding: 10px 12px; border-left: 4px solid var(--control); border-radius: 0 8px 8px 0; background: var(--sunk); display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.skip-return-text { flex: 1 1 14rem; font-size: 0.9375rem; word-break: keep-all; }
+.skip-summary { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 10px; }
+.measure-sub { margin-top: 16px; font-size: 1rem; }
+.outcome[data-outcome="checked-skip"] { background: var(--sunk); color: var(--ink-2); }
+
+/* 복습 일정(js/ui/end-review.js)·복습 한 회차(js/ui/review.js)·머리말 한 줄. 새 색·새 글꼴 없이 기존 토큰만 쓴다. */
+.review-line { margin: 8px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 0.9375rem; color: var(--ink-2); word-break: keep-all; }
+.schedule .setting { margin: 12px 0 0; }
+.schedule .setting-label { font-weight: 700; margin-right: 6px; }
+.schedule input[type="time"], .dialog input[type="date"] { min-height: var(--hit); width: auto; }
+.review-done { margin: 8px 0 0; padding-left: 1.2em; }
+.review-gate .tag + .outcome { margin-left: 4px; }
+
+/* 처음 여는 모듈: 기록 안내를 시작 전 문항 안내 카드에 합친 한 칸(ui/probe.js) */
+.probe-record { margin: 12px 0 4px; padding-top: 12px; border-top: 1px solid var(--control); }
+.probe-record-row { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-weight: 600; }
+.probe-record-row input { width: 22px; height: 22px; flex: none; }
+
+/* 여는 카드(js/ui/opener.js, K04 A124 · A125): 본문 앞 첫 카드 하나. 그림이 먼저 혼자 보이고 곧 질문 · 보기가 나온다. 무리 사이(그림 · 질문과 보기 · 시작 · 옅은 줄)는 넓게, 안은 촘촘하게. 새 값 없이 토큰만 쓴다. */
+.opener-gate { display: grid; gap: var(--gap-out); margin-bottom: 0; } /* 카드 아래 여백을 빼서 첫 화면(800 높이)에 질문 · 보기 · 시작이 쪽 넘김 없이 들어온다 */
+.opener-gate .figure, .opener-revisit .figure { border-color: var(--hair); }
+.opener-gate .fig-table th, .opener-gate .fig-table td, .opener-revisit .fig-table th, .opener-revisit .fig-table td { padding: var(--gap-in); }
+.opener-question { display: grid; gap: var(--gap-in); }
+.opener-question .prompt { margin-bottom: var(--gap-in); }
+.opener-choices { display: grid; gap: var(--gap-in); }
+.opener-choice { justify-content: flex-start; min-height: var(--hit); padding: var(--gap-in) calc(var(--gap-in) * 2); text-align: left; word-break: keep-all; }
+.opener-choice.is-picked, .opener-choice.is-picked[disabled] { opacity: 1; border-color: var(--primary); background: var(--sunk); }
+.opener-question .btn-primary { justify-self: start; margin-top: var(--gap-in); }
+.opener-foot { display: grid; justify-items: start; gap: 0; }
+.opener-skip { font-size: 0.9375rem; font-weight: 500; color: var(--muted); padding: 0 var(--gap-in); text-align: left; }
+.opener-more { margin: 0; }
+.opener-more summary { font-size: 0.9375rem; font-weight: 500; padding: 0 var(--gap-in); }
+.opener-revisit { display: grid; gap: var(--gap-in); margin: 0 0 var(--gap-out); padding-bottom: var(--gap-out); border-bottom: 1px solid var(--hair); }
+.opener-revisit .opener-figure { margin: var(--gap-in) 0; }
+.opener-revisit .opener-answer { font-weight: 600; word-break: keep-all; }
+.opener-revisit .opener-why { color: var(--ink-2); word-break: keep-all; }

@@ -1,0 +1,28 @@
+/* 학습 기록: 처음 열 때의 안내 한 줄(진행을 막지 않는다)과 설정 창의 기록 구역. */
+.rec-notice {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;
+  padding: 10px 14px; margin-bottom: 20px; border: 1.5px solid var(--hair); border-radius: 12px; background: var(--surface);
+}
+.rec-notice-text { flex: 1 1 18rem; min-width: 0; font-size: 0.9375rem; line-height: 1.6; color: var(--ink-2); }
+.rec-notice-text strong { color: var(--ink); }
+.rec-notice-actions { display: flex; flex-wrap: wrap; gap: 4px; }
+
+.rec-settings { margin: 24px 0 8px; padding-top: 16px; border-top: 1px solid var(--hair); }
+.dialog-subtitle { font-size: 1.0625rem; line-height: 1.4; margin: 0 0 8px; }
+.rec-settings .dialog-subtitle:not(:first-child) { margin-top: 20px; }
+.rec-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 8px; }
+.rec-disclaimer { margin-top: 8px; padding: 8px 12px; border-radius: 8px; background: var(--sunk); color: var(--ink-2); }
+.check-row input[role="switch"] { appearance: none; -webkit-appearance: none; width: 44px; height: 26px; margin: 0; border-radius: 13px; border: 1.5px solid var(--control); background: var(--sunk); position: relative; flex: none; cursor: pointer; }
+.check-row input[role="switch"]::after { content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: var(--control); transition: transform 0.15s ease; }
+.check-row input[role="switch"]:checked { background: var(--primary); border-color: var(--primary); }
+.check-row input[role="switch"]:checked::after { transform: translateX(18px); background: var(--on-primary); }
+.check-row input[role="switch"]:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* 기록 요약 표는 열이 4개라서 끝 화면 요약표의 좁은 화면용 격자를 쓰지 않고 그대로 둔다. */
+.rec-table { font-size: 0.875rem; }
+.rec-table th, .rec-table td { padding: 8px 6px; }
+@media (max-width: 479.98px) {
+  .rec-table thead { display: table-header-group; }
+  .rec-table tr { display: table-row; padding: 0; border-bottom: 0; }
+  .rec-table th, .rec-table td { border-bottom: 1px solid var(--hair); padding: 8px 6px; }
+}

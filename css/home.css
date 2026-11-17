@@ -1,0 +1,40 @@
+/* 모듈 목록 화면과 모듈 머리의 종류 꼬리표. 색은 tokens.css 의 토큰만 쓴다(어두운 모드는 토큰이 바뀐다). */
+.home { padding-bottom: 40px; }
+.home-head { margin-bottom: 24px; }
+.home-head .module-title { font-size: 1.5rem; line-height: 1.35; margin-bottom: 10px; }
+.home-note { padding: 10px 14px; border-left: 4px solid var(--warn); border-radius: 8px; background: var(--warn-bg); }
+
+.kind { margin-top: 28px; }
+.kind-name { font-size: 1.1875rem; line-height: 1.4; }
+.kind-line { margin-bottom: 10px; }
+.kind-empty { padding: 10px 14px; border: 1.5px dashed var(--hair); border-radius: 10px; }
+.module-list { list-style: none; padding: 0; display: grid; gap: 10px; }
+
+.module-card {
+  display: grid; gap: 6px; min-height: var(--hit); padding: 14px 16px;
+  border: 1.5px solid var(--control); border-radius: var(--r); background: var(--surface); color: var(--ink); text-decoration: none;
+}
+.module-card:hover { background: var(--sunk); }
+.card-title { font-weight: 700; line-height: 1.4; }
+.module-question { display: block; }
+.module-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+/* 상태는 글이 뜻을 전한다. 모양(테두리)은 보조일 뿐 색만으로 가르지 않는다. */
+.status { display: inline-block; padding: 2px 10px; border-radius: 999px; border: 1.5px solid var(--control); background: var(--sunk); font-size: 0.9375rem; font-weight: 700; }
+.status[data-status="doing"] { border-style: dashed; }
+.status[data-status="done"] { border-color: var(--ok); color: var(--ok); background: var(--ok-bg); }
+.status[data-status="review"] { border-width: 2.5px; border-color: var(--warn); color: var(--warn); background: var(--warn-bg); }
+
+.home-foot { margin-top: 32px; }
+.kind-tag { margin-bottom: 8px; }
+
+/* 모듈 안 위 막대: 단추가 하나 늘었으므로 좁은 화면에서 안쪽 여백을 줄인다(누르는 칸 높이 44px 는 그대로). */
+.topbar-actions .btn { white-space: nowrap; }
+@media (max-width: 479.98px) {
+  .topbar { gap: 4px; }
+  .topbar-actions { gap: var(--gap-in); } /* 누르는 자리 사이 8 이상(c01 간격과 배치 [B/C]) — 앞 값 0. 단추 안쪽 여백을 8 → 4 로 줄여 글자 사이 간격은 그대로 두었다 */
+  .topbar-actions .btn { padding: 0 4px; }
+  .brand { display: none; } /* 좁은 폭: 이름을 줄여 '장면 99 / 99' 까지 들어가게 한다(모듈 이름은 탭 제목에 있다) */
+  .topbar-progress { font-size: 0.875rem; }
+}
+a.btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+.topbar-actions { margin-left: auto; }

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 270" fill="none" stroke="#8a867c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <!-- 탁자 -->
+  <line x1="8" y1="196" x2="592" y2="196"/>
+  <!-- 같은 카드 세 장: 물음표 -->
+  <g>
+    <rect x="18" y="48" width="104" height="132" rx="12" fill="#f6f4ec"/>
+    <rect x="26" y="56" width="88" height="116" rx="8" fill="#e6e2d6"/>
+    <text x="70" y="136" text-anchor="middle" font-family="sans-serif" font-size="72" font-weight="700" fill="#2a2926" stroke="none">?</text>
+  </g>
+  <text x="147" y="132" text-anchor="middle" font-family="sans-serif" font-size="44" font-weight="700" fill="#2a2926" stroke="none">×</text>
+  <g>
+    <rect x="172" y="48" width="104" height="132" rx="12" fill="#f6f4ec"/>
+    <rect x="180" y="56" width="88" height="116" rx="8" fill="#e6e2d6"/>
+    <text x="224" y="136" text-anchor="middle" font-family="sans-serif" font-size="72" font-weight="700" fill="#2a2926" stroke="none">?</text>
+  </g>
+  <text x="301" y="132" text-anchor="middle" font-family="sans-serif" font-size="44" font-weight="700" fill="#2a2926" stroke="none">×</text>
+  <g>
+    <rect x="326" y="48" width="104" height="132" rx="12" fill="#f6f4ec"/>
+    <rect x="334" y="56" width="88" height="116" rx="8" fill="#e6e2d6"/>
+    <text x="378" y="136" text-anchor="middle" font-family="sans-serif" font-size="72" font-weight="700" fill="#2a2926" stroke="none">?</text>
+  </g>
+  <!-- 같음표와 결과 -->
+  <text x="455" y="132" text-anchor="middle" font-family="sans-serif" font-size="44" font-weight="700" fill="#2a2926" stroke="none">=</text>
+  <rect x="478" y="68" width="112" height="92" rx="14" fill="#c9c4b6"/>
+  <text x="534" y="130" text-anchor="middle" font-family="sans-serif" font-size="46" font-weight="700" fill="#2a2926" stroke="none">−27</text>
+  <!-- 세 카드가 같은 수라는 표시 -->
+  <path d="M 20 214 L 20 228 L 430 228 L 430 214"/>
+  <text x="225" y="262" text-anchor="middle" font-family="sans-serif" font-size="38" font-weight="700" fill="#8a867c" stroke="none">같은 수</text>
+</svg>

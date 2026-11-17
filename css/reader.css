@@ -1,0 +1,125 @@
+/* 본문 읽기: 제목부, 장면, 글 단위, 조작 줄, 선택 줄, 도움 서랍. */
+.module-head { margin-bottom: var(--gap-out); }
+.module-head-row { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-in); }
+.module-title { font-size: 1.5rem; line-height: 1.35; margin: 2px 0 12px; }
+.head-toggle { flex: none; font-size: 0.9375rem; font-weight: 500; color: var(--muted); }
+.head-more { margin-top: 4px; }
+/* 본문이 시작되면 머리는 제목 한 줄로(js/ui/app.js 의 updateHead — 읽는 중일 때만). 눌러서 펼치면 위 모양 그대로다. */
+.reader[data-head="folded"] .module-head { margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--hair); }
+.reader[data-head="folded"] .module-title { font-size: 0.9375rem; font-weight: 600; color: var(--muted); margin: 0; }
+/* 넓은 화면(720 이상)에서는 위 막대에 모듈 제목이 이미 있으므로 접힌 머리에서는 제목을 눈에서만 뺀다(읽기 보조에는 남김). 휴대폰은 위 막대에 제목이 없어 머리의 제목이 유일한 것이다. */
+@media (min-width: 720px) {
+  .reader[data-head="folded"] .module-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+.central {
+  padding: 12px 16px; border-left: 4px solid var(--primary); background: var(--sunk); border-radius: 0 10px 10px 0;
+  font-size: 1.0625rem; font-weight: 600; line-height: 1.65;
+}
+.central-small { font-size: 1rem; font-weight: 500; margin-bottom: 8px; }
+.prereq { margin-top: 12px; }
+.prereq summary { min-height: var(--hit); display: flex; align-items: center; cursor: pointer; font-weight: 600; }
+.prereq ul { margin: 4px 0 0; padding-left: 1.2em; color: var(--ink-2); }
+.prereq li { margin-bottom: 4px; }
+
+.storage-warning { padding: 10px 14px; border-radius: 8px; background: var(--warn-bg); color: var(--ink); margin-bottom: 16px; }
+.resume {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;
+  padding: 10px 14px; margin-bottom: 20px; border: 1.5px solid var(--hair); border-radius: 12px; background: var(--surface);
+}
+.resume-text { flex: 1 1 14rem; }
+.resume-actions { display: flex; gap: 4px; }
+
+.flow { margin-bottom: var(--gap-out); }
+.scene { margin-top: 36px; scroll-margin-top: calc(var(--topbar-h) + 12px); }
+.scene:first-child { margin-top: 8px; }
+.scene-head { margin-bottom: 12px; padding-top: 20px; border-top: 1px solid var(--hair); }
+/* 장면별로 보기는 한 번에 한 장면만 보이므로 장면 사이를 가르는 가로줄이 없다(이어서 쌓기에서만 둔다). */
+.flow[data-view="scene"] .scene { margin-top: 0; }
+.flow[data-view="scene"] .scene-head { border-top: 0; padding-top: 0; }
+.scene:first-child .scene-head { border-top: 0; padding-top: 0; }
+/* 장면별로 보기: 장면 이동 막대(보기 방식이 '장면별로 보기'일 때만 나온다) */
+.scene-nav { margin: 0 0 var(--gap-in); padding: 0; } /* 장면 이동은 물러나 있는 막대(테두리 · 바탕 없음) */
+.scene-nav-label { font-size: 0.875rem; font-weight: 700; color: var(--muted); margin: 0 0 6px; }
+.scene-nav-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.scene-nav-actions .btn { border-color: transparent; background: transparent; color: var(--muted); font-size: 0.9375rem; font-weight: 500; padding: 0 8px; }
+.scene-nav-actions .btn:hover:not([disabled]) { background: var(--sunk); }
+.scene-nav-actions .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.scene-title { font-size: 1.125rem; line-height: 1.4; margin: 2px 0 var(--gap-in); }
+
+.block { margin: 18px 0; scroll-margin-top: calc(var(--topbar-h) + 12px); }
+.block-text { margin: 0; }
+.unit {
+  margin: 0 0 1.1em; font-size: var(--reading); line-height: var(--lh-read);
+  word-break: keep-all; overflow-wrap: break-word; scroll-margin-top: calc(var(--topbar-h) + 16px);
+}
+.unit.is-typing .typed:not(.typed-sentences)::after, .unit.is-typing .sent.is-writing::after {
+  content: ""; display: inline-block; width: 2px; height: 1.1em; margin-left: 2px; background: var(--ink-2); vertical-align: text-bottom;
+}
+/* 문장 줄바꿈(K04 A126): 한 글 단위 안에서 문장마다 새 줄, 문장 사이는 줄 간격에 --gap-sent 를 더한다. 글 단위 사이는 --gap-unit(무리 여백: 안은 촘촘히, 무리 사이는 넓게 — 값의 근거는 tokens.css). 문장 안은 화면 폭대로 감긴다. */
+.unit .sent { display: block; }
+.unit .sent + .sent { margin-top: var(--gap-sent); }
+.typed-sentences { display: block; }
+.block-text .unit { margin-bottom: var(--gap-unit); }
+.block-text .unit:last-child { margin-bottom: 0; }
+/* 앞 단위 옅게: 지금 단위보다 앞선 글은 한 단계 낮춘 색. 다시 읽을 때(마우스를 올리거나 초점이 갈 때)는 원래 색 */
+.unit.is-past { color: var(--muted); transition: color 0.2s ease; }
+.unit.is-past:hover, .unit.is-past:focus-within { color: var(--ink); }
+.unit ::selection, .unit::selection { background: var(--warn-bg); color: var(--ink); }
+
+/* 조작 줄: 화면 아래에 붙는다. 시트가 반쯤 열리면 시트 위로 올라온다(layout.css). */
+.controls {
+  position: sticky; bottom: 0; z-index: 20; margin: auto calc(-1 * var(--gutter)) 0; flex: none;
+  padding: 8px var(--gutter) calc(8px + env(safe-area-inset-bottom)); background: var(--bg); border-top: 1px solid var(--hair);
+}
+.controls-row { display: flex; flex-wrap: wrap; gap: var(--gap-in); align-items: center; justify-content: space-between; }
+/* 노트 · 도움 · 정지(· 지문 보기)는 작고 옅게 한 무리. 계속은 따로 오른쪽에 둔다. */
+.controls-aux { display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-in); } /* 누르는 자리 사이 8 이상(c01 간격과 배치 [B/C]) — 앞 값 2 */
+.controls-aux .btn { border-color: transparent; background: transparent; color: var(--muted); font-size: 0.9375rem; font-weight: 500; }
+.controls-aux .btn:hover:not([disabled]):not([aria-disabled="true"]) { background: var(--sunk); }
+/* 단추 글은 접지 않는다(375px 폭에서 '노/트' 로 갈라진 적이 있다). 자리가 모자라면 단추째 다음 줄로 내려간다. */
+.controls-row .btn { padding: 0 12px; white-space: nowrap; }
+.btn-continue { flex: 0 0 auto; min-width: 7rem; margin-left: auto; }
+/* 계속은 읽을 글보다 가볍게: 채움 없이 옅은 바탕 + 윤곽. 누를 수 있을 때는 글자가 진하고 윤곽이 또렷, 못 누를 때는 바탕 없이 옅은 윤곽 + 옅은 글자(키보드 초점 표시는 base.css 의 :focus-visible 그대로). */
+.controls-row .btn-continue { background: var(--sunk); color: var(--ink); border-color: var(--control); }
+.controls-row .btn-continue:hover:not([disabled]):not([aria-disabled="true"]) { background: var(--hair); }
+.controls-row .btn-continue[disabled], .controls-row .btn-continue[aria-disabled="true"] { background: transparent; color: var(--muted); border-color: var(--hair); }
+/* 글이 나타나는 동안의 '바로 펼치기'는 윤곽만 — 읽을 글보다 무겁지 않게 */
+.btn-continue.is-typing, .btn-continue.is-typing:hover:not([aria-disabled="true"]) { background: var(--surface); color: var(--ink); border-color: var(--control); }
+.btn-continue.is-typing:hover:not([aria-disabled="true"]) { background: var(--sunk); }
+.btn-continue.is-blocked { border-style: dashed; }
+.controls-status { min-height: 0; margin-top: 4px; }
+.controls-status:empty { display: none; }
+
+.selection-bar {
+  position: sticky; top: calc(var(--topbar-h) + 8px); z-index: 25; margin: 0 0 12px; padding: 10px 12px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+  border: 1.5px solid var(--control); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow);
+}
+.selection-quote { flex: 1 1 12rem; min-width: 0; font-style: italic; color: var(--ink-2); }
+.selection-actions { display: flex; flex-wrap: wrap; gap: 4px; }
+
+.help {
+  margin: 14px 0; padding: 14px 16px; border: 1.5px solid var(--control); border-radius: var(--r); background: var(--surface);
+  scroll-margin-top: calc(var(--topbar-h) + 12px);
+}
+.help-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.help-title { font-size: 1.0625rem; }
+.help-title:focus { outline: none; }
+.help-note-line { margin: 4px 0 10px; }
+.help-sub { font-size: 1rem; margin: 12px 0 6px; }
+.hint-list, .reason-list { margin: 8px 0; padding-left: 0; list-style: none; display: grid; gap: 8px; }
+.hint-list li, .reason-list li, .help-note, .solution { padding: 10px 12px; border-radius: 8px; background: var(--sunk); }
+.solution { margin: 8px 0; }
+.ladder { margin-top: 10px; }
+/* 질문하기(연결된 서비스가 있을 때만 나온다)와 긴급 안내(언제나 서랍 맨 아래·설정 창 아래에 있다). */
+.ai-ask { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--hair); }
+.ai-ask .input { width: 100%; margin-top: 4px; }
+.ai-counter { margin: 2px 0 0; text-align: right; }
+.ai-answer { margin: 8px 0; padding: 10px 12px; border-radius: 8px; background: var(--sunk); white-space: pre-wrap; }
+.ai-feedback { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-top: 6px; }
+.emergency-disclosure { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--hair); }
+.emergency-panel { margin-top: 8px; }
+.emergency-list { margin: 8px 0; padding-left: 0; list-style: none; display: grid; gap: 8px; }
+.emergency-line { padding: 10px 12px; border-radius: 8px; background: var(--sunk); }
+.emergency-head { font-size: 1.0625rem; }
+.emergency-number { font-size: 1.25rem; font-variant-numeric: tabular-nums; }

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 270" fill="none" stroke="#8a867c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <!-- 태양: 크게 -->
+  <circle cx="190" cy="105" r="92" fill="#f1cf8a"/>
+  <text x="190" y="114" text-anchor="middle" font-family="sans-serif" font-size="30" font-weight="700" fill="#2a2926" stroke="none">태양</text>
+  <!-- 태양의 지름을 가리키는 줄 -->
+  <line x1="98" y1="238" x2="282" y2="238"/>
+  <polyline points="112,228 98,238 112,248"/>
+  <polyline points="268,228 282,238 268,248"/>
+  <text x="190" y="218" text-anchor="middle" font-family="sans-serif" font-size="19" fill="#2a2926" stroke="none">태양의 지름</text>
+  <!-- 지구: 작게 (그림 속 비율은 실제와 다름) -->
+  <circle cx="470" cy="115" r="30" fill="#9db4cf"/>
+  <path d="M 452 108 q 8 -12 18 -3 q 7 8 -3 14 q -11 3 -15 -11 z" fill="#a6c2a3" stroke="none"/>
+  <path d="M 478 124 q 9 -6 14 3 q -2 9 -12 7 z" fill="#a6c2a3" stroke="none"/>
+  <text x="470" y="176" text-anchor="middle" font-family="sans-serif" font-size="24" font-weight="700" fill="#2a2926" stroke="none">지구</text>
+  <!-- 지구의 지름을 가리키는 줄 -->
+  <line x1="440" y1="238" x2="500" y2="238"/>
+  <polyline points="454,228 440,238 454,248"/>
+  <polyline points="486,228 500,238 486,248"/>
+  <text x="470" y="218" text-anchor="middle" font-family="sans-serif" font-size="19" fill="#2a2926" stroke="none">지구의 지름</text>
+  <!-- 가운데 물음표 -->
+  <text x="365" y="130" text-anchor="middle" font-family="sans-serif" font-size="46" font-weight="700" fill="#8a867c" stroke="none">?</text>
+  <text x="300" y="262" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#6b675e" stroke="none">그림 속 크기의 비율은 실제와 다릅니다</text>
+</svg>

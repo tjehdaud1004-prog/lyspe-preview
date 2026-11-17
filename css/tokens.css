@@ -1,0 +1,61 @@
+/* 색·치수 토큰. 차분한 종이 톤(기존 Lyza 앱의 분위기를 참고해 새로 정리). 값은 여기에서만 바꾼다. */
+:root {
+  color-scheme: light;
+  --bg: #f7f6f2; --surface: #ffffff; --sunk: #eceae3;
+  --ink: #1b1a17; --ink-2: #46443e; --muted: #625f57; --hair: #dddad1; --control: #858176;
+  --primary: #1b1a17; --on-primary: #ffffff; --primary-hover: #34322d;
+  --primary-off: #6b6860; --on-primary-off: #ffffff; /* 비활성 주 단추: 불투명도로 흐리지 않고 글자 대비 4.5 이상을 지킨다 */
+  --ok: #2c6a48; --ok-bg: #e3f0e8; --alert: #b0301f; --err-bg: #f7e4e0; --warn-bg: #f6ead2; --warn: #855a00;
+  --focus: #2457c5;
+  --series-0: #2457c5; --series-1: #a64b00;
+  --inverse-bg: #1b1a17; --inverse-ink: #f7f6f2;
+  --scrim: rgba(20, 20, 18, 0.45);
+  --shadow: 0 8px 28px rgba(27, 26, 23, 0.18);
+
+  --font: "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", "Noto Sans KR", "Noto Sans CJK KR", "Source Han Sans KR", sans-serif;
+  --font-mono: ui-monospace, Consolas, "Roboto Mono", "Droid Sans Mono", monospace;
+
+  --gutter: 20px;
+  --gap-in: 8px;   /* 무리 여백(K04 A123): 같은 무리 안의 간격 */
+  --gap-out: 32px; /* 무리 여백: 지금 읽을 것과 나머지 사이의 간격 */
+  /* 본문 글 세 층(K04 A128, 디자인 근거 대어 보기 TABLE.md): 감긴 줄 < 문장 사이 < 글 단위 사이. 층마다 눈에 보이는 빈 높이(= 줄 간격 − 글자 크기 + 더한 간격)를 앞 층의 2배 이상으로 — 묶음 안 : 묶음 사이 ≥ 1:2 (c01 간격과 배치 [A]). 17px 에서 감긴 줄 10.2 · 문장 사이 22.2 · 글 단위 사이 58.2. */
+  --lh-read: 1.6;      /* 긴 읽기 글 줄 간격 — 한글 실험 근거 없음, 1.6 출발 [D](c02 한글 글자) · 한국 앱 읽기 글 1.6 [P]. 앞 값 1.9 는 받치는 카드가 없었다 */
+  --lh-ui: 1.5;        /* 짧은 안내 · 질문 글 줄 간격 — UI 글 1.4~1.5 [P] */
+  --gap-sent: 12px;    /* 같은 글 단위 안에서 문장과 문장 사이(줄 간격에 더하는 간격). 4px 기반 값 [P]. 12 로 고른 것은 위 비율(10.2 → 22.2)을 맞추기 위한 제작 판단 */
+  --gap-unit: 48px;    /* 글 단위와 글 단위 사이. 제작값 '무리 사이 48'(cognition 카드 1, 연구 아님)이고 4px 기반 값 [P]. 문장 사이 22.2 의 2배 이상(58.2)이 되려면 32 로는 모자랐다(42.2) */
+  --topbar-h: 56px;
+  --controls-clear: 16px; /* 문항 블록이 나타나 스크롤될 때 아랫변과 아래 조작 줄 사이에 두는 여백(reader.js scrollToStep) */
+  --hit: 44px;
+  --r: 12px;
+  --reading: 1.0625rem; /* 17px — 본문은 16px 아래로 내려가지 않는다 */
+  --note-w: clamp(280px, 38vw, 360px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #141412; --surface: #1d1d1a; --sunk: #262622;
+    --ink: #eceae3; --ink-2: #c4c1b8; --muted: #a29f95; --hair: #34332e; --control: #7d7a71;
+    --primary: #e4e1d8; --on-primary: #141412; --primary-hover: #cfcbc1;
+    --primary-off: #8f8c83; --on-primary-off: #141412;
+    --ok: #72c394; --ok-bg: #1c2b22; --alert: #f08b7e; --err-bg: #33201d; --warn-bg: #2e2718; --warn: #e2b55a;
+    --focus: #86aeff;
+    --series-0: #86aeff; --series-1: #f0b35a;
+    --inverse-bg: #eceae3; --inverse-ink: #141412;
+    --scrim: rgba(0, 0, 0, 0.6);
+    --shadow: 0 0 0 1px #34332e, 0 8px 28px rgba(0, 0, 0, 0.55);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #141412; --surface: #1d1d1a; --sunk: #262622;
+  --ink: #eceae3; --ink-2: #c4c1b8; --muted: #a29f95; --hair: #34332e; --control: #7d7a71;
+  --primary: #e4e1d8; --on-primary: #141412; --primary-hover: #cfcbc1;
+  --primary-off: #8f8c83; --on-primary-off: #141412;
+  --ok: #72c394; --ok-bg: #1c2b22; --alert: #f08b7e; --err-bg: #33201d; --warn-bg: #2e2718; --warn: #e2b55a;
+  --focus: #86aeff;
+  --series-0: #86aeff; --series-1: #f0b35a;
+  --inverse-bg: #eceae3; --inverse-ink: #141412;
+  --scrim: rgba(0, 0, 0, 0.6);
+  --shadow: 0 0 0 1px #34332e, 0 8px 28px rgba(0, 0, 0, 0.55);
+}
+@media (max-width: 359px) { :root { --gutter: 16px; } }

@@ -1,0 +1,27 @@
+/* 끝 화면: 중심 질문으로 돌아가기와 요약 */
+.end { margin: 40px 0 0; padding: 20px; border: 1.5px solid var(--control); border-radius: 16px; background: var(--surface); scroll-margin-top: calc(var(--topbar-h) + 12px); }
+.end:focus { outline: none; }
+.end-title { font-size: 1.3125rem; line-height: 1.4; margin-bottom: 12px; }
+.end-title:focus { outline: none; }
+.end .central { margin-bottom: 16px; }
+.end label.prompt { margin-bottom: 8px; }
+.end-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.lead { margin-bottom: 16px; }
+.summary-table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; margin: 8px 0 20px; }
+.summary-table caption { text-align: left; font-weight: 700; padding-bottom: 8px; font-size: 1rem; }
+.summary-table th, .summary-table td { padding: 10px 8px; border-bottom: 1px solid var(--hair); text-align: left; vertical-align: top; word-break: keep-all; }
+.summary-table thead th { color: var(--muted); font-size: 0.875rem; }
+.summary-table tbody th { font-weight: 600; }
+.summary-table .scene-no {
+  display: inline-grid; place-items: center; width: 24px; height: 24px; margin-right: 4px; border-radius: 50%;
+  background: var(--sunk); color: var(--ink-2); font-size: 0.8125rem;
+}
+.summary-table .detail { color: var(--muted); }
+.summary-final { margin-bottom: 16px; }
+.final-answer { white-space: pre-wrap; padding: 10px 14px; border: 1.5px solid var(--hair); border-radius: 10px; background: var(--bg); }
+@media (max-width: 479.98px) {
+  .summary-table thead { display: none; }
+  .summary-table tr { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; padding: 8px 0; border-bottom: 1px solid var(--hair); }
+  .summary-table th, .summary-table td { border-bottom: 0; padding: 2px 0; }
+  .summary-table .detail { grid-column: 1 / -1; }
+}
