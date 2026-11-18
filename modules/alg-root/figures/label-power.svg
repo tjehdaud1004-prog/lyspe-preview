@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 240" fill="none" stroke="#2a2926" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2a2926" stroke="none"/></marker></defs>
+  <rect x="2" y="2" width="596" height="236" rx="16" fill="#f6f4ec" stroke="#8a867c" stroke-width="2"/>
+  <text x="250" y="175" text-anchor="middle" font-family="sans-serif" font-size="120" font-weight="700" fill="#2a2926" stroke="none">a</text>
+  <text x="330" y="105" text-anchor="middle" font-family="sans-serif" font-size="70" font-weight="700" fill="#2a2926" stroke="none">n</text>
+  <text x="120" y="50" text-anchor="middle" font-family="sans-serif" font-size="24" font-weight="700" fill="#2a2926" stroke="none">밑 : 곱하는 수</text>
+  <line x1="150" y1="64" x2="226" y2="108" stroke-width="2.5" marker-end="url(#ar)"/>
+  <text x="450" y="50" text-anchor="middle" font-family="sans-serif" font-size="24" font-weight="700" fill="#2a2926" stroke="none">지수 : 곱한 횟수</text>
+  <line x1="430" y1="64" x2="352" y2="92" stroke-width="2.5" marker-end="url(#ar)"/>
+  <text x="300" y="222" text-anchor="middle" font-family="sans-serif" font-size="24" font-weight="700" fill="#8a867c" stroke="none">a 를 n 번 곱한 수</text>
+</svg>

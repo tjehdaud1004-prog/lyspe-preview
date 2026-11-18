@@ -1,20 +1,20 @@
 [
- {
-  "id": "alg-root",
-  "title": "대수 ① 같은 수를 여러 번 곱해 만든 수의 근",
-  "kind": "discern",
-  "centralQuestion": "같은 수를 n 번 곱해 a 가 되는 실수 x(a 의 실수인 n제곱근)가 몇 개인지, n 이 짝수인지 홀수인지와 a 의 부호를 보고 가를 수 있는가?",
-  "version": "1.01",
-  "needs": [],
-  "order": 1
- },
- {
-  "id": "sci-scale",
-  "title": "통합과학 첫걸음 ① 원자에서 은하까지, 크기를 나란히 놓기",
-  "kind": "relate",
-  "centralQuestion": "크기를 10의 거듭제곱으로 어림해 지수 n 으로 나란히 놓으면, 지수 한 칸은 왜 10배이고 두 대상은 몇 배쯤 차이 나는가?",
-  "version": "1.01",
-  "needs": [],
-  "order": 2
- }
+  {
+    "id": "alg-root",
+    "title": "대수 ① 같은 수를 여러 번 곱해 만든 수의 근",
+    "kind": "discern",
+    "centralQuestion": "같은 수를 n 번 곱해 a 가 되는 실수 x(a 의 실수인 n제곱근)가 몇 개인지, n 이 짝수인지 홀수인지와 a 의 부호를 보고 가를 수 있는가?",
+    "version": "2.00",
+    "needs": [],
+    "order": 1
+  },
+  {
+    "id": "sci-scale",
+    "title": "통합과학 첫걸음 ① 원자에서 은하까지, 크기를 나란히 놓기",
+    "kind": "relate",
+    "centralQuestion": "크기를 10의 거듭제곱으로 어림해 지수 n 으로 나란히 놓으면, 지수 한 칸은 왜 10배이고 두 대상은 몇 배쯤 차이 나는가?",
+    "version": "1.01",
+    "needs": [],
+    "order": 2
+  }
 ]
