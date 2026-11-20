@@ -140,7 +140,7 @@ export function createSettingsDialog({ session, mod, recording, planner, onRevie
       radioGroup({
         legend: '나타나는 단위', name: 'unit', current: s.unit, onChange: (v) => set({ unit: v }),
         options: Object.entries(TEXT_UNIT_LABELS).map(([value, label]) => ({ value, label })),
-        hint: '‘조금씩 나타나게’일 때 글이 한 번에 나타나는 크기입니다(어절 = 띄어쓰기 단위). 어느 쪽이 더 잘 기억된다고 확인된 것은 아니니, 바꿔 보며 편한 쪽을 고르세요.',
+        hint: '‘조금씩 나타나게’일 때 글이 한 번에 나타나는 크기입니다(타자 = 자판을 치듯 자모가 차례로 조합되며, 어절 = 띄어쓰기 단위). 어느 쪽이 더 잘 기억된다고 확인된 것은 아니니, 바꿔 보며 편한 쪽을 고르세요.',
       }),
       radioGroup({
         legend: '본문 보기 방식', name: 'view', current: s.view, onChange: (v) => set({ view: v }),

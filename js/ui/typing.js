@@ -31,6 +31,7 @@ export function createTyper({ el, text, parts = [text], getSpeed, getUnit = () =
   let held = false;
   let early = false; // 다 나타나기 전에 '바로 펼치기'로 끝냈는가
   let node = null;
+  let lastNode = null; // 마지막으로 글을 쓴 글 노드 — 조합 중인 음절을 그 자리에서 고쳐 쓴다
 
   const state = () => ({ done, paused, held, early });
   const notify = () => onStateChange?.(state());
@@ -46,8 +47,10 @@ export function createTyper({ el, text, parts = [text], getSpeed, getUnit = () =
   }
 
   // 나온 조각을 문장 경계에 맞춰 나눠 담는다. 문장 칸(span.sent)은 그 문장의 첫 글자가 나올 때 만든다(안 나온 문장의 자리가 미리 비어 있지 않게).
-  function write(piece) {
-    if (!multi) { node.data += piece; return; }
+  // back: 조합 중인 앞 차례(타자)의 글자 수 — 지우고 새 차례를 쓴다(새 글자로 붙지 않는다).
+  function write(piece, back = 0) {
+    if (back > 0) { lastNode.data = lastNode.data.slice(0, -back); sentUsed -= back; }
+    if (!multi) { node.data += piece; lastNode = node; return; }
     let rest = piece;
     while (rest !== '') {
       if (sentUsed === parts[sentIndex].length) { sentIndex += 1; sentUsed = 0; }
@@ -60,6 +63,7 @@ export function createTyper({ el, text, parts = [text], getSpeed, getUnit = () =
       }
       const take = rest.slice(0, parts[sentIndex].length - sentUsed);
       sentNodes[sentIndex].data += take;
+      lastNode = sentNodes[sentIndex];
       sentUsed += take.length;
       rest = rest.slice(take.length);
     }
@@ -81,7 +85,7 @@ export function createTyper({ el, text, parts = [text], getSpeed, getUnit = () =
     if (held) { held = false; notify(); }
     const step = cursor.next();
     if (step === null) { complete(); return; } // 마지막 조각의 몫까지 머문 뒤 '다 나타남'
-    write(step.piece);
+    write(step.piece, step.back);
     onTick?.();
     schedule(step.waitMs);
   }
