@@ -2,7 +2,7 @@
 // 끝 화면의 다시 보기 카드(openerRevisitCard)는 같은 그림과 질문을 다시 보이고, 이번에는 정답과 까닭을 보인다.
 // 언제 보이고 무엇이 남는지는 core/opener.js 의 규칙이고, 여기는 보여 주고 누른 것을 전할 뿐이다.
 import { h, uid } from './dom.js';
-import { renderFigure } from './figure.js';
+import { createFigure, renderFigure } from './figure.js';
 import { hasProgress } from '../core/progress.js';
 import { optionOrder } from '../core/shuffle.js';
 import {
@@ -28,6 +28,7 @@ export function createOpenerGate({ mod, session, rec, announce, onOpen, onClose 
   let settled = false;  // 안내를 본 것으로 저장했는가
   let recordBox = null;
   let timer = null;
+  let draw = null;      // 여는 그림이 그려지는 중이면 { finish() }
 
   // 기록 동의를 저장한다(처음 답이 기록되기 전에 — 같은 카드에서 기록을 켠 사람의 첫 답이 버려지지 않게). 그 뒤 체크를 바꾸면 곧바로 다시 저장한다.
   function settleNotice() {
@@ -41,6 +42,8 @@ export function createOpenerGate({ mod, session, rec, announce, onOpen, onClose 
     merged = null;
     settled = false;
     clearTimeout(timer);
+    draw?.finish();
+    draw = null;
     el.hidden = true;
     el.replaceChildren();
     onClose?.(kind);
@@ -86,8 +89,12 @@ export function createOpenerGate({ mod, session, rec, announce, onOpen, onClose 
       h('p', { class: 'prompt', id: labelId, dataset: { itemId: 'opener' }, text: def.prompt }),
       choices.el, note, start);
     const foot = h('div', { class: 'opener-foot', hidden: true }, skipLink, more);
-    el.replaceChildren(h('div', { class: 'opener-figure' }, renderFigure(mod.figures[def.figure], def.alt, { base: `modules/${mod.id}/` })), question, foot);
+    // 여는 그림도 처음 볼 때 한 번 그려지듯(2판 A146). 그리는 동안 물음 · 보기는 그대로 보이고 눌러도 된다. 움직임 줄이기 · 즉시 표시면 그리지 않는다.
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches || session.settings?.display === 'instant';
+    const fig = createFigure(mod.figures[def.figure], def.alt, { base: `modules/${mod.id}/`, inline: !still });
+    el.replaceChildren(h('div', { class: 'opener-figure' }, fig.el), question, foot);
     el.dataset.stage = 'figure';
+    draw = still ? null : fig.drawIn?.() ?? null;
 
     const reveal = () => {
       if (!active) return;
@@ -120,7 +127,7 @@ export function createOpenerGate({ mod, session, rec, announce, onOpen, onClose 
       return true;
     },
     // '처음부터'를 누른 경우처럼 아무것도 남기지 않고 닫는다.
-    cancel() { if (active) { active = false; merged = null; settled = false; clearTimeout(timer); el.hidden = true; el.replaceChildren(); } },
+    cancel() { if (active) { active = false; merged = null; settled = false; clearTimeout(timer); draw?.finish(); draw = null; el.hidden = true; el.replaceChildren(); } },
   };
 }
 

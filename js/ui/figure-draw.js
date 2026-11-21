@@ -45,7 +45,8 @@ export async function loadInlineSvg(url, opts) {
   return svg;
 }
 
-// 그림을 그린다. 차례 표시(data-draw)가 없으면 문서 순서. { finish(), finished } — finish 는 바로 다 보이게 한다.
+// 그림을 그린다(2판 A146): 선 · 글자 · 칠을 하나의 차례로. 차례 표시(data-draw)가 없으면 문서 순서. { finish(), finished } — finish 는 바로 다 보이게 한다.
+// 선은 dash, 글자는 왼쪽에서 오른쪽으로 닦아내기, 칠 + 테두리는 테두리를 dash 로 그린 뒤 칠, 테두리 없는 칠은 짧게 나타난다.
 export function drawSvg(root) {
   const vb = root.viewBox?.baseVal;
   const jobs = [];
@@ -59,25 +60,39 @@ export function drawSvg(root) {
     let bb;
     try { bb = el.getBBox(); } catch { continue; }
     if (el.localName === 'rect' && vb && bb.width >= vb.width * 0.9 && bb.height >= vb.height * 0.9) continue; // 바탕 틀은 그대로 둔다
-    const stroked = hasStroke && !hasFill;
-    const wipe = stroked && (cs.strokeDasharray !== 'none' || cs.markerEnd !== 'none' || cs.markerStart !== 'none' || typeof el.getTotalLength !== 'function');
-    const len = stroked && !wipe ? el.getTotalLength() : Math.hypot(bb.width, bb.height);
-    jobs.push({ el, bb, phase: stroked ? 'line' : 'fill', how: stroked ? (wipe && Math.max(bb.width, bb.height) >= 2 ? 'wipe' : wipe ? 'fade' : 'dash') : 'fade', len, key: el.hasAttribute('data-draw') ? Number(el.getAttribute('data-draw')) : NaN });
+    const dashable = hasStroke && cs.strokeDasharray === 'none' && cs.markerEnd === 'none' && cs.markerStart === 'none' && typeof el.getTotalLength === 'function';
+    const key = el.hasAttribute('data-draw') ? Number(el.getAttribute('data-draw')) : NaN;
+    const diag = Math.hypot(bb.width, bb.height);
+    let job;
+    if (isText) job = { type: 'text', how: 'text', size: el.textContent.trim().length };
+    else if (hasStroke && hasFill) job = { type: 'shape', how: dashable ? 'shape' : 'fade', size: dashable ? el.getTotalLength() : diag, fillOpacity: cs.fillOpacity };
+    else if (hasStroke) job = { type: 'line', how: dashable ? 'dash' : Math.max(bb.width, bb.height) >= 2 ? 'wipe' : 'fade', size: dashable ? el.getTotalLength() : diag };
+    else job = { type: 'fill', how: 'fade', size: diag };
+    jobs.push({ el, bb, key, ...job });
   }
   const { slots } = planDraw(jobs);
   const anims = jobs.map((j, i) => {
-    const timing = { delay: slots[i].start, duration: slots[i].duration, easing: DRAW.EASE, fill: 'backwards' };
+    const timing = { delay: slots[i].start, duration: slots[i].duration, easing: DRAW.PEN, fill: 'backwards' };
     if (j.how === 'dash') {
-      const L = j.len * 1.01 + 1;
+      const L = j.size * 1.01 + 1;
       return j.el.animate([{ strokeDasharray: `${L} ${L}`, strokeDashoffset: L }, { strokeDasharray: `${L} ${L}`, strokeDashoffset: 0 }], timing);
     }
-    if (j.how === 'wipe') {
+    if (j.how === 'shape') {
+      const L = j.size * 1.01 + 1;
+      const dash = `${L} ${L}`;
+      return j.el.animate([
+        { strokeDasharray: dash, strokeDashoffset: L, fillOpacity: 0, offset: 0, easing: DRAW.PEN },
+        { strokeDasharray: dash, strokeDashoffset: 0, fillOpacity: 0, offset: 1 - DRAW.FILL_SHARE, easing: DRAW.EASE }, // 테두리를 다 그린 뒤 칠이 나타난다
+        { strokeDasharray: dash, strokeDashoffset: 0, fillOpacity: j.fillOpacity, offset: 1 },
+      ], { ...timing, easing: 'linear' });
+    }
+    if (j.how === 'text' || j.how === 'wipe') {
       const p = WIPE_PAD;
-      const horizontal = j.bb.width >= j.bb.height;
+      const horizontal = j.how === 'text' || j.bb.width >= j.bb.height;
       const from = horizontal ? `inset(-${p} 100% -${p} -${p})` : `inset(-${p} -${p} 100% -${p})`;
       return j.el.animate([{ clipPath: from }, { clipPath: `inset(-${p})` }], timing);
     }
-    return j.el.animate([{ opacity: 0 }, { opacity: 1 }], timing);
+    return j.el.animate([{ opacity: 0 }, { opacity: 1 }], { ...timing, easing: DRAW.EASE });
   });
   root.setAttribute('data-drawing', 'true');
   const finished = Promise.all(anims.map((a) => a.finished.catch(() => {}))).then(() => { root.removeAttribute('data-drawing'); root.setAttribute('data-drawn', 'true'); });
