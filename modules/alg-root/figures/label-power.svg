@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 330" fill="none" stroke="#2a2926" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
   <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2a2926" stroke="none"/></marker></defs>
   <rect x="2" y="2" width="596" height="326" rx="16" fill="#f6f4ec" stroke="#8a867c" stroke-width="2"/>
-  <text data-draw="1" x="24" y="92" font-family="sans-serif" font-size="32" font-weight="700" fill="#5f5b52" stroke="none">2 × 2 × 2 × 2</text>
+  <text data-draw="1" x="24" y="92" font-family="sans-serif" font-size="32" font-weight="700" fill="#5f5b52" stroke="none">2 를 열 번 곱함</text>
   <line data-draw="2" x1="262" y1="80" x2="304" y2="80" stroke-width="2.5" marker-end="url(#ar)"/>
   <text data-draw="3" x="316" y="100" font-family="sans-serif" font-size="72" font-weight="700" fill="#2a2926" stroke="none">2</text>
-  <text data-draw="3" x="362" y="62" font-family="sans-serif" font-size="44" font-weight="700" fill="#2a2926" stroke="none">4</text>
-  <text data-draw="3" x="412" y="92" font-family="sans-serif" font-size="32" font-weight="700" fill="#2a2926" stroke="none">거듭제곱</text>
+  <text data-draw="3" x="362" y="62" font-family="sans-serif" font-size="44" font-weight="700" fill="#2a2926" stroke="none">10</text>
+  <text data-draw="3" x="432" y="92" font-family="sans-serif" font-size="32" font-weight="700" fill="#2a2926" stroke="none">거듭제곱</text>
   <text data-draw="4" x="24" y="205" font-family="sans-serif" font-size="32" font-weight="700" fill="#5f5b52" stroke="none">곱하는 수 2</text>
   <line data-draw="5" x1="262" y1="193" x2="304" y2="193" stroke-width="2.5" marker-end="url(#ar)"/>
   <text data-draw="6" x="316" y="205" font-family="sans-serif" font-size="36" font-weight="700" fill="#2a2926" stroke="none">밑 · 큰 글자</text>
-  <text data-draw="7" x="24" y="285" font-family="sans-serif" font-size="32" font-weight="700" fill="#5f5b52" stroke="none">곱한 횟수 4</text>
+  <text data-draw="7" x="24" y="285" font-family="sans-serif" font-size="32" font-weight="700" fill="#5f5b52" stroke="none">곱한 횟수 10</text>
   <line data-draw="8" x1="262" y1="273" x2="304" y2="273" stroke-width="2.5" marker-end="url(#ar)"/>
   <text data-draw="9" x="316" y="285" font-family="sans-serif" font-size="36" font-weight="700" fill="#2a2926" stroke="none">지수 · 작은 글자</text>
 </svg>
