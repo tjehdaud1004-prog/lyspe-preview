@@ -18,8 +18,8 @@ export function fillText(el, text, parts = [text]) {
   else el.replaceChildren(...parts.map(sentenceSpan));
 }
 
-export function createTyper({ el, text, parts = [text], getSpeed, getUnit = () => 'char', isHeld, onTick, onStateChange }) {
-  const cursor = createRevealCursor({ text, getUnit, getSpeed });
+export function createTyper({ el, text, parts = [text], getSpeed, getUnit = () => 'char', isHeld, onTick, onStateChange, ramp, gap }) {
+  const cursor = createRevealCursor({ text, getUnit, getSpeed, ...(ramp ? { ramp } : {}), gap }); // ramp·gap: 장면의 첫 글(K04 A143)
   const multi = parts.length > 1;
   let sentIndex = 0; // 지금 글자를 받는 문장
   let sentUsed = 0;  // 그 문장에서 이미 쓴 글자 수
@@ -98,7 +98,7 @@ export function createTyper({ el, text, parts = [text], getSpeed, getUnit = () =
       typedEl = h('span', { class: multi ? 'typed typed-sentences' : 'typed', 'aria-hidden': 'true' }, multi ? null : node);
       el.append(h('span', { class: 'sr-only', text }), typedEl);
       if (cursor.done()) { complete(); return; }
-      tick();
+      if (cursor.leadMs() > 0) schedule(cursor.leadMs()); else tick(); // 장면 첫 글자 앞의 틈(커서만 깜빡인다)
       notify();
     },
     pause() { if (done || paused) return; paused = true; clearTimeout(timer); timer = null; notify(); },

@@ -7,6 +7,7 @@ import { skippedScenes, jumpTarget, formatSceneNos, SKIP_TEXT } from '../core/sk
 import { isSceneShown, browseBy, sceneNav } from '../core/sceneview.js';
 import { createRevisitTracker } from '../core/revisit.js';
 import { createTyper, fillText } from './typing.js';
+import { RAMP, FIRST_GAP_MS } from '../core/segment.js';
 import { sentencePartsOf } from '../core/sentences.js';
 import { renderBlock } from './blocks/index.js';
 import { openPassageDialog } from './blocks/passage.js';
@@ -32,6 +33,7 @@ export function createReader(ctx) {
   const rec = ctx.rec;
   let typer = null;
   let typerEl = null;
+  let drawing = null; // 지금 그려지는 그림 { done, queue } — 없으면 null
   let autoTimer = null;
   let controlsEl = null;
   let active = true; // 끝 화면에서는 읽기 조작 단추를 감춘다
@@ -48,17 +50,18 @@ export function createReader(ctx) {
     const scene = mod.scenes[sceneIndex];
     const titleId = `scene-title-${scene.id}`;
     const body = h('div', { class: 'scene-body' });
+    const title = h('h2', { class: 'scene-title', id: titleId, text: scene.title });
     const isSkipped = skipped().has(scene.id);
     // 건너뛴 장면: 머리에 띠를 달고, '이어서 쌓기'에서는 접힌 한 줄로 둔다(펼치면 skip_return).
     const section = h('section', { class: 'scene', 'aria-labelledby': titleId, dataset: { sceneId: scene.id, ...(isSkipped ? { skipped: 'true' } : {}) } },
       isSkipped && h('button', { type: 'button', class: 'btn skip-fold', onClick: () => openSkippedScene(scene.id, 'browse') }, SKIP_TEXT.fold({ no: sceneIndex + 1, title: scene.title })),
       // 장면 머리에는 제목만 둔다(K04 A123): '장면 n / N' 은 위 막대에 있고, 하는 일 딱지는 학습자 화면에서 뺐다(자료 scene.focus 와 집계 byTag 는 그대로).
       h('header', { class: 'scene-head' },
-        h('h2', { class: 'scene-title', id: titleId, text: scene.title }),
+        title,
         isSkipped && h('p', { class: 'skip-banner', text: SKIP_TEXT.banner })),
       body);
     flow.append(section);
-    entry = { section, body };
+    entry = { section, body, title, titlePending: true, typedAny: false }; // titlePending: 제목을 아직 타자로 치지 않았다(K04 A143) · typedAny: 이 장면에서 타자로 나온 것이 있다
     scenes.set(sceneIndex, entry);
     return entry;
   }
@@ -205,11 +208,14 @@ export function createReader(ctx) {
       handle.el.dataset.blockType = block.type;
       handle.el.setAttribute('role', 'group');
       handle.el.setAttribute('aria-label', blockKindName(block.type));
-      sceneOf(step.sceneIndex).body.append(handle.el);
+      const sc = sceneOf(step.sceneIndex);
+      sc.titlePending = false; // 블록으로 시작한 장면은 제목이 바로 보인다
+      sc.body.append(handle.el);
       watchBlock(handle.el);
       stepEls.set(index, handle.el);
       unitDone.add(index);
       applyVeil();
+      if (!instant && block.type === 'figure' && session.settings.display !== 'instant' && !reducedMotion.matches) startDraw(handle);
       if (!instant) announce(`${blockKindName(block.type)}이 나왔습니다.`);
       return;
     }
@@ -218,7 +224,9 @@ export function createReader(ctx) {
     const p = h('p', { class: 'unit', dataset: { step: String(index), unit: String(step.unitIndex) } });
     textBlockOf(step, block).append(p);
     stepEls.set(index, p);
+    const scene = sceneOf(step.sceneIndex);
     if (instant || session.settings.display === 'instant') {
+      scene.titlePending = false; // 바로 보임: 제목도 바로
       fillText(p, text, parts);
       unitDone.add(index);
       if (track) rec.unitShown({ blockId: block.id, chars: text.length, mode: 'instant' });
@@ -226,22 +234,63 @@ export function createReader(ctx) {
       afterUnitDone(index);
       return;
     }
-    typerEl = p;
     announce(text); // 눈에 보이는 글자는 aria-hidden 이므로, 단위 전체를 한 번만 알려 준다
     rec.unitShown({ blockId: block.id, chars: text.length, mode: 'typing' });
+    const common = { getSpeed: () => session.settings.speed, getUnit: () => session.settings.unit, isHeld: () => guard.held(), onTick: followTyping };
+    // 본문 글 단위를 친다. 장면의 첫 글(제목이 아니면 이 단위)이면 틈 · 느린 가속(K04 A143).
+    const typeBody = (first) => {
+      scene.typedAny = true;
+      typerEl = p;
+      typer = createTyper({
+        el: p, text, parts, ...common,
+        ...(first ? { ramp: RAMP.first, gap: FIRST_GAP_MS } : {}),
+        onStateChange: (st) => {
+          rec.unitStalled(st.paused || st.held);
+          if (st.done) { rec.unitFullyShown(); expandedEarly.set(index, st.early); typer = null; unitDone.add(index); afterUnitDone(index); }
+          updateControls();
+        },
+      });
+      typer.start();
+    };
+    const begin = () => {
+    if (!scene.titlePending) { typeBody(!scene.typedAny); return; }
+    // 장면 제목도 같은 타자기로 먼저 친다(장면의 첫 글). 다 나오면 본문 첫 단위가 시작한다. 중간에 '바로 펼치기'면 본문도 바로 펼친다.
+    scene.titlePending = false;
+    scene.typedAny = true;
+    typerEl = scene.title;
     typer = createTyper({
-      el: p, text, parts,
-      getSpeed: () => session.settings.speed,
-      getUnit: () => session.settings.unit,
-      isHeld: () => guard.held(),
-      onTick: followTyping,
+      el: scene.title, text: scene.title.textContent, ...common, ramp: RAMP.first, gap: FIRST_GAP_MS,
       onStateChange: (st) => {
         rec.unitStalled(st.paused || st.held);
-        if (st.done) { rec.unitFullyShown(); expandedEarly.set(index, st.early); typer = null; unitDone.add(index); afterUnitDone(index); }
+        if (st.done) { typer = null; typeBody(false); if (st.early) typer.finish(); }
         updateControls();
       },
     });
     typer.start();
+    };
+    // 그림이 그려지는 동안이면 그리기가 끝난 뒤에 시작한다(그림 먼저 장면)
+    if (!drawing) { begin(); return; }
+    if (scene.titlePending) scene.title.style.visibility = 'hidden'; // 기다리는 동안 제목이 다 보였다가 지워지고 다시 쳐지지 않게
+    drawing.queue.push(() => { scene.title.style.visibility = ''; begin(); });
+  }
+
+  // 그려지듯 나오기(K04 A144): 그림이 처음 나올 때 한 번. 그리는 동안은 글이 나오는 것과 같은 자리를 쓴다 —
+  // '바로 펼치기'(= typer.finish)로 건너뛸 수 있고, 다음 글 단위는 그리기가 끝난 뒤 시작한다(drawing.queue).
+  function startDraw(handle) {
+    const d = handle.drawIn?.();
+    if (!d) return;
+    const mine = { done: false, queue: [] };
+    drawing = mine;
+    typerEl = null;
+    typer = { drawing: true, state: () => ({ done: mine.done, paused: false, held: false, early: false }), finish: () => d.finish(), pause() {}, resume() {} };
+    d.done.then(() => {
+      if (drawing !== mine) return;
+      mine.done = true;
+      drawing = null;
+      if (typer?.drawing) typer = null;
+      for (const fn of mine.queue) fn();
+      updateControls();
+    });
   }
 
   function blockKindName(type) {
@@ -411,7 +460,7 @@ export function createReader(ctx) {
     continueBtn.setAttribute('aria-disabled', String(blocked));
     continueBtn.classList.toggle('is-blocked', blocked);
     continueBtn.classList.toggle('is-typing', typing); // 글이 나타나는 동안의 '바로 펼치기'는 윤곽만(지금 단위보다 무겁지 않게)
-    pauseBtn.hidden = !typing;
+    pauseBtn.hidden = !typing || typer.drawing === true; // 그리는 동안은 '정지'가 없다(바로 펼치기만)
     pauseBtn.textContent = st?.paused ? '이어서 쓰기' : '정지';
     let text = '';
     if (st?.held) text = '입력 중이라 글이 잠시 멈췄습니다. 입력을 마치거나 ‘바로 펼치기’를 누르면 이어집니다.';
@@ -443,7 +492,7 @@ export function createReader(ctx) {
     clear(flow);
     veiledEls.clear(); veilNotes.clear();
     scenes.clear(); textBlocks.clear(); handles.clear(); stepEls.clear(); unitDone.clear(); expandedEarly.clear(); expanded.clear();
-    typer = null; typerEl = null; browsing = null;
+    typer = null; typerEl = null; drawing = null; browsing = null;
     bandObserver?.disconnect(); viewObserver?.disconnect(); inBand.clear(); inView.clear(); tracker.reset();
     flow.append(nav);
     // 이어 보기: 이미 열린 단계는 모두 바로 펼친다. 처음 시작이면 첫 단위만 설정대로(점진 표시 등) 연다.

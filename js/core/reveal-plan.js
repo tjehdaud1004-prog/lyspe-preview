@@ -7,34 +7,39 @@
 // 보이되 '다 나타남'은 그 글의 총 시간 뒤다 — 바로 보이기(instant, 총 시간 0)와 같아지지 않는다.
 // 타자(keys)는 조각이 글자와 같고, 커서가 한글 음절 안의 자판 차례(segment.js keyFrames)로 다시 나눠 낸다(몫의 합은 같다).
 // 마지막 조각이 '나타나는' 시각(appearAt 의 끝)은 단위마다 다르다(큰 조각일수록 일찍). 같은 것은 completeAt 이다.
-import { segment, pieceDelay, keyFrames } from './segment.js';
+import { segment, pieceDelay, keyFrames, charCount, RAMP } from './segment.js';
 
 // 단위가 달라도 completeAt 이 같아야 하는 허용 오차(ms). 조각 지연이 정수 합이라 실제로는 0 이지만 반올림 여유로 둔다.
 export const SCHEDULE_TOLERANCE_MS = 1;
 
 // 글 하나의 일정. pieces[i] 는 appearAt[i](ms) 에 나타나고, waits[i] 는 그 뒤 다음 일(다음 조각 또는 완료)까지의 간격이다.
-export function planReveal(text, unit = 'char', speed = 'normal') {
+// opts(K04 A143 타자 가속): ramp = 글자 조각 가속(기본 RAMP.body, null 이면 없음), from = 이 글이 앞 글에서 이어지는 글자 조각 순번,
+// gap = 첫 글자 앞에 두는 틈(ms — 장면 첫 글). 틈은 appearAt 과 completeAt 에 그대로 들어간다(단위와 무관).
+export function planReveal(text, unit = 'char', speed = 'normal', { ramp = RAMP.body, from = 0, gap = 0 } = {}) {
   const pieces = segment(String(text ?? ''), unit);
-  const waits = pieces.map((p) => pieceDelay(p, speed));
+  let ci = from;
+  const waits = pieces.map((p) => { const w = pieceDelay(p, speed, ramp, ci); ci += charCount(p); return w; });
   const appearAt = [];
-  let t = 0;
+  let t = gap;
   for (const w of waits) { appearAt.push(t); t += w; }
-  return { unit, speed, pieces, waits, appearAt, completeAt: t };
+  return { unit, speed, pieces, waits, appearAt, gap, completeAt: t };
 }
 
 // 나타나는 도중에 단위·속도가 바뀌어도 이어 가는 커서. 이미 나온 글은 그대로 두고, 남은 글만 새 단위·속도로 다시 짠다.
 // 조각 경계에서만 다시 짜므로(큰 조각도 글자 조각의 합) 수식 토큰이 쪼개지지 않고, 총 시간도 변하지 않는다.
-export function createRevealCursor({ text, getUnit = () => 'char', getSpeed = () => 'normal' }) {
+export function createRevealCursor({ text, getUnit = () => 'char', getSpeed = () => 'normal', ramp = RAMP.body, gap = 0 }) {
   const full = String(text ?? '');
   let shown = 0;
   let k = 0;
-  let plan = planReveal(full, getUnit(), getSpeed());
+  let ci = 0; // 지금까지 나온 글자 조각 수(가속 순번)
+  let plan = planReveal(full, getUnit(), getSpeed(), { ramp, gap });
   let replans = 0;
   let queue = []; // 타자(keys): 한 음절 안의 남은 자판 차례. 한 차례씩 내고, 앞 차례를 고쳐 쓴다(back = 지울 글자 수)
   return {
     done: () => shown >= full.length && queue.length === 0,
     shown: () => full.slice(0, shown),
     replans: () => replans,
+    leadMs: () => (shown === 0 ? gap : 0), // 첫 글자 앞의 틈 — 표시기가 시작할 때 기다린다
     // 다음 조각을 낸다: { piece, waitMs } — piece 를 보이고 waitMs 뒤에 다음 일을 한다. 다 나왔으면 null.
     next() {
       if (queue.length > 0) return queue.shift();
@@ -42,7 +47,7 @@ export function createRevealCursor({ text, getUnit = () => 'char', getSpeed = ()
       const unit = getUnit();
       const speed = getSpeed();
       if (unit !== plan.unit || speed !== plan.speed) {
-        plan = planReveal(full.slice(shown), unit, speed);
+        plan = planReveal(full.slice(shown), unit, speed, { ramp, from: ci });
         k = 0;
         replans += 1;
       }
@@ -50,6 +55,7 @@ export function createRevealCursor({ text, getUnit = () => 'char', getSpeed = ()
       const waitMs = plan.waits[k];
       k += 1;
       shown += piece.length;
+      ci += charCount(piece);
       if (unit === 'keys') {
         const frames = keyFrames(piece);
         if (frames.length > 1) { // 조각의 몫(waitMs)을 차례 수로 나눈다 — 합이 그대로라 completeAt 이 변하지 않는다

@@ -7,12 +7,13 @@ import { MASKED_NOTE, REVEALED_NOTE } from '../../core/reveal.js';
 export function renderFigureBlock(ctx, block) {
   const def = ctx.mod.figures[block.figure];
   let state = figureState(ctx.mod, block, ctx.session.progress);
-  const figure = createFigure(def, state.alt, { masked: state.masked, base: `modules/${ctx.mod.id}/` });
+  const figure = createFigure(def, state.alt, { masked: state.masked, base: `modules/${ctx.mod.id}/`, inline: true });
   // 안내 줄을 알림 영역(aria-live)으로 둔다: 값이 열리면 이 줄의 글이 바뀐다. 화면 읽기 프로그램이 실제로 읽는지는 확인하지 못했다.
   const note = block.revealAfter ? h('p', { class: 'small fig-note', role: 'status', 'aria-live': 'polite', text: state.masked ? MASKED_NOTE : REVEALED_NOTE }) : null;
   const el = h('div', { class: 'block block-figure', dataset: { blockId: block.id } }, figure.el, note);
   return {
     el, blockId: block.id, resolved: () => true,
+    drawIn: () => figure.drawIn?.() ?? null, // 그려지듯 나오기(reader.js 가 처음 나올 때 한 번 부른다)
     refresh() {
       if (!block.revealAfter) return;
       const next = figureState(ctx.mod, block, ctx.session.progress);

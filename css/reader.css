@@ -52,12 +52,12 @@
   margin: 0 0 1.1em; font-size: var(--reading); line-height: var(--lh-read);
   word-break: keep-all; overflow-wrap: break-word; scroll-margin-top: calc(var(--topbar-h) + 16px);
 }
-.unit.is-typing .typed:not(.typed-sentences)::after, .unit.is-typing .sent.is-writing::after {
+.unit.is-typing .typed:not(.typed-sentences)::after, .unit.is-typing .sent.is-writing::after, .scene-title.is-typing .typed::after {
   content: ""; display: inline-block; width: 2px; height: 1.1em; margin-left: 2px; background: var(--ink-2); vertical-align: text-bottom;
 }
 /* 타자 커서(K04 A140): 글이 나오는 동안만(.is-typing 이 있을 때) 깜빡인다. 움직임 줄이기면 깜빡이지 않고 그대로 선다. */
 @media (prefers-reduced-motion: no-preference) {
-  .unit.is-typing .typed:not(.typed-sentences)::after, .unit.is-typing .sent.is-writing::after { animation: caret-blink 1s steps(1) infinite; }
+  .unit.is-typing .typed:not(.typed-sentences)::after, .unit.is-typing .sent.is-writing::after, .scene-title.is-typing .typed::after { animation: caret-blink 1s steps(1) infinite; }
 }
 @keyframes caret-blink { 50% { opacity: 0; } }
 /* 문장 줄바꿈(K04 A126): 한 글 단위 안에서 문장마다 새 줄, 문장 사이는 줄 간격에 --gap-sent 를 더한다. 글 단위 사이는 --gap-unit(무리 여백: 안은 촘촘히, 무리 사이는 넓게 — 값의 근거는 tokens.css). 문장 안은 화면 폭대로 감긴다. */

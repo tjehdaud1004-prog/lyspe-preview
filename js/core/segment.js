@@ -9,7 +9,13 @@
 // 지연 합(totalDuration)은 단위와 무관하다 — 속도 설정은 단위와 독립이다. 실제 표시기가 '다 나타남'을 언제로 치는가
 // (마지막 조각의 몫까지 머문 뒤)와 조각별 나타나는 시각은 core/reveal-plan.js 의 일정이 정한다.
 
-export const SPEEDS = Object.freeze({ slow: 90, normal: 45, fast: 18 }); // 글자 조각당 ms
+export const SPEEDS = Object.freeze({ slow: 115, normal: 58, fast: 23 }); // 글자 조각당 ms (K04 A143: 45·90·18 에서 약 30% 늦춤 — 제작값, 근거 없음)
+
+// 타자 가속(K04 A143, 제작값): 한 글 단위의 글자 조각 순번 i(0부터)의 지연에 m(i) = 1 + (S-1)(1-i/R)² (i<R), 그 뒤 1 을 곱한다.
+// body = 보통 글 단위, first = 장면의 첫 글(더 느리게 시작해 더 오래 가속). FIRST_GAP_MS = 장면 첫 글자 앞에 눈을 옮길 틈.
+export const RAMP = Object.freeze({ body: Object.freeze({ S: 2.2, R: 14 }), first: Object.freeze({ S: 3.0, R: 20 }) });
+export const FIRST_GAP_MS = 450;
+export const rampMult = (i, ramp) => (!ramp || i >= ramp.R ? 1 : 1 + (ramp.S - 1) * (1 - i / ramp.R) ** 2);
 export const SPEED_LABELS = Object.freeze({ slow: '느림', normal: '보통', fast: '빠름' });
 
 export const TEXT_UNITS = Object.freeze(['keys', 'char', 'word', 'sentence']);
@@ -91,7 +97,7 @@ export function keyFrames(piece) {
 
 // 문장 끝·쉼표에서 잠깐 쉬어 읽을 틈을 준다(분절 효과를 주장하는 것이 아니라 읽기 리듬용 기본값).
 // piece 는 글자 조각(가장 작은 단위)이다. 큰 단위 조각은 pieceDelay 를 쓴다.
-export function delayFor(piece, speed = 'normal') {
+export function delayFor(piece, speed = 'normal', mult = 1) {
   const base = SPEEDS[speed] ?? SPEEDS.normal;
   const body = piece.replace(/\s+$/, '');
   const trailingBreak = /\n/.test(piece.slice(body.length));
@@ -100,14 +106,18 @@ export function delayFor(piece, speed = 'normal') {
   else if (/[,;:]$/.test(body)) factor = 2.5;
   if (trailingBreak) factor = Math.max(factor, 5);
   const lengthFactor = Math.min(3, 1 + Math.max(0, body.length - 1) / 6);
-  return Math.round(base * lengthFactor * factor);
+  return Math.round(base * lengthFactor * factor * mult);
 }
 
 // 어떤 단위의 조각이든 같은 규칙으로 지연을 구한다: 안에 든 글자 조각 지연의 합(글자 수에 비례).
-export function pieceDelay(piece, speed = 'normal') {
-  return charPieces(piece).reduce((sum, p) => sum + delayFor(p, speed), 0);
+// ramp 가 있으면 글자 조각마다 m(from + 안에서의 순번)을 곱한다 — 반올림도 글자 조각마다라 단위가 달라도 합이 같다.
+export function pieceDelay(piece, speed = 'normal', ramp = null, from = 0) {
+  return charPieces(piece).reduce((sum, p, j) => sum + delayFor(p, speed, rampMult(from + j, ramp)), 0);
 }
 
-export function totalDuration(pieces, speed = 'normal') {
-  return pieces.reduce((sum, p) => sum + pieceDelay(p, speed), 0);
+export function totalDuration(pieces, speed = 'normal', ramp = null) {
+  let from = 0;
+  return pieces.reduce((sum, p) => { const d = pieceDelay(p, speed, ramp, from); from += charPieces(p).length; return sum + d; }, 0);
 }
+
+export const charCount = (piece) => charPieces(piece).length;

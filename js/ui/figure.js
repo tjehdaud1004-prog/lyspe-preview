@@ -2,6 +2,7 @@
 import { h, svg, clear, uid } from './dom.js';
 import { linesGeometry, pointsGeometry, POINT_SHAPES } from '../core/chart.js';
 import { markValueText } from '../core/reveal.js';
+import { loadInlineSvg, drawSvg } from './figure-draw.js';
 
 function renderTable(def) {
   const head = def.columns.map((c, i) => h('th', { scope: 'col', text: c || (i === 0 ? '구분' : '') }));
@@ -122,12 +123,35 @@ export function renderFigure(def, alt, opts) { return createFigure(def, alt, opt
 
 // 나중에 고칠 수 있는 그림: update({ alt, masked }) 로 텍스트 대체와 '값 가리기'를 바꾼다.
 // base: 모듈 폴더의 주소(modules/<id>/) — image 꼴의 src 가 그 폴더 안의 상대 경로다.
-export function createFigure(def, alt, { masked = false, base = '' } = {}) {
+export function createFigure(def, alt, { masked = false, base = '', inline = false } = {}) {
   if (def.kind === 'image') {
-    // 진짜 그림 파일: <img> 로 넣는다(스크립트 없음). 대체 글은 img 의 alt 하나로 둔다(같은 글을 두 번 읽지 않게).
-    const img = h('img', { class: 'fig-image', src: base + def.src, alt: alt ?? def.alt, decoding: 'async' });
+    // 진짜 그림 파일. 대체 글은 하나로 둔다(같은 글을 두 번 읽지 않게): <img> 는 alt, 인라인 SVG 는 role="img" 의 aria-label.
+    // inline: 같은 출처 SVG 를 받아 문서에 넣는다(안의 선을 움직이려고 — K04 A144). 받기에 실패하면 <img>.
+    let label = alt ?? def.alt;
+    const mkImg = () => h('img', { class: 'fig-image', src: base + def.src, alt: label, decoding: 'async' });
     const cap = def.caption ? h('figcaption', { class: 'fig-caption', text: def.caption }) : null;
-    return { el: h('figure', { class: 'figure figure-image' }, img, cap), update(next) { if (next.alt !== undefined) img.alt = next.alt; } };
+    let node = inline ? null : mkImg();
+    const host = inline ? h('div', { class: 'fig-image-host' }) : null;
+    const place = (n) => { node = n; host.replaceChildren(n); };
+    const ready = inline
+      ? loadInlineSvg(base + def.src, { alt: label }).then((s) => place(s), () => place(mkImg()))
+      : Promise.resolve();
+    return {
+      el: h('figure', { class: 'figure figure-image' }, host ?? node, cap),
+      update(next) {
+        if (next.alt === undefined) return;
+        label = next.alt;
+        if (node?.localName === 'img') node.alt = label; else node?.setAttribute('aria-label', label);
+      },
+      // 그리기: { finish(), done } — 그릴 수 없으면(인라인이 아님 · 받기 실패) done 이 바로 끝난다.
+      drawIn() {
+        if (!inline) return null;
+        let skip = false;
+        let run = null;
+        const done = ready.then(() => { if (skip || node?.localName !== 'svg') return undefined; run = drawSvg(node); return run.finished; });
+        return { finish() { skip = true; run?.finish(); }, done };
+      },
+    };
   }
   const labelId = uid('fig-alt-');
   const caption = h('p', { class: 'fig-alt sr-only', id: labelId, text: alt });
