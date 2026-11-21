@@ -495,7 +495,8 @@ export function unitWarnings(mod) {
       if (block.type !== 'text') continue;
       block.units.forEach((u, i) => {
         const n = sentenceCount(u);
-        if (n < 2 || n > 4) warnings.push(`${block.id}[${i}]: 문장 ${n}개`);
+        if (n < 1 || n > 4) // 한 문장 단위도 받는다(K04 U-1121g 「한문장씩」)
+         warnings.push(`${block.id}[${i}]: 문장 ${n}개`);
       });
     }
   }
