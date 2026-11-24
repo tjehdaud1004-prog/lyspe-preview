@@ -155,7 +155,9 @@ export async function main() {
     onEnd() { session.update((s) => setPhase(s, 'final', session.now())); },
   });
   const layout = createLayout({ root: layoutRoot, note, session, rec });
-  const selection = createSelectionBar({ flow: reader.el, note, help });
+  // 글을 고르면 위에 뜨던 띠(노트에 붙이기 · 이 문장 도움)는 사용자가 방해라고 해 일단 끈다(U-1124d, 2026-11-24). 다듬은 뒤 다시 켤 때 true 로.
+  const SELECTION_BAR_ON = false;
+  const selection = SELECTION_BAR_ON ? createSelectionBar({ flow: reader.el, note, help }) : null;
 
   async function restart() {
     const { ok, checked } = await askConfirm({
@@ -274,7 +276,7 @@ export async function main() {
       headMore,
       reviewGate.lineEl),
     !storageOk && h('p', { class: 'storage-warning', role: 'status', text: '이 브라우저에서는 진행을 저장할 수 없습니다. 새로고침하면 처음으로 돌아갑니다.' }),
-    recording.notice, gate.el, openerGate.el, skipGate.el, reviewGate.el, resume, selection.el, reader.el, end.el, controls);
+    recording.notice, gate.el, openerGate.el, skipGate.el, reviewGate.el, resume, selection?.el, reader.el, end.el, controls);
 
   function updateHead() {
     const reading = bodyOpen && session.progress.phase === 'reading';

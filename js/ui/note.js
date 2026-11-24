@@ -17,7 +17,7 @@ export function createNote({ session, guard, toast, rec }) {
 
   const textarea = h('textarea', {
     class: 'input input-text note-text', rows: 10, lang: 'ko', id: uid('note-text-'),
-    placeholder: '여기에 메모를 적습니다. 본문에서 문장을 골라 ‘노트에 붙이기’를 눌러도 됩니다.',
+    placeholder: '여기에 메모를 적습니다.',
     onInput: () => {
       guard.markInput(); clearTimeout(timer); timer = setTimeout(saveText, 350);
       const len = textarea.value.length;
