@@ -12,8 +12,10 @@
   <text data-draw="3" x="300" y="220" text-anchor="middle" font-family="sans-serif" font-size="32" font-weight="700" fill="#2a2926" stroke="none">0</text>
   <text data-draw="3" x="400" y="220" text-anchor="middle" font-family="sans-serif" font-size="32" font-weight="700" fill="#5f5b52" stroke="none">1</text>
   <text data-draw="3" x="500" y="220" text-anchor="middle" font-family="sans-serif" font-size="32" font-weight="700" fill="#5f5b52" stroke="none">2</text>
-  <text data-draw="4" x="150" y="62" text-anchor="middle" font-family="sans-serif" font-size="32" font-weight="700" fill="#2a2926" stroke="none">음수</text>
-  <text data-draw="4" x="150" y="106" text-anchor="middle" font-family="sans-serif" font-size="32" font-weight="500" fill="#5f5b52" stroke="none">0 보다 작은 수</text>
-  <text data-draw="5" x="450" y="62" text-anchor="middle" font-family="sans-serif" font-size="32" font-weight="700" fill="#2a2926" stroke="none">양수</text>
-  <text data-draw="5" x="450" y="106" text-anchor="middle" font-family="sans-serif" font-size="32" font-weight="500" fill="#5f5b52" stroke="none">0 보다 큰 수</text>
+  <text data-draw="4" x="150" y="46" text-anchor="middle" font-family="sans-serif" font-size="32" font-weight="700" fill="#2a2926" stroke="none">음수</text>
+  <text data-draw="4" x="150" y="88" text-anchor="middle" font-family="sans-serif" font-size="32" font-weight="500" fill="#5f5b52" stroke="none">0 보다 작은 수</text>
+  <line data-draw="5" x1="150" y1="102" x2="150" y2="144" stroke-width="2.5" marker-end="url(#ar)"/>
+  <text data-draw="6" x="450" y="46" text-anchor="middle" font-family="sans-serif" font-size="32" font-weight="700" fill="#2a2926" stroke="none">양수</text>
+  <text data-draw="6" x="450" y="88" text-anchor="middle" font-family="sans-serif" font-size="32" font-weight="500" fill="#5f5b52" stroke="none">0 보다 큰 수</text>
+  <line data-draw="7" x1="450" y1="102" x2="450" y2="144" stroke-width="2.5" marker-end="url(#ar)"/>
 </svg>
