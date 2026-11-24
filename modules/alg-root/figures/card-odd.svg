@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" fill="none" stroke="#2a2926" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2a2926" stroke="none"/></marker></defs>
+  <rect x="2" y="2" width="596" height="376" rx="16" fill="#f6f4ec" stroke="#8a867c" stroke-width="2"/>
+  <text data-draw="1" x="300" y="52" text-anchor="middle" font-family="sans-serif" font-size="32" font-weight="700" fill="#2a2926" stroke="none">2 와 −2 를 세 번 곱하면</text>
+  <rect data-draw="2" x="30" y="90" width="120" height="100" rx="12" fill="#e6e2d6" stroke="#2a2926" stroke-width="3"/>
+  <text data-draw="2" x="90" y="156" text-anchor="middle" font-family="sans-serif" font-size="44" font-weight="700" fill="#2a2926" stroke="none">2</text>
+  <rect data-draw="2" x="30" y="240" width="120" height="100" rx="12" fill="#2a2926" stroke="#2a2926" stroke-width="3"/>
+  <text data-draw="2" x="90" y="306" text-anchor="middle" font-family="sans-serif" font-size="44" font-weight="700" fill="#f6f4ec" stroke="none">−2</text>
+  <text data-draw="3" x="290" y="130" text-anchor="middle" font-family="sans-serif" font-size="32" font-weight="700" fill="#5f5b52" stroke="none">뒤집힘 없음</text>
+  <line data-draw="4" x1="165" y1="150" x2="415" y2="150" stroke-width="2.5" marker-end="url(#ar)"/>
+  <rect data-draw="5" x="430" y="90" width="120" height="100" rx="12" fill="#e6e2d6" stroke="#2a2926" stroke-width="3"/>
+  <text data-draw="5" x="490" y="156" text-anchor="middle" font-family="sans-serif" font-size="44" font-weight="700" fill="#2a2926" stroke="none">8</text>
+  <text data-draw="6" x="290" y="280" text-anchor="middle" font-family="sans-serif" font-size="32" font-weight="700" fill="#5f5b52" stroke="none">세 번 뒤집힘</text>
+  <line data-draw="7" x1="165" y1="300" x2="415" y2="300" stroke-width="2.5" marker-end="url(#ar)"/>
+  <rect data-draw="8" x="430" y="240" width="120" height="100" rx="12" fill="#2a2926" stroke="#2a2926" stroke-width="3"/>
+  <text data-draw="8" x="490" y="306" text-anchor="middle" font-family="sans-serif" font-size="44" font-weight="700" fill="#f6f4ec" stroke="none">−8</text>
+</svg>
