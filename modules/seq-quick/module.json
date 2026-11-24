@@ -1,0 +1,1070 @@
+{
+  "id": "seq-quick",
+  "version": "1.02",
+  "kind": "fluency",
+  "needs": [
+    "seq-nth"
+  ],
+  "order": 1,
+  "title": "공차와 항, 빠르고 정확하게",
+  "centralQuestion": "같은 수를 거듭 더해 가는 수의 줄에서 늘 더하는 수 · 다음 수 · 몇 번째 수를, 틀리지 않으면서 힘을 덜 들이고 구할 수 있는가?",
+  "prerequisites": [
+    "더하기 · 빼기와 구구단 곱셈을 할 수 있다.",
+    "수의 줄을 부르는 말(등차수열 · 항 · 공차)과 기호 aₙ 은 첫 장면에서 수 예로 한 번 더 보여 준다."
+  ],
+  "scenes": [
+    {
+      "id": "s1",
+      "title": "들어가기",
+      "focus": [
+        "procedure"
+      ],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s1t1",
+          "units": [
+            "정확이 먼저입니다. 푸는 동안에는 시계가 보이지 않습니다. 판이 끝나면 맞힌 문항 수와 걸린 시간이 나옵니다.",
+            "2, 5, 8, 11 의 공차는 (뒤의 항) − (앞의 항) 이므로 5 − 2 = 3 이고, d = 3 입니다.",
+            "첫째항은 a₁ = 2 이고, 넷째 항은 a₄ = 11 입니다.",
+            "10, 6, 2 처럼 줄어드는 수의 줄은 6 − 10 = −4 이므로 d = −4 입니다.",
+            "번호가 2 떨어진 a₁ 과 a₃ 은 공차를 두 번 더한 만큼 차이 납니다.",
+            "예를 들어 2, 5, 8, 11 에서 a₁ = 2, a₃ = 8 이고 8 − 2 = 3 + 3 입니다."
+          ]
+        },
+        {
+          "type": "round",
+          "id": "s1r1",
+          "mode": "drill",
+          "work": [
+            "procedure"
+          ],
+          "knowledge": [
+            "procedure"
+          ],
+          "prompt": "네 문항입니다. 이 판의 수의 줄은 모두 등차수열입니다. 구하는 값을 수 하나로 적고, 음수는 앞에 빼기 기호를 붙입니다.",
+          "gate": true,
+          "pass": 3,
+          "timing": "none",
+          "items": [
+            {
+              "id": "s1r1i1",
+              "drillType": "seq-d",
+              "cue": "5, 9, 13, 17 의 공차",
+              "answer": {
+                "kind": "number",
+                "value": 4
+              },
+              "why": "공차 = 9 − 5 = 4",
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 12
+                  },
+                  "feedback": "맨 앞 항과 맨 끝 항의 차를 구했습니다. 그 값은 공차가 3번 쌓인 값입니다. (뒤의 항) − (앞의 항)이 공차입니다."
+                }
+              ]
+            },
+            {
+              "id": "s1r1i2",
+              "drillType": "kth",
+              "cue": "첫째항 a₁ = 11, 공차 d = −5 일 때 a₆",
+              "answer": {
+                "kind": "number",
+                "value": -14
+              },
+              "why": "a₆ = 11 + 5 × (−5) = −14",
+              "negativeD": true,
+              "negativeAns": true,
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": -19
+                  },
+                  "feedback": "공차를 6번 더했습니다. a₆ 의 값은 첫째항에 공차를 5번 더한 값입니다."
+                },
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 36
+                  },
+                  "feedback": "공차의 부호를 빼고 더했습니다. 공차가 음수이면 더하는 것이 아니라 그만큼 줄어듭니다."
+                }
+              ]
+            },
+            {
+              "id": "s1r1i3",
+              "drillType": "seq-next",
+              "cue": "6, 9, 12, 15 의 다음 항",
+              "answer": {
+                "kind": "number",
+                "value": 18
+              },
+              "why": "공차 3 이므로 15 + 3 = 18",
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 3
+                  },
+                  "feedback": "공차를 답했습니다. 다음 항은 마지막 항에 공차를 더한 값입니다."
+                }
+              ]
+            },
+            {
+              "id": "s1r1i4",
+              "drillType": "two-terms",
+              "cue": "a₂ = 20, a₅ = 41 일 때 공차",
+              "answer": {
+                "kind": "number",
+                "value": 7
+              },
+              "why": "공차 = (41 − 20) ÷ (5 − 2) = 21 ÷ 3 = 7",
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 21
+                  },
+                  "feedback": "두 항의 차를 그대로 답했습니다. 그 차는 공차가 3번 쌓인 값이므로 번호의 차(3)로 나누어야 합니다."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "첫째 판",
+      "focus": [
+        "procedure"
+      ],
+      "blocks": [
+        {
+          "type": "round",
+          "id": "s2r1",
+          "mode": "drill",
+          "work": [
+            "procedure"
+          ],
+          "knowledge": [
+            "procedure"
+          ],
+          "prompt": "여덟 문항입니다. 이 판의 수의 줄은 모두 등차수열입니다. 구하는 값을 수 하나로 적고, 음수는 앞에 빼기 기호를 붙입니다.",
+          "timing": "after",
+          "items": [
+            {
+              "id": "s2r1i1",
+              "drillType": "seq-d",
+              "cue": "13, 23, 33, 43 의 공차",
+              "answer": {
+                "kind": "number",
+                "value": 10
+              },
+              "why": "공차 = 23 − 13 = 10",
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 30
+                  },
+                  "feedback": "맨 앞 항과 맨 끝 항의 차를 구했습니다. 그 값은 공차가 3번 쌓인 값입니다. (뒤의 항) − (앞의 항)이 공차입니다."
+                }
+              ]
+            },
+            {
+              "id": "s2r1i2",
+              "drillType": "kth",
+              "cue": "첫째항 a₁ = 50, 공차 d = −7 일 때 a₈",
+              "answer": {
+                "kind": "number",
+                "value": 1
+              },
+              "why": "a₈ = 50 + 7 × (−7) = 1",
+              "negativeD": true,
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": -6
+                  },
+                  "feedback": "공차를 8번 더했습니다. a₈ 의 값은 첫째항에 공차를 7번 더한 값입니다."
+                },
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 99
+                  },
+                  "feedback": "공차의 부호를 빼고 더했습니다. 공차가 음수이면 더하는 것이 아니라 그만큼 줄어듭니다."
+                }
+              ]
+            },
+            {
+              "id": "s2r1i3",
+              "drillType": "seq-next",
+              "cue": "−45, −38, −31, −24 의 다음 항",
+              "answer": {
+                "kind": "number",
+                "value": -17
+              },
+              "why": "공차 7 이므로 −24 + 7 = −17",
+              "negativeAns": true,
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 7
+                  },
+                  "feedback": "공차를 답했습니다. 다음 항은 마지막 항에 공차를 더한 값입니다."
+                }
+              ]
+            },
+            {
+              "id": "s2r1i4",
+              "drillType": "kth",
+              "cue": "첫째항 a₁ = 3, 공차 d = 9 일 때 a₅",
+              "answer": {
+                "kind": "number",
+                "value": 39
+              },
+              "why": "a₅ = 3 + 4 × 9 = 39",
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 48
+                  },
+                  "feedback": "공차를 5번 더했습니다. a₅ 의 값은 첫째항에 공차를 4번 더한 값입니다."
+                }
+              ]
+            },
+            {
+              "id": "s2r1i5",
+              "drillType": "seq-next",
+              "cue": "14, 18, 22, 26 의 다음 항",
+              "answer": {
+                "kind": "number",
+                "value": 30
+              },
+              "why": "공차 4 이므로 26 + 4 = 30",
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 4
+                  },
+                  "feedback": "공차를 답했습니다. 다음 항은 마지막 항에 공차를 더한 값입니다."
+                }
+              ]
+            },
+            {
+              "id": "s2r1i6",
+              "drillType": "two-terms",
+              "cue": "a₅ = 7, a₉ = 31 일 때 공차",
+              "answer": {
+                "kind": "number",
+                "value": 6
+              },
+              "why": "공차 = (31 − 7) ÷ (9 − 5) = 24 ÷ 4 = 6",
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 24
+                  },
+                  "feedback": "두 항의 차를 그대로 답했습니다. 그 차는 공차가 4번 쌓인 값이므로 번호의 차(4)로 나누어야 합니다."
+                }
+              ]
+            },
+            {
+              "id": "s2r1i7",
+              "drillType": "seq-d",
+              "cue": "13, 11, 9, 7 의 공차",
+              "answer": {
+                "kind": "number",
+                "value": -2
+              },
+              "why": "공차 = 11 − 13 = −2",
+              "negativeD": true,
+              "negativeAns": true,
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 2
+                  },
+                  "feedback": "앞 항에서 뒤 항을 뺐습니다. 공차는 (뒤 항) − (앞 항) 이라서, 줄어드는 수열의 공차는 음수입니다."
+                }
+              ]
+            },
+            {
+              "id": "s2r1i8",
+              "drillType": "two-terms",
+              "cue": "a₅ = 18, a₇ = 50 일 때 공차",
+              "answer": {
+                "kind": "number",
+                "value": 16
+              },
+              "why": "공차 = (50 − 18) ÷ (7 − 5) = 32 ÷ 2 = 16",
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 32
+                  },
+                  "feedback": "두 항의 차를 그대로 답했습니다. 그 차는 공차가 2번 쌓인 값이므로 번호의 차(2)로 나누어야 합니다."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "둘째 판",
+      "focus": [
+        "procedure"
+      ],
+      "blocks": [
+        {
+          "type": "round",
+          "id": "s3r1",
+          "mode": "drill",
+          "work": [
+            "procedure"
+          ],
+          "knowledge": [
+            "procedure"
+          ],
+          "prompt": "여덟 문항입니다. 이 판의 수의 줄은 모두 등차수열입니다. 구하는 값을 수 하나로 적고, 음수는 앞에 빼기 기호를 붙입니다.",
+          "timing": "after",
+          "items": [
+            {
+              "id": "s3r1i1",
+              "drillType": "two-terms",
+              "cue": "a₆ = 14, a₈ = 50 일 때 공차",
+              "answer": {
+                "kind": "number",
+                "value": 18
+              },
+              "why": "공차 = (50 − 14) ÷ (8 − 6) = 36 ÷ 2 = 18",
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 36
+                  },
+                  "feedback": "두 항의 차를 그대로 답했습니다. 그 차는 공차가 2번 쌓인 값이므로 번호의 차(2)로 나누어야 합니다."
+                }
+              ]
+            },
+            {
+              "id": "s3r1i2",
+              "drillType": "kth",
+              "cue": "첫째항 a₁ = −25, 공차 d = 6 일 때 a₅",
+              "answer": {
+                "kind": "number",
+                "value": -1
+              },
+              "why": "a₅ = −25 + 4 × 6 = −1",
+              "negativeAns": true,
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 5
+                  },
+                  "feedback": "공차를 5번 더했습니다. a₅ 의 값은 첫째항에 공차를 4번 더한 값입니다."
+                }
+              ]
+            },
+            {
+              "id": "s3r1i3",
+              "drillType": "seq-d",
+              "cue": "16, 25, 34, 43 의 공차",
+              "answer": {
+                "kind": "number",
+                "value": 9
+              },
+              "why": "공차 = 25 − 16 = 9",
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 27
+                  },
+                  "feedback": "맨 앞 항과 맨 끝 항의 차를 구했습니다. 그 값은 공차가 3번 쌓인 값입니다. (뒤의 항) − (앞의 항)이 공차입니다."
+                }
+              ]
+            },
+            {
+              "id": "s3r1i4",
+              "drillType": "seq-next",
+              "cue": "3, 11, 19, 27 의 다음 항",
+              "answer": {
+                "kind": "number",
+                "value": 35
+              },
+              "why": "공차 8 이므로 27 + 8 = 35",
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 8
+                  },
+                  "feedback": "공차를 답했습니다. 다음 항은 마지막 항에 공차를 더한 값입니다."
+                }
+              ]
+            },
+            {
+              "id": "s3r1i5",
+              "drillType": "two-terms",
+              "cue": "a₄ = 42, a₈ = 14 일 때 공차",
+              "answer": {
+                "kind": "number",
+                "value": -7
+              },
+              "why": "공차 = (14 − 42) ÷ (8 − 4) = −28 ÷ 4 = −7",
+              "negativeD": true,
+              "negativeAns": true,
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": -28
+                  },
+                  "feedback": "두 항의 차를 그대로 답했습니다. 그 차는 공차가 4번 쌓인 값이므로 번호의 차(4)로 나누어야 합니다."
+                }
+              ]
+            },
+            {
+              "id": "s3r1i6",
+              "drillType": "kth",
+              "cue": "첫째항 a₁ = 23, 공차 d = 3 일 때 a₈",
+              "answer": {
+                "kind": "number",
+                "value": 44
+              },
+              "why": "a₈ = 23 + 7 × 3 = 44",
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 47
+                  },
+                  "feedback": "공차를 8번 더했습니다. a₈ 의 값은 첫째항에 공차를 7번 더한 값입니다."
+                }
+              ]
+            },
+            {
+              "id": "s3r1i7",
+              "drillType": "seq-next",
+              "cue": "34, 31, 28, 25 의 다음 항",
+              "answer": {
+                "kind": "number",
+                "value": 22
+              },
+              "why": "공차 −3 이므로 25 − 3 = 22",
+              "negativeD": true,
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": -3
+                  },
+                  "feedback": "공차를 답했습니다. 다음 항은 마지막 항에 공차를 더한 값입니다."
+                }
+              ]
+            },
+            {
+              "id": "s3r1i8",
+              "drillType": "seq-d",
+              "cue": "3, 15, 27, 39 의 공차",
+              "answer": {
+                "kind": "number",
+                "value": 12
+              },
+              "why": "공차 = 15 − 3 = 12",
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 36
+                  },
+                  "feedback": "맨 앞 항과 맨 끝 항의 차를 구했습니다. 그 값은 공차가 3번 쌓인 값입니다. (뒤의 항) − (앞의 항)이 공차입니다."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "셋째 판",
+      "focus": [
+        "procedure"
+      ],
+      "blocks": [
+        {
+          "type": "round",
+          "id": "s4r1",
+          "mode": "drill",
+          "work": [
+            "procedure"
+          ],
+          "knowledge": [
+            "procedure"
+          ],
+          "prompt": "여덟 문항입니다. 이 판의 수의 줄은 모두 등차수열입니다. 구하는 값을 수 하나로 적고, 음수는 앞에 빼기 기호를 붙입니다.",
+          "timing": "after",
+          "items": [
+            {
+              "id": "s4r1i1",
+              "drillType": "kth",
+              "cue": "첫째항 a₁ = 48, 공차 d = −5 일 때 a₈",
+              "answer": {
+                "kind": "number",
+                "value": 13
+              },
+              "why": "a₈ = 48 + 7 × (−5) = 13",
+              "negativeD": true,
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 8
+                  },
+                  "feedback": "공차를 8번 더했습니다. a₈ 의 값은 첫째항에 공차를 7번 더한 값입니다."
+                },
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 83
+                  },
+                  "feedback": "공차의 부호를 빼고 더했습니다. 공차가 음수이면 더하는 것이 아니라 그만큼 줄어듭니다."
+                }
+              ]
+            },
+            {
+              "id": "s4r1i2",
+              "drillType": "seq-d",
+              "cue": "18, 21, 24, 27 의 공차",
+              "answer": {
+                "kind": "number",
+                "value": 3
+              },
+              "why": "공차 = 21 − 18 = 3",
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 9
+                  },
+                  "feedback": "맨 앞 항과 맨 끝 항의 차를 구했습니다. 그 값은 공차가 3번 쌓인 값입니다. (뒤의 항) − (앞의 항)이 공차입니다."
+                }
+              ]
+            },
+            {
+              "id": "s4r1i3",
+              "drillType": "two-terms",
+              "cue": "a₆ = 9, a₁₀ = 17 일 때 공차",
+              "answer": {
+                "kind": "number",
+                "value": 2
+              },
+              "why": "공차 = (17 − 9) ÷ (10 − 6) = 8 ÷ 4 = 2",
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 8
+                  },
+                  "feedback": "두 항의 차를 그대로 답했습니다. 그 차는 공차가 4번 쌓인 값이므로 번호의 차(4)로 나누어야 합니다."
+                }
+              ]
+            },
+            {
+              "id": "s4r1i4",
+              "drillType": "seq-next",
+              "cue": "−40, −35, −30, −25 의 다음 항",
+              "answer": {
+                "kind": "number",
+                "value": -20
+              },
+              "why": "공차 5 이므로 −25 + 5 = −20",
+              "negativeAns": true,
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 5
+                  },
+                  "feedback": "공차를 답했습니다. 다음 항은 마지막 항에 공차를 더한 값입니다."
+                }
+              ]
+            },
+            {
+              "id": "s4r1i5",
+              "drillType": "kth",
+              "cue": "첫째항 a₁ = 24, 공차 d = −9 일 때 a₅",
+              "answer": {
+                "kind": "number",
+                "value": -12
+              },
+              "why": "a₅ = 24 + 4 × (−9) = −12",
+              "negativeD": true,
+              "negativeAns": true,
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": -21
+                  },
+                  "feedback": "공차를 5번 더했습니다. a₅ 의 값은 첫째항에 공차를 4번 더한 값입니다."
+                },
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 60
+                  },
+                  "feedback": "공차의 부호를 빼고 더했습니다. 공차가 음수이면 더하는 것이 아니라 그만큼 줄어듭니다."
+                }
+              ]
+            },
+            {
+              "id": "s4r1i6",
+              "drillType": "seq-d",
+              "cue": "15, 26, 37, 48 의 공차",
+              "answer": {
+                "kind": "number",
+                "value": 11
+              },
+              "why": "공차 = 26 − 15 = 11",
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 33
+                  },
+                  "feedback": "맨 앞 항과 맨 끝 항의 차를 구했습니다. 그 값은 공차가 3번 쌓인 값입니다. (뒤의 항) − (앞의 항)이 공차입니다."
+                }
+              ]
+            },
+            {
+              "id": "s4r1i7",
+              "drillType": "two-terms",
+              "cue": "a₄ = 5, a₆ = 33 일 때 공차",
+              "answer": {
+                "kind": "number",
+                "value": 14
+              },
+              "why": "공차 = (33 − 5) ÷ (6 − 4) = 28 ÷ 2 = 14",
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 28
+                  },
+                  "feedback": "두 항의 차를 그대로 답했습니다. 그 차는 공차가 2번 쌓인 값이므로 번호의 차(2)로 나누어야 합니다."
+                }
+              ]
+            },
+            {
+              "id": "s4r1i8",
+              "drillType": "seq-next",
+              "cue": "24, 26, 28, 30 의 다음 항",
+              "answer": {
+                "kind": "number",
+                "value": 32
+              },
+              "why": "공차 2 이므로 30 + 2 = 32",
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 2
+                  },
+                  "feedback": "공차를 답했습니다. 다음 항은 마지막 항에 공차를 더한 값입니다."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "title": "마무리",
+      "focus": [
+        "procedure",
+        "integrate"
+      ],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s5t1",
+          "units": [
+            "세 판의 맞힌 문항 수와 걸린 시간은 판 결과 화면으로 돌아가 다시 볼 수 있습니다. 비교는 내가 앞서 푼 판과만 합니다."
+          ]
+        },
+        {
+          "type": "check",
+          "id": "s5c1",
+          "fresh": true,
+          "work": [
+            "integrate",
+            "procedure"
+          ],
+          "knowledge": [
+            "procedure"
+          ],
+          "prompt": "첫째 주에 10쪽을 읽고, 그다음 주부터 매주 지난주보다 6쪽씩 더 읽습니다. 8번째 주 한 주 동안 읽는 쪽 수는 몇 쪽입니까?",
+          "answer": {
+            "kind": "number",
+            "value": 52,
+            "unit": "쪽"
+          },
+          "misconceptions": [
+            {
+              "match": {
+                "kind": "number",
+                "value": 58
+              },
+              "feedback": "6쪽을 8번 더했습니다. 첫째 주에서 8번째 주까지는 7번 늘어납니다."
+            },
+            {
+              "match": {
+                "kind": "number",
+                "value": 42
+              },
+              "feedback": "늘어난 양 6 × 7 만 구했습니다. 첫째 주에 읽은 10쪽도 더해야 합니다."
+            },
+            {
+              "match": {
+                "kind": "number",
+                "value": 48
+              },
+              "feedback": "6 × 8 만 계산했습니다. 곱하는 수는 7 이고, 첫째 주의 10쪽도 더해야 합니다."
+            }
+          ],
+          "hints": [
+            "주마다 같은 수만큼 늘어나는 수의 줄입니다. 첫째항과 공차가 무엇인지 먼저 찾습니다.",
+            "첫째 주가 첫째항이고, 8번째 주는 8번째 항입니다. 공차를 몇 번 더하면 8번째 항이 되는지 생각합니다."
+          ],
+          "solution": "첫째항은 10, 공차는 6 입니다. 첫째 주에서 8번째 주까지는 6쪽씩 늘어나는 일이 7번 일어나므로 10 + 7 × 6 = 52 (쪽)입니다."
+        }
+      ]
+    }
+  ],
+  "preCheck": {
+    "intro": "공차와 항을 구하는 문항 세 개입니다. 수의 줄은 모두 등차수열이고, aₙ 은 n번째 항을 뜻합니다. 음수는 앞에 빼기 기호를 붙여 적습니다.",
+    "items": [
+      {
+        "id": "pc1",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "41, 35, 29, 23 의 공차",
+        "answer": {
+          "kind": "number",
+          "value": -6
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 6
+            },
+            "feedback": "앞 항에서 뒤 항을 뺐습니다. 공차는 (뒤 항) − (앞 항) 이라서, 줄어드는 수열의 공차는 음수입니다."
+          }
+        ],
+        "solution": "공차 = 35 − 41 = −6"
+      },
+      {
+        "id": "pc2",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "a₃ = 2, a₅ = 26 일 때 공차",
+        "answer": {
+          "kind": "number",
+          "value": 12
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 24
+            },
+            "feedback": "두 항의 차를 그대로 답했습니다. 그 차는 공차가 2번 쌓인 값이므로 번호의 차(2)로 나누어야 합니다."
+          }
+        ],
+        "solution": "공차 = (26 − 2) ÷ (5 − 3) = 24 ÷ 2 = 12"
+      },
+      {
+        "id": "pc3",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "첫째항 a₁ = 18, 공차 d = 2 일 때 a₄",
+        "answer": {
+          "kind": "number",
+          "value": 24
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 26
+            },
+            "feedback": "공차를 4번 더했습니다. a₄ 의 값은 첫째항에 공차를 3번 더한 값입니다."
+          }
+        ],
+        "solution": "a₄ = 18 + 3 × 2 = 24"
+      }
+    ]
+  },
+  "delayedCheck": {
+    "intro": "본문과 같은 계산이고 수와 상황이 새롭습니다. 수의 줄은 모두 등차수열이고, aₙ 은 n번째 항을 뜻합니다. 음수는 앞에 빼기 기호를 붙여 적습니다.",
+    "afterDays": 7,
+    "items": [
+      {
+        "id": "dc1",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "4, 9, 14, 19 의 공차",
+        "answer": {
+          "kind": "number",
+          "value": 5
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 15
+            },
+            "feedback": "맨 앞 항과 맨 끝 항의 차를 구했습니다. 그 값은 공차가 3번 쌓인 값입니다. (뒤의 항) − (앞의 항)이 공차입니다."
+          }
+        ],
+        "solution": "공차 = 9 − 4 = 5"
+      },
+      {
+        "id": "dc2",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "a₃ = 11, a₆ = 35 일 때 공차",
+        "answer": {
+          "kind": "number",
+          "value": 8
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 24
+            },
+            "feedback": "두 항의 차를 그대로 답했습니다. 그 차는 공차가 3번 쌓인 값이므로 번호의 차(3)로 나누어야 합니다."
+          }
+        ],
+        "solution": "공차 = (35 − 11) ÷ (6 − 3) = 24 ÷ 3 = 8"
+      },
+      {
+        "id": "dc3",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "벽에 타일을 첫째 줄에 9장 붙이고, 줄마다 앞줄보다 3장씩 더 붙입니다. 7번째 줄 한 줄에 붙이는 타일은 몇 장입니까?",
+        "answer": {
+          "kind": "number",
+          "value": 27,
+          "unit": "장"
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 30
+            },
+            "feedback": "공차를 7번 더했습니다. 첫째 줄에서 7번째 줄까지는 6번 늘어납니다."
+          }
+        ],
+        "solution": "첫째 줄의 9장이 첫째항이고 늘어나는 3장이 공차입니다. 7번째 줄은 9 + 6 × 3 = 27 (장)입니다."
+      }
+    ]
+  },
+  "review": {
+    "minutes": 4,
+    "items": [
+      {
+        "id": "rv1",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "등차수열 37, 34, 31, 28 의 공차. 음수는 앞에 빼기 기호를 붙여 적습니다.",
+        "answer": {
+          "kind": "number",
+          "value": -3
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 3
+            },
+            "feedback": "앞 항에서 뒤 항을 뺐습니다. 공차는 (뒤 항) − (앞 항) 이라서, 줄어드는 수열의 공차는 음수입니다."
+          }
+        ],
+        "feedback": "공차 = 34 − 37 = −3"
+      },
+      {
+        "id": "rv2",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "등차수열 46, 38, 30, 22 의 다음 항. 음수는 앞에 빼기 기호를 붙여 적습니다.",
+        "answer": {
+          "kind": "number",
+          "value": 14
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": -8
+            },
+            "feedback": "공차를 답했습니다. 다음 항은 마지막 항에 공차를 더한 값입니다."
+          }
+        ],
+        "feedback": "공차 −8 이므로 22 − 8 = 14"
+      },
+      {
+        "id": "rv3",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "첫째항 a₁ = −26, 공차 d = 2 일 때 a₉. 음수는 앞에 빼기 기호를 붙여 적습니다.",
+        "answer": {
+          "kind": "number",
+          "value": -10
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": -8
+            },
+            "feedback": "공차를 9번 더했습니다. a₉ 의 값은 첫째항에 공차를 8번 더한 값입니다."
+          }
+        ],
+        "feedback": "a₉ = −26 + 8 × 2 = −10"
+      },
+      {
+        "id": "rv4",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "의자를 첫째 줄에 8개 놓고, 줄마다 앞줄보다 5개씩 더 놓습니다. 6번째 줄 한 줄에 놓는 의자는 몇 개입니까? 음수는 앞에 빼기 기호를 붙여 적습니다.",
+        "answer": {
+          "kind": "number",
+          "value": 33,
+          "unit": "개"
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 38
+            },
+            "feedback": "공차를 6번 더했습니다. 첫째 줄에서 6번째 줄까지는 5번 늘어납니다."
+          }
+        ],
+        "feedback": "첫째 줄의 8개가 첫째항이고 늘어나는 5개가 공차입니다. 6번째 줄은 8 + 5 × 5 = 33 (개)입니다."
+      },
+      {
+        "id": "rv5",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "a₅ = 17, a₈ = 29 일 때 공차. 음수는 앞에 빼기 기호를 붙여 적습니다.",
+        "answer": {
+          "kind": "number",
+          "value": 4
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 12
+            },
+            "feedback": "두 항의 차를 그대로 답했습니다. 그 차는 공차가 3번 쌓인 값이므로 번호의 차(3)로 나누어야 합니다."
+          }
+        ],
+        "feedback": "공차 = (29 − 17) ÷ (8 − 5) = 12 ÷ 3 = 4"
+      },
+      {
+        "id": "rv6",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "첫째항 a₁ = 5, 공차 d = 7 일 때 a₆. 음수는 앞에 빼기 기호를 붙여 적습니다.",
+        "answer": {
+          "kind": "number",
+          "value": 40
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 47
+            },
+            "feedback": "공차를 6번 더했습니다. a₆ 의 값은 첫째항에 공차를 5번 더한 값입니다."
+          }
+        ],
+        "feedback": "a₆ = 5 + 5 × 7 = 40"
+      }
+    ]
+  }
+}

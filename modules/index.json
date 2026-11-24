@@ -13,7 +13,7 @@
     "title": "통합과학 첫걸음 ① 원자에서 은하까지, 크기를 나란히 놓기",
     "kind": "relate",
     "centralQuestion": "크기를 10의 거듭제곱으로 어림해 지수 n 으로 나란히 놓으면, 지수 한 칸은 왜 10배이고 두 대상은 몇 배쯤 차이 나는가?",
-    "version": "1.01",
+    "version": "1.02",
     "needs": [],
     "order": 2
   },
@@ -44,5 +44,208 @@
     "version": "1.06",
     "needs": [],
     "order": 1
+  },
+  {
+    "id": "seq0-diff",
+    "title": "수열 첫걸음 ② 이웃한 두 항의 차",
+    "kind": "procedure",
+    "centralQuestion": "차례대로 늘어놓은 수들에서 바로 옆에 붙은 두 수마다 뒤의 수에서 앞의 수를 빼, 그 뺀 값들을 차례대로 늘어놓을 수 있는가?",
+    "version": "1.02",
+    "needs": [
+      "seq0-list"
+    ],
+    "order": 2,
+    "next": "seq0-arith"
+  },
+  {
+    "id": "seq0-arith",
+    "title": "수열 첫걸음 ③ 차가 늘 같은 수열",
+    "kind": "discern",
+    "centralQuestion": "차례대로 늘어놓은 수들(수열)이나 이야기를 보고, 바로 붙어 있는 두 수의 차가 늘 같은지(등차수열인지) 가를 수 있고, 그 같은 차(공차)를 말할 수 있는가?",
+    "version": "1.02",
+    "needs": [
+      "seq0-diff"
+    ],
+    "order": 3,
+    "next": "seq0-build"
+  },
+  {
+    "id": "seq0-build",
+    "title": "수열 첫걸음 ④ 첫째항에서 공차를 더해 가기",
+    "kind": "procedure",
+    "centralQuestion": "맨 앞의 수(첫째항)와 늘 같은 차(공차)를 알면, 앞의 수에 공차를 더해 가며 차례대로 늘어놓은 수들(수열)을 만들어 낼 수 있는가?",
+    "version": "1.02",
+    "needs": [
+      "seq0-arith"
+    ],
+    "order": 4,
+    "next": "seq0-down"
+  },
+  {
+    "id": "seq0-down",
+    "title": "수열 첫걸음 ⑤ 줄어드는 등차수열",
+    "kind": "relate",
+    "centralQuestion": "차례대로 늘어놓은 수들(수열)에서 바로 붙어 있는 두 수의 차가 늘 같은, 0 보다 작은 수이면 수들은 어떻게 되는가, 그리고 왜 그런가?",
+    "version": "1.02",
+    "needs": [
+      "seq0-build",
+      "bridge-neg"
+    ],
+    "order": 5,
+    "next": "seq0-index"
+  },
+  {
+    "id": "seq0-index",
+    "title": "수열 첫걸음 ⑥ 몇째 항을 aₙ 으로 적기",
+    "kind": "pairs",
+    "centralQuestion": "늘어놓은 수 하나하나를 a₁, a₂, a₃ … 처럼 짧은 기호로 적고 읽을 수 있고, aₙ 이 ‘n째 자리의 수’라는 것을 아는가?",
+    "version": "1.02",
+    "needs": [
+      "seq0-down"
+    ],
+    "order": 6,
+    "next": "seq0-steps"
+  },
+  {
+    "id": "seq0-steps",
+    "title": "수열 첫걸음 ⑦ 공차를 몇 번 더하나",
+    "kind": "relate",
+    "centralQuestion": "같은 수를 거듭 더해 가며 늘어놓은 수들에서, 맨 앞부터 몇째 수까지 가려면 그 수를 몇 번 더해야 하고, 왜 자리 번호보다 한 번 적은가?",
+    "version": "1.02",
+    "needs": [
+      "seq0-index"
+    ],
+    "order": 7,
+    "next": "seq0-formula"
+  },
+  {
+    "id": "seq0-formula",
+    "title": "수열 첫걸음 ⑧ 일반항 — aₙ 을 n 의 식으로",
+    "kind": "procedure",
+    "centralQuestion": "몇째 수인지만 넣으면 그 수가 바로 나오는 셈(예: 자리 번호 × 3 + 1)이 주어지면, 원하는 자리의 수를 구하고 수들을 차례대로 늘어놓을 수 있는가?",
+    "version": "1.02",
+    "needs": [
+      "seq0-steps",
+      "bridge-sub"
+    ],
+    "order": 9,
+    "next": "seq0-plot"
+  },
+  {
+    "id": "seq0-plot",
+    "title": "수열 첫걸음 ⑨ 항을 점으로 찍기",
+    "kind": "relate",
+    "centralQuestion": "차례대로 늘어놓은 수들을 점으로 찍으면 어떤 모양이 되고, 늘 같은 수를 더해 가는 줄이면 왜 곧은 줄 하나 위에 놓이는가?",
+    "version": "1.02",
+    "needs": [
+      "seq0-formula",
+      "bridge-coord"
+    ],
+    "order": 11
+  },
+  {
+    "id": "seq0-expand",
+    "title": "수열 첫걸음 ⑩ 일반항을 펼쳐 정리하기",
+    "kind": "procedure",
+    "centralQuestion": "몇째 수든 구하는 긴 셈을 괄호를 풀어 짧게 정리할 수 있고, 정리한 것에서 맨 앞의 수와 늘 더하는 수를 다시 읽을 수 있는가?",
+    "version": "1.02",
+    "needs": [
+      "seq0-plot",
+      "bridge-dist"
+    ],
+    "order": 12
+  },
+  {
+    "id": "seq-linear",
+    "title": "등차수열의 일반항은 왜 n 의 일차식일까",
+    "kind": "relate",
+    "centralQuestion": "차례대로 늘어놓은 수들이 한 칸마다 어떻게 달라지는지를 점을 찍은 그림 · 표 · 식으로 잇고, 맨 앞의 수나 한 칸마다 바뀌는 양이 달라지면 무엇이 바뀌는지 설명할 수 있는가?",
+    "version": "1.02",
+    "needs": [
+      "seq-terms"
+    ],
+    "order": 1
+  },
+  {
+    "id": "seq-nth",
+    "title": "두 항으로 등차수열의 일반항 구하기",
+    "kind": "procedure",
+    "centralQuestion": "차례대로 늘어놓은 수 가운데 두 개만 알 때, 한 칸마다 바뀌는 양과 맨 앞의 수를 구해 n번째 수를 바로 내는 식을 세우고, 세운 식이 주어진 값과 맞는지 따져 볼 수 있는가?",
+    "version": "1.02",
+    "needs": [
+      "seq-terms"
+    ],
+    "order": 1
+  },
+  {
+    "id": "seq-quick",
+    "title": "공차와 항, 빠르고 정확하게",
+    "kind": "fluency",
+    "centralQuestion": "같은 수를 거듭 더해 가는 수의 줄에서 늘 더하는 수 · 다음 수 · 몇 번째 수를, 틀리지 않으면서 힘을 덜 들이고 구할 수 있는가?",
+    "version": "1.02",
+    "needs": [
+      "seq-nth"
+    ],
+    "order": 1
+  },
+  {
+    "id": "seq-sort",
+    "title": "등차인가, 등비인가, 둘 다 아닌가",
+    "kind": "discern",
+    "centralQuestion": "수를 늘어놓은 것이나 이야기를 보고, 늘 같은 수를 더해 가는지, 늘 같은 수를 곱해 가는지, 둘 다 아닌지 가를 수 있는가?",
+    "version": "1.02",
+    "needs": [
+      "seq-terms"
+    ],
+    "order": 1
+  },
+  {
+    "id": "plan-compare",
+    "title": "사용량에 따라 어느 요금제가 유리한가",
+    "kind": "weave",
+    "centralQuestion": "사용 시간이 달라지면 요금제 A와 B 중 어느 쪽이 더 싼지, 그 이유와 함께 설명할 수 있는가?",
+    "version": "1.15",
+    "needs": [],
+    "order": 1
+  },
+  {
+    "id": "bridge-neg",
+    "title": "이음 · 0 보다 작은 수로 빼기 · 더하기",
+    "kind": "procedure",
+    "centralQuestion": "수직선에서 0 보다 작은 쪽으로 넘어가는 뺄셈과, 0 보다 작은 수에 더하고 빼는 셈을 할 수 있는가?",
+    "version": "1.01",
+    "needs": [],
+    "order": 5,
+    "next": "seq0-down"
+  },
+  {
+    "id": "bridge-sub",
+    "title": "이음 · 글자가 든 식에 수 넣기",
+    "kind": "procedure",
+    "centralQuestion": "3 × n + 2 처럼 글자가 든 식에서, 글자에 수를 넣어 값을 구할 수 있는가?",
+    "version": "1.01",
+    "needs": [],
+    "order": 8,
+    "next": "seq0-formula"
+  },
+  {
+    "id": "bridge-coord",
+    "title": "이음 · 가로와 세로 두 수로 점의 자리",
+    "kind": "procedure",
+    "centralQuestion": "가로 몇, 세로 몇으로 점의 자리를 말하고, 눈금이 있는 그림에서 점의 자리를 두 수로 읽을 수 있는가?",
+    "version": "1.01",
+    "needs": [],
+    "order": 10,
+    "next": "seq0-plot"
+  },
+  {
+    "id": "bridge-dist",
+    "title": "이음 · 괄호 앞의 수를 나눠 곱하기",
+    "kind": "procedure",
+    "centralQuestion": "3 × (n − 1) 의 괄호를 풀어 3n − 3 으로 나타낼 수 있고, 왜 그렇게 되는지 수로 확인할 수 있는가?",
+    "version": "1.01",
+    "needs": [],
+    "order": 9,
+    "next": "seq0-expand"
   }
 ]

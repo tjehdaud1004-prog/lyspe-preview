@@ -1,0 +1,1485 @@
+{
+  "id": "bridge-sub",
+  "next": "seq0-formula",
+  "version": "1.01",
+  "kind": "procedure",
+  "shuffleOptions": true,
+  "bridge": true,
+  "order": 8,
+  "needs": [],
+  "title": "이음 · 글자가 든 식에 수 넣기",
+  "centralQuestion": "3 × n + 2 처럼 글자가 든 식에서, 글자에 수를 넣어 값을 구할 수 있는가?",
+  "prerequisites": [
+    "두 자리 수 이하의 덧셈 · 뺄셈 · 곱셈을 할 수 있다.",
+    "괄호 안을 먼저, 곱셈을 덧셈 · 뺄셈보다 먼저 계산하는 차례를 안다."
+  ],
+  "ai": {
+    "scope": {
+      "in": "글자가 든 식에서 글자 자리에 수를 넣어 식의 값을 구하는 방법",
+      "adjacent": [
+        "수와 글자가 붙은 곱셈 꼴",
+        "괄호와 곱셈 · 덧셈 · 뺄셈의 계산 차례",
+        "이 화면의 사용 방법",
+        "낱말의 뜻을 쉬운 말로 다시 설명하기"
+      ]
+    }
+  },
+  "figures": {
+    "times-table": {
+      "kind": "table",
+      "caption": "n 에 수를 넣었을 때 3n 의 값",
+      "columns": [
+        "n 에 넣은 수",
+        "3n 을 곱셈으로 적은 것",
+        "값"
+      ],
+      "rows": [
+        [
+          "1",
+          "3 × 1",
+          "3"
+        ],
+        [
+          "2",
+          "3 × 2",
+          "6"
+        ],
+        [
+          "3",
+          "3 × 3",
+          "9"
+        ],
+        [
+          "4",
+          "3 × 4",
+          "12"
+        ],
+        [
+          "5",
+          "3 × 5",
+          "15"
+        ]
+      ]
+    }
+  },
+  "scenes": [
+    {
+      "id": "s1",
+      "title": "무엇을 하는가",
+      "focus": [
+        "attend"
+      ],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s1t1",
+          "units": [
+            "n = 3 일 때 2n + 5 는 2 × 3 + 5 = 11 이다. 글자 n 자리에 수를 넣고 계산해 식의 값을 구한다."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "글자가 든 식 읽기",
+      "focus": [
+        "procedure",
+        "discriminate"
+      ],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s2t1",
+          "units": [
+            "n 에 1 을 넣으면 3n + 2 는 3 × 1 + 2 = 5 이다. 3n + 2 처럼 수 대신 글자가 든 식에서 글자 n 은 아직 정하지 않은 수의 자리이다.",
+            "글자와 수가 붙어 있으면 곱셈이다. 3n 은 3 × n 을 줄여 적은 것이어서, n 에 4 를 넣으면 34 가 아니라 3 × 4 = 12 이다. 아래 표는 n 에 1 부터 5 까지 넣은 3n 의 값이다."
+          ]
+        },
+        {
+          "type": "figure",
+          "id": "s2f1",
+          "figure": "times-table",
+          "alt": "n 에 1, 2, 3, 4, 5 를 넣었을 때 3n 의 값을 적은 표. 3 × 1 = 3, 3 × 2 = 6, 3 × 3 = 9, 3 × 4 = 12, 3 × 5 = 15 이다."
+        },
+        {
+          "type": "check",
+          "id": "s2c1",
+          "work": [
+            "procedure",
+            "discriminate"
+          ],
+          "knowledge": [
+            "procedure",
+            "concept"
+          ],
+          "prompt": "n = 5 일 때 4n 의 값은 얼마인가?",
+          "answer": {
+            "kind": "number",
+            "value": 20
+          },
+          "misconceptions": [
+            {
+              "match": {
+                "kind": "number",
+                "value": 45
+              },
+              "feedback": "4 와 n 에 넣은 수 5 를 이어 붙여 45 로 읽었습니다. 수와 글자가 붙어 있으면 곱셈이므로 4 × 5 로 읽습니다."
+            },
+            {
+              "match": {
+                "kind": "number",
+                "value": 9
+              },
+              "feedback": "4 와 5 를 더했습니다. 수와 글자가 붙어 있는 것은 더하기가 아니라 곱셈입니다."
+            }
+          ],
+          "hints": [
+            "4n 은 4 와 n 이 붙어 있다. 붙어 있는 수와 글자가 어떤 셈인지 먼저 정한다.",
+            "n 자리에 수를 넣고, 4 와 그 수 사이에 곱셈 기호를 다시 적어 본다."
+          ],
+          "solution": "4n 은 4 × n 이다. n 자리에 5 를 넣으면 4 × 5 = 20 이다."
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "다 푼 풀이 읽기",
+      "focus": [
+        "attend",
+        "relate"
+      ],
+      "condition": "식 3n + 2, n = 4 / 구하려는 것: 식의 값",
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s3t1",
+          "units": [
+            "n = 4 일 때 3n + 2 의 값을 구해 보자. 먼저 n 이 있던 자리에 4 를 넣는다. 이때 넣은 수에 괄호를 씌우고 곱셈 기호를 다시 적어 3 × (4) + 2 라고 쓴다.",
+            "다음에는 곱셈을 덧셈보다 먼저 계산한다."
+          ]
+        },
+        {
+          "type": "link",
+          "id": "s3l1",
+          "procedure": "substitute",
+          "work": [
+            "attend",
+            "relate"
+          ],
+          "knowledge": [
+            "procedure",
+            "concept"
+          ],
+          "mode": "show",
+          "goal": "글자 자리에 수를 넣어 식의 값 구하기",
+          "given": "식 3n + 2, n = 4",
+          "steps": [
+            {
+              "id": "a",
+              "label": "① 글자 자리에 넣을 수를 확인한다",
+              "gives": "글자 n 이 있는 자리 한 곳에 넣는 수는 4 이다",
+              "why": "계산은 글자가 있던 자리에서 시작하므로, 먼저 어느 글자에 어떤 수를 넣는지 정해야 한다. 글자가 아닌 수는 바꾸지 않고 그대로 둔다."
+            },
+            {
+              "id": "b",
+              "label": "② 글자를 지우고 괄호를 씌워 그 수를 넣는다",
+              "gives": "3 × (4) + 2",
+              "why": "수를 넣을 때 괄호를 씌우면 넣은 수가 한 덩이로 남는다. 괄호가 없으면 3n 에 4 를 넣어 34 로 읽는 실수가 생길 수 있다. 줄여 적은 곱셈 기호도 이때 다시 적는다."
+            },
+            {
+              "id": "c",
+              "label": "③ 괄호 안 먼저, 곱셈, 덧셈 · 뺄셈의 차례로 계산한다",
+              "gives": "14 (곱셈 먼저: 3 × 4 = 12, 그다음 12 + 2 = 14)",
+              "why": "식에 정해진 계산 차례를 따라야 값이 하나로 정해진다. 괄호 안을 먼저 계산하고, 곱셈을 덧셈 · 뺄셈보다 먼저 계산한다."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "③ 계산부터 직접 하기",
+      "focus": [
+        "procedure",
+        "discriminate"
+      ],
+      "condition": "식 5n − 1, n = 6 / 구하려는 것: 식의 값",
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s4t1",
+          "units": [
+            "이번에는 ① 과 ② 가 풀려 있고, ③ 을 직접 한다. 식에 뺄셈이 있어도 곱셈을 먼저 계산한다. 곱셈의 값을 구한 뒤에 식에 적힌 기호대로 뺀다."
+          ]
+        },
+        {
+          "type": "link",
+          "id": "s4l1",
+          "procedure": "substitute",
+          "work": [
+            "procedure",
+            "discriminate"
+          ],
+          "knowledge": [
+            "procedure"
+          ],
+          "mode": "complete",
+          "goal": "글자 자리에 수를 넣어 식의 값 구하기",
+          "given": "식 5n − 1, n = 6",
+          "steps": [
+            {
+              "id": "a",
+              "label": "① 글자 자리에 넣을 수를 확인한다",
+              "gives": "글자 n 이 있는 자리 한 곳에 넣는 수는 6 이다",
+              "why": "계산은 글자가 있던 자리에서 시작하므로, 먼저 어느 글자에 어떤 수를 넣는지 정해야 한다. 글자가 아닌 수는 바꾸지 않고 그대로 둔다."
+            },
+            {
+              "id": "b",
+              "label": "② 글자를 지우고 괄호를 씌워 그 수를 넣는다",
+              "gives": "5 × (6) − 1",
+              "why": "수를 넣을 때 괄호를 씌우면 넣은 수가 한 덩이로 남는다. 괄호가 없으면 3n 에 4 를 넣어 34 로 읽는 실수가 생길 수 있다. 줄여 적은 곱셈 기호도 이때 다시 적는다."
+            },
+            {
+              "id": "c",
+              "label": "③ 괄호 안 먼저, 곱셈, 덧셈 · 뺄셈의 차례로 계산한다",
+              "gives": "29 (곱셈 먼저: 5 × 6 = 30, 그다음 30 − 1 = 29)",
+              "why": "식에 정해진 계산 차례를 따라야 값이 하나로 정해진다. 괄호 안을 먼저 계산하고, 곱셈을 덧셈 · 뺄셈보다 먼저 계산한다.",
+              "blank": {
+                "field": "gives",
+                "prompt": "② 에서 수를 넣은 식을 계산한 값은 얼마인가?",
+                "answer": {
+                  "kind": "number",
+                  "value": 29
+                },
+                "misconceptions": [
+                  {
+                    "match": {
+                      "kind": "number",
+                      "value": 25
+                    },
+                    "feedback": "뺄셈을 곱셈보다 먼저 계산했습니다. 괄호가 없으면 곱셈을 먼저 계산하고, 덧셈 · 뺄셈은 그다음에 합니다."
+                  },
+                  {
+                    "match": {
+                      "kind": "number",
+                      "value": 31
+                    },
+                    "feedback": "식에는 빼는 기호가 있는데 더했습니다. 곱셈의 값을 구한 뒤 식에 적힌 기호대로 그 수를 뺍니다."
+                  }
+                ],
+                "hints": [
+                  "식에 괄호가 없으면 곱셈을 덧셈 · 뺄셈보다 먼저 계산한다.",
+                  "곱셈의 값을 먼저 구한 뒤, 식에 적힌 기호대로 그 값에 수를 더하거나 뺀다."
+                ],
+                "solution": "곱셈 먼저: 5 × 6 = 30, 그다음 30 − 1 = 29."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "title": "② 와 ③ 을 직접 하기",
+      "focus": [
+        "procedure",
+        "discriminate"
+      ],
+      "condition": "식 2(n + 3), n = 5 / 구하려는 것: 식의 값",
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s5t1",
+          "units": [
+            "이번에는 ① 만 풀려 있고, ② 와 ③ 을 직접 한다. 2(n + 3) 처럼 수 바로 뒤에 괄호가 와도 곱셈이다. 곱셈 기호를 되살리면 2 × (n + 3) 이고, 수를 넣은 뒤에는 괄호 안을 먼저 계산한다.",
+            "식에 원래 괄호가 있으면 수를 넣은 모양에 괄호가 겹쳐 보인다. 3(n + 1) 에 n = 2 를 넣으면 3 × ((2) + 1) 이다. 안쪽 괄호 (2) 는 넣은 수에 씌운 것이고, 바깥 괄호는 식에 원래 있던 것이다."
+          ]
+        },
+        {
+          "type": "link",
+          "id": "s5l1",
+          "procedure": "substitute",
+          "work": [
+            "procedure",
+            "discriminate"
+          ],
+          "knowledge": [
+            "procedure",
+            "concept"
+          ],
+          "mode": "complete",
+          "goal": "글자 자리에 수를 넣어 식의 값 구하기",
+          "given": "식 2(n + 3), n = 5",
+          "steps": [
+            {
+              "id": "a",
+              "label": "① 글자 자리에 넣을 수를 확인한다",
+              "gives": "글자 n 이 있는 자리 한 곳에 넣는 수는 5 이다",
+              "why": "계산은 글자가 있던 자리에서 시작하므로, 먼저 어느 글자에 어떤 수를 넣는지 정해야 한다. 글자가 아닌 수는 바꾸지 않고 그대로 둔다."
+            },
+            {
+              "id": "b",
+              "label": "② 글자를 지우고 괄호를 씌워 그 수를 넣는다",
+              "gives": "2 × ((5) + 3)",
+              "why": "수를 넣을 때 괄호를 씌우면 넣은 수가 한 덩이로 남는다. 괄호가 없으면 3n 에 4 를 넣어 34 로 읽는 실수가 생길 수 있다. 줄여 적은 곱셈 기호도 이때 다시 적는다.",
+              "blank": {
+                "field": "gives",
+                "prompt": "① 에서 정한 수를 넣고 곱셈 기호를 되살린 식은 어느 것인가?",
+                "answer": {
+                  "kind": "choice",
+                  "options": [
+                    {
+                      "id": "nobracket",
+                      "label": "2 × (5) + 3"
+                    },
+                    {
+                      "id": "right",
+                      "label": "2 × ((5) + 3)"
+                    },
+                    {
+                      "id": "firstadd",
+                      "label": "(2 + 5) × 3"
+                    },
+                    {
+                      "id": "paste",
+                      "label": "25 + 3"
+                    }
+                  ],
+                  "value": "right"
+                },
+                "misconceptions": [
+                  {
+                    "match": {
+                      "kind": "choice",
+                      "value": "nobracket"
+                    },
+                    "feedback": "괄호 안의 3 이 괄호 밖으로 나왔습니다. 2(n + 3) 에서 n + 3 은 괄호 안에 한 덩이로 남습니다."
+                  },
+                  {
+                    "match": {
+                      "kind": "choice",
+                      "value": "firstadd"
+                    },
+                    "feedback": "2 와 n 에 넣은 수 5 를 먼저 더했습니다. 2 는 괄호 안의 n + 3 전체에 곱해지는 수입니다."
+                  },
+                  {
+                    "match": {
+                      "kind": "choice",
+                      "value": "paste"
+                    },
+                    "feedback": "2 와 n 에 넣은 수 5 를 이어 붙여 25 로 읽었습니다. 수 바로 뒤의 괄호는 곱셈이므로 2 × (…) 로 씁니다."
+                  }
+                ],
+                "hints": [
+                  "글자 n 이 있던 자리에만 수를 넣는다. 글자가 아닌 수는 그대로 둔다.",
+                  "수를 넣은 자리에 괄호를 씌우고, 수와 괄호가 붙어 있던 곳에는 곱셈 기호를 다시 적는다."
+                ],
+                "solution": "글자 n 이 있던 자리에 5 를 괄호로 씌워 넣고, 줄여 적었던 곱셈 기호를 되살리면 2 × ((5) + 3) 이다."
+              }
+            },
+            {
+              "id": "c",
+              "label": "③ 괄호 안 먼저, 곱셈, 덧셈 · 뺄셈의 차례로 계산한다",
+              "gives": "16 (괄호 안 먼저: 5 + 3 = 8, 그다음 2 × 8 = 16)",
+              "why": "식에 정해진 계산 차례를 따라야 값이 하나로 정해진다. 괄호 안을 먼저 계산하고, 곱셈을 덧셈 · 뺄셈보다 먼저 계산한다.",
+              "blank": {
+                "field": "gives",
+                "prompt": "② 에서 수를 넣은 식을 계산한 값은 얼마인가?",
+                "answer": {
+                  "kind": "number",
+                  "value": 16
+                },
+                "misconceptions": [
+                  {
+                    "match": {
+                      "kind": "number",
+                      "value": 13
+                    },
+                    "feedback": "괄호 안을 먼저 계산하지 않고 괄호 밖의 곱셈부터 했습니다. 괄호가 있으면 괄호 안을 먼저 계산합니다."
+                  },
+                  {
+                    "match": {
+                      "kind": "number",
+                      "value": 8
+                    },
+                    "feedback": "괄호 안의 값만 구하고 괄호 앞의 수를 곱하지 않았습니다. 수 바로 뒤의 괄호는 곱셈이므로 그 수를 곱합니다."
+                  }
+                ],
+                "hints": [
+                  "괄호가 있으면 괄호 안을 먼저 계산한다.",
+                  "괄호 안의 값을 구한 뒤, 괄호 앞의 수를 곱한다."
+                ],
+                "solution": "괄호 안 먼저: 5 + 3 = 8, 그다음 2 × 8 = 16."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s6",
+      "title": "① ~ ③ 을 모두 직접 하기",
+      "focus": [
+        "procedure",
+        "hold"
+      ],
+      "condition": "식 4 + 3(n − 1), n = 6 / 구하려는 것: 식의 값",
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s6t1",
+          "units": [
+            "이번에는 ① ~ ③ 을 모두 직접 한다. 4 + 3(n − 1) 은 괄호 안이 뺄셈이고, 괄호 앞의 3 을 곱한 값에 4 를 더하는 식이다.",
+            "계산 차례는 괄호 안, 곱셈, 덧셈의 순서이다. n 에 수를 넣은 뒤 괄호 안의 뺄셈을 가장 먼저 구한다. 예를 들어 n = 2 이면 4 + 3 × (2 − 1) 에서 2 − 1 = 1 을 먼저 구하고, 4 + 3 × 1 = 7 이다."
+          ]
+        },
+        {
+          "type": "link",
+          "id": "s6l1",
+          "procedure": "substitute",
+          "work": [
+            "procedure",
+            "hold"
+          ],
+          "knowledge": [
+            "procedure",
+            "concept"
+          ],
+          "mode": "complete",
+          "stage": "build",
+          "goal": "글자 자리에 수를 넣어 식의 값 구하기",
+          "given": "식 4 + 3(n − 1), n = 6",
+          "steps": [
+            {
+              "id": "a",
+              "label": "① 글자 자리에 넣을 수를 확인한다",
+              "gives": "글자 n 이 있는 자리 한 곳에 넣는 수는 6 이다",
+              "why": "계산은 글자가 있던 자리에서 시작하므로, 먼저 어느 글자에 어떤 수를 넣는지 정해야 한다. 글자가 아닌 수는 바꾸지 않고 그대로 둔다.",
+              "blank": {
+                "field": "gives",
+                "prompt": "4 + 3(n − 1) 에서 글자 n 이 있던 자리에 6 을 넣은 식은 어느 것인가?",
+                "answer": {
+                  "kind": "choice",
+                  "options": [
+                    {
+                      "id": "leading",
+                      "label": "6 + 3(n − 1)"
+                    },
+                    {
+                      "id": "coef",
+                      "label": "4 + 6(n − 1)"
+                    },
+                    {
+                      "id": "right",
+                      "label": "4 + 3(6 − 1)"
+                    },
+                    {
+                      "id": "one",
+                      "label": "4 + 3(n − 6)"
+                    }
+                  ],
+                  "value": "right"
+                },
+                "misconceptions": [
+                  {
+                    "match": {
+                      "kind": "choice",
+                      "value": "leading"
+                    },
+                    "feedback": "맨 앞의 4 를 6 으로 바꿨습니다. 4 는 글자가 아닌 수이니 그대로 두고, 글자 n 이 있던 자리에만 6 을 넣습니다."
+                  },
+                  {
+                    "match": {
+                      "kind": "choice",
+                      "value": "coef"
+                    },
+                    "feedback": "3 을 6 으로 바꿨습니다. 3 은 글자가 아닌 수이니 그대로 두고, 글자 n 이 있던 자리에만 6 을 넣습니다."
+                  },
+                  {
+                    "match": {
+                      "kind": "choice",
+                      "value": "one"
+                    },
+                    "feedback": "1 을 6 으로 바꿨고 글자 n 은 그대로 남았습니다. 1 은 글자가 아닌 수이니 그대로 두고, 6 은 n 자리에 넣습니다."
+                  }
+                ],
+                "hints": [
+                  "식에서 글자가 어느 것인지 먼저 찾는다.",
+                  "수를 넣는 자리는 글자가 있던 자리뿐이다. 글자가 아닌 수는 그대로 둔다."
+                ],
+                "solution": "식에서 글자는 n 하나뿐이다. 6 은 n 이 있던 자리에만 들어가 4 + 3(6 − 1) 이 되고, 4 · 3 · 1 은 그대로 둔다."
+              }
+            },
+            {
+              "id": "b",
+              "label": "② 글자를 지우고 괄호를 씌워 그 수를 넣는다",
+              "gives": "4 + 3 × ((6) − 1)",
+              "why": "수를 넣을 때 괄호를 씌우면 넣은 수가 한 덩이로 남는다. 괄호가 없으면 3n 에 4 를 넣어 34 로 읽는 실수가 생길 수 있다. 줄여 적은 곱셈 기호도 이때 다시 적는다.",
+              "blank": {
+                "field": "gives",
+                "prompt": "① 에서 정한 수를 넣고 곱셈 기호를 되살린 식은 어느 것인가?",
+                "answer": {
+                  "kind": "choice",
+                  "options": [
+                    {
+                      "id": "outside",
+                      "label": "4 + 3 × (6) − 1"
+                    },
+                    {
+                      "id": "firstadd",
+                      "label": "(4 + 3) × ((6) − 1)"
+                    },
+                    {
+                      "id": "right",
+                      "label": "4 + 3 × ((6) − 1)"
+                    },
+                    {
+                      "id": "paste",
+                      "label": "4 + 36 − 1"
+                    }
+                  ],
+                  "value": "right"
+                },
+                "misconceptions": [
+                  {
+                    "match": {
+                      "kind": "choice",
+                      "value": "outside"
+                    },
+                    "feedback": "괄호 안의 1 이 괄호 밖으로 나왔습니다. 3(n − 1) 에서 n − 1 은 괄호 안에 한 덩이로 남습니다."
+                  },
+                  {
+                    "match": {
+                      "kind": "choice",
+                      "value": "firstadd"
+                    },
+                    "feedback": "4 와 3 을 먼저 묶었습니다. 3 은 괄호 안의 값에 곱해지는 수이고, 4 는 그 곱에 더하는 수입니다."
+                  },
+                  {
+                    "match": {
+                      "kind": "choice",
+                      "value": "paste"
+                    },
+                    "feedback": "3 과 n 에 넣은 수 6 을 이어 붙여 36 으로 읽었습니다. 수 바로 뒤의 괄호는 곱셈이므로 3 × (…) 로 씁니다."
+                  }
+                ],
+                "hints": [
+                  "글자 n 이 있던 자리에만 수를 넣는다. 글자가 아닌 수는 그대로 둔다.",
+                  "수를 넣은 자리에 괄호를 씌우고, 수와 괄호가 붙어 있던 곳에는 곱셈 기호를 다시 적는다."
+                ],
+                "solution": "글자 n 이 있던 자리에 6 을 괄호로 씌워 넣고, 줄여 적었던 곱셈 기호를 되살리면 4 + 3 × ((6) − 1) 이다."
+              }
+            },
+            {
+              "id": "c",
+              "label": "③ 괄호 안 먼저, 곱셈, 덧셈 · 뺄셈의 차례로 계산한다",
+              "gives": "19 (괄호 안 먼저: 6 − 1 = 5, 곱셈: 3 × 5 = 15, 덧셈: 4 + 15 = 19)",
+              "why": "식에 정해진 계산 차례를 따라야 값이 하나로 정해진다. 괄호 안을 먼저 계산하고, 곱셈을 덧셈 · 뺄셈보다 먼저 계산한다.",
+              "blank": {
+                "field": "gives",
+                "prompt": "② 에서 수를 넣은 식을 계산한 값은 얼마인가?",
+                "answer": {
+                  "kind": "number",
+                  "value": 19
+                },
+                "misconceptions": [
+                  {
+                    "match": {
+                      "kind": "number",
+                      "value": 21
+                    },
+                    "feedback": "괄호 안을 먼저 계산하지 않고 괄호 밖의 곱셈부터 했습니다. 괄호가 있으면 괄호 안을 먼저 계산합니다."
+                  },
+                  {
+                    "match": {
+                      "kind": "number",
+                      "value": 35
+                    },
+                    "feedback": "덧셈을 곱셈보다 먼저 계산했습니다. 3 은 괄호 안의 값에 곱하고, 그 곱을 4 에 더합니다."
+                  }
+                ],
+                "hints": [
+                  "괄호 안의 뺄셈을 가장 먼저 계산한다.",
+                  "그다음 괄호 앞의 수를 곱하고, 마지막에 맨 앞의 수를 더한다."
+                ],
+                "solution": "괄호 안 먼저: 6 − 1 = 5, 곱셈: 3 × 5 = 15, 덧셈: 4 + 15 = 19."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s7",
+      "title": "혼자 풀어 보기",
+      "focus": [
+        "procedure",
+        "plan",
+        "monitor"
+      ],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s7t1",
+          "units": [
+            "이번에는 풀이의 틀 없이 식과 n 에 넣을 수만 있다. 도움을 열기 전에 먼저 한 번 답해 본다."
+          ]
+        },
+        {
+          "type": "problem",
+          "id": "s7q1",
+          "work": [
+            "procedure",
+            "plan",
+            "monitor"
+          ],
+          "knowledge": [
+            "procedure",
+            "concept"
+          ],
+          "unaided": true,
+          "prompt": "다음 네 식에서 n 에 주어진 수를 넣어 값을 구한다.",
+          "parts": [
+            {
+              "id": "p1",
+              "label": "4n + 3 (n = 7)",
+              "answer": {
+                "kind": "number",
+                "value": 31
+              },
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 50
+                  },
+                  "feedback": "4n 에서 4 와 n 에 넣은 수 7 을 이어 붙여 47 로 읽었습니다. 수와 글자가 붙어 있으면 곱셈이므로 4 × 7 로 읽습니다."
+                },
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 40
+                  },
+                  "feedback": "덧셈을 곱셈보다 먼저 계산했습니다. 괄호가 없으면 곱셈을 먼저 계산하고, 덧셈 · 뺄셈은 그다음에 합니다."
+                }
+              ]
+            },
+            {
+              "id": "p2",
+              "label": "6n − 2 (n = 5)",
+              "answer": {
+                "kind": "number",
+                "value": 28
+              },
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 63
+                  },
+                  "feedback": "6n 에서 6 과 n 에 넣은 수 5 를 이어 붙여 65 로 읽었습니다. 수와 글자가 붙어 있으면 곱셈이므로 6 × 5 로 읽습니다."
+                },
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 18
+                  },
+                  "feedback": "뺄셈을 곱셈보다 먼저 계산했습니다. 괄호가 없으면 곱셈을 먼저 계산하고, 덧셈 · 뺄셈은 그다음에 합니다."
+                }
+              ]
+            },
+            {
+              "id": "p3",
+              "goals": [
+                "g1"
+              ],
+              "label": "3(n + 4) (n = 6)",
+              "answer": {
+                "kind": "number",
+                "value": 30
+              },
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 22
+                  },
+                  "feedback": "괄호 안을 먼저 계산하지 않고 괄호 밖의 곱셈부터 했습니다. 괄호가 있으면 괄호 안을 먼저 계산합니다."
+                },
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 10
+                  },
+                  "feedback": "괄호 안의 값만 구하고 괄호 앞의 수를 곱하지 않았습니다. 수 바로 뒤의 괄호는 곱셈이므로 그 수를 곱합니다."
+                }
+              ]
+            },
+            {
+              "id": "p4",
+              "goals": [
+                "g1"
+              ],
+              "label": "5 + 2(n − 1) (n = 9)",
+              "answer": {
+                "kind": "number",
+                "value": 21
+              },
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 22
+                  },
+                  "feedback": "괄호 안을 먼저 계산하지 않고 괄호 밖의 곱셈부터 했습니다. 괄호가 있으면 괄호 안을 먼저 계산합니다."
+                },
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 56
+                  },
+                  "feedback": "덧셈을 곱셈보다 먼저 계산했습니다. 2 는 괄호 안의 값에 곱하고, 그 곱을 5 에 더합니다."
+                }
+              ]
+            }
+          ],
+          "hints": [
+            "글자 n 이 있던 자리에 수를 넣고, 수와 글자가 붙어 있던 곳에는 곱셈 기호를 다시 적는다.",
+            "괄호가 있으면 괄호 안을 먼저, 그다음 곱셈, 마지막에 덧셈이나 뺄셈을 계산한다."
+          ],
+          "solution": "4n + 3 에서 n 에 7 을 넣으면 4 × (7) + 3 이다. 곱셈 먼저: 4 × 7 = 28, 그다음 28 + 3 = 31. 6n − 2 에서 n 에 5 를 넣으면 6 × (5) − 2 이다. 곱셈 먼저: 6 × 5 = 30, 그다음 30 − 2 = 28. 3(n + 4) 에서 n 에 6 을 넣으면 3 × ((6) + 4) 이다. 괄호 안 먼저: 6 + 4 = 10, 그다음 3 × 10 = 30. 5 + 2(n − 1) 에서 n 에 9 를 넣으면 5 + 2 × ((9) − 1) 이다. 괄호 안 먼저: 9 − 1 = 8, 곱셈: 2 × 8 = 16, 덧셈: 5 + 16 = 21."
+        }
+      ]
+    },
+    {
+      "id": "s8",
+      "title": "처음 보는 상황에서 풀어 보기",
+      "focus": [
+        "integrate",
+        "procedure"
+      ],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s8t1",
+          "units": [
+            "이번에는 식이 이야기 속에 있다. 이야기에 나온 글자 k 도 n 처럼 정하지 않은 수를 대신한다. 이야기의 말에서 알맞은 식을 고른 뒤, 이야기가 알려 주는 수를 글자 자리에 넣어 값을 구한다."
+          ]
+        },
+        {
+          "type": "transfer",
+          "id": "s8q1",
+          "work": [
+            "integrate",
+            "procedure"
+          ],
+          "knowledge": [
+            "procedure",
+            "concept"
+          ],
+          "unaided": true,
+          "fresh": true,
+          "prompt": "택시 요금은 기본요금 300원에, 1 km 달릴 때마다 80원이 더해진다. 달린 거리를 k km 라 한다.",
+          "parts": [
+            {
+              "id": "p1",
+              "label": "k km 를 달렸을 때 요금(원)을 나타내는 식",
+              "answer": {
+                "kind": "choice",
+                "options": [
+                  {
+                    "id": "swap",
+                    "label": "300k + 80"
+                  },
+                  {
+                    "id": "together",
+                    "label": "(300 + 80)k"
+                  },
+                  {
+                    "id": "right",
+                    "label": "300 + 80k"
+                  },
+                  {
+                    "id": "plusk",
+                    "label": "300 + 80 + k"
+                  }
+                ],
+                "value": "right"
+              },
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "choice",
+                    "value": "swap"
+                  },
+                  "feedback": "기본요금과 1 km 요금이 바뀌었습니다. 기본요금은 한 번만 내고, 80원이 거리만큼 더해집니다."
+                },
+                {
+                  "match": {
+                    "kind": "choice",
+                    "value": "together"
+                  },
+                  "feedback": "기본요금 300원까지 거리만큼 곱했습니다. 기본요금은 한 번만 내므로 거리를 곱하는 것은 80원뿐입니다."
+                },
+                {
+                  "match": {
+                    "kind": "choice",
+                    "value": "plusk"
+                  },
+                  "feedback": "거리 k 를 그대로 더했습니다. 1 km 마다 80원이 더해지므로 80원에 거리를 곱합니다."
+                }
+              ]
+            },
+            {
+              "id": "p2",
+              "label": "3 km 달렸을 때 요금",
+              "answer": {
+                "kind": "number",
+                "value": 540,
+                "unit": "원"
+              },
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 1140
+                  },
+                  "feedback": "300 과 80 을 먼저 더했습니다. 곱셈을 먼저 하고, 300 은 그 값에 더합니다."
+                },
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 1103
+                  },
+                  "feedback": "80 과 k 에 넣은 수 3 을 이어 붙여 803 으로 읽었습니다. 수와 글자가 붙어 있으면 곱셈이므로 80 × 3 입니다."
+                }
+              ]
+            },
+            {
+              "id": "p3",
+              "label": "8 km 달렸을 때 요금",
+              "answer": {
+                "kind": "number",
+                "value": 940,
+                "unit": "원"
+              },
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 3040
+                  },
+                  "feedback": "300 과 80 을 먼저 더했습니다. 곱셈을 먼저 하고, 300 은 그 값에 더합니다."
+                },
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 1108
+                  },
+                  "feedback": "80 과 k 에 넣은 수 8 을 이어 붙여 808 로 읽었습니다. 수와 글자가 붙어 있으면 곱셈이므로 80 × 8 입니다."
+                }
+              ]
+            }
+          ],
+          "hints": [
+            "기본요금은 한 번만 내는지, 80원은 몇 번 더해지는지 먼저 생각한다.",
+            "식을 정한 뒤에는 k 자리에 달린 거리를 넣고, 곱셈을 먼저 계산한다."
+          ],
+          "solution": "기본요금 300원은 한 번이고 80원은 거리 k 만큼 더해지므로 요금은 300 + 80k 원이다. k = 3 이면 300 + 80 × (3) = 300 + 240 = 540 이다. k = 8 이면 300 + 80 × (8) = 300 + 640 = 940 이다."
+        }
+      ]
+    }
+  ],
+  "skipCheck": {
+    "intro": "본문에 없는 다른 수로 묻습니다. 종이에 적어 가며 풀어도 됩니다.",
+    "goals": [
+      {
+        "id": "g1",
+        "kind": "perform",
+        "label": "글자가 든 식에서 글자 자리에 수를 넣어 값 구하기",
+        "scenes": [
+          "s2",
+          "s3",
+          "s4",
+          "s5",
+          "s6"
+        ],
+        "items": [
+          {
+            "id": "k1",
+            "work": [
+              "procedure"
+            ],
+            "knowledge": [
+              "procedure"
+            ],
+            "prompt": "n = 8 일 때 7n − 3 의 값은 얼마인가?",
+            "answer": {
+              "kind": "number",
+              "value": 53
+            },
+            "misconceptions": [
+              {
+                "match": {
+                  "kind": "number",
+                  "value": 75
+                },
+                "feedback": "7n 에서 7 과 n 에 넣은 수 8 을 이어 붙여 78 로 읽었습니다. 수와 글자가 붙어 있으면 곱셈이므로 7 × 8 로 읽습니다."
+              },
+              {
+                "match": {
+                  "kind": "number",
+                  "value": 35
+                },
+                "feedback": "뺄셈을 곱셈보다 먼저 계산했습니다. 괄호가 없으면 곱셈을 먼저 계산하고, 덧셈 · 뺄셈은 그다음에 합니다."
+              }
+            ],
+            "solution": "n 에 8 을 넣으면 7 × (8) − 3 이다. 곱셈 먼저: 7 × 8 = 56, 그다음 56 − 3 = 53.",
+            "form": "single"
+          },
+          {
+            "id": "k2",
+            "work": [
+              "procedure"
+            ],
+            "knowledge": [
+              "procedure",
+              "concept"
+            ],
+            "prompt": "n = 7 일 때 3(n + 2) 의 값은 어느 것인가?",
+            "answer": {
+              "kind": "choice",
+              "options": [
+                {
+                  "id": "nobracket",
+                  "label": "23"
+                },
+                {
+                  "id": "forgot",
+                  "label": "9"
+                },
+                {
+                  "id": "concat",
+                  "label": "39"
+                },
+                {
+                  "id": "right",
+                  "label": "27"
+                }
+              ],
+              "value": "right"
+            },
+            "misconceptions": [
+              {
+                "match": {
+                  "kind": "choice",
+                  "value": "nobracket"
+                },
+                "feedback": "괄호 안을 먼저 계산하지 않고 괄호 밖의 곱셈부터 했습니다. 괄호가 있으면 괄호 안을 먼저 계산합니다."
+              },
+              {
+                "match": {
+                  "kind": "choice",
+                  "value": "forgot"
+                },
+                "feedback": "괄호 안의 값만 구하고 괄호 앞의 수를 곱하지 않았습니다. 수 바로 뒤의 괄호는 곱셈이므로 그 수를 곱합니다."
+              },
+              {
+                "match": {
+                  "kind": "choice",
+                  "value": "concat"
+                },
+                "feedback": "3 과 n 에 넣은 수 7 을 이어 붙여 읽었습니다. 수 바로 뒤의 괄호도 곱셈이므로 3 에 괄호 안의 값을 곱합니다."
+              }
+            ],
+            "solution": "n 에 7 을 넣으면 3 × ((7) + 2) 이다. 괄호 안 먼저: 7 + 2 = 9, 그다음 3 × 9 = 27.",
+            "form": "bracket"
+          }
+        ]
+      }
+    ]
+  },
+  "preCheck": {
+    "intro": "글자가 든 식에서 글자에 수를 넣어 값을 구하는 문제를 세 개 풉니다. 종이에 적어 가며 풀어도 되고, 모르면 ‘모르겠다’를 눌러도 됩니다.",
+    "items": [
+      {
+        "id": "pc1",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "n = 6 일 때 3n + 4 의 값은 얼마인가?",
+        "answer": {
+          "kind": "number",
+          "value": 22
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 40
+            },
+            "feedback": "3n 에서 3 과 n 에 넣은 수 6 을 이어 붙여 36 으로 읽었습니다. 수와 글자가 붙어 있으면 곱셈이므로 3 × 6 으로 읽습니다."
+          },
+          {
+            "match": {
+              "kind": "number",
+              "value": 30
+            },
+            "feedback": "덧셈을 곱셈보다 먼저 계산했습니다. 괄호가 없으면 곱셈을 먼저 계산하고, 덧셈 · 뺄셈은 그다음에 합니다."
+          }
+        ],
+        "solution": "n 에 6 을 넣으면 3 × (6) + 4 이다. 곱셈 먼저: 3 × 6 = 18, 그다음 18 + 4 = 22."
+      },
+      {
+        "id": "pc2",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure",
+          "concept"
+        ],
+        "prompt": "n = 5 일 때 2(n + 4) 의 값은 어느 것인가?",
+        "answer": {
+          "kind": "choice",
+          "options": [
+            {
+              "id": "right",
+              "label": "18"
+            },
+            {
+              "id": "nobracket",
+              "label": "14"
+            },
+            {
+              "id": "forgot",
+              "label": "9"
+            },
+            {
+              "id": "concat",
+              "label": "29"
+            }
+          ],
+          "value": "right"
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "choice",
+              "value": "nobracket"
+            },
+            "feedback": "괄호 안을 먼저 계산하지 않고 괄호 밖의 곱셈부터 했습니다. 괄호가 있으면 괄호 안을 먼저 계산합니다."
+          },
+          {
+            "match": {
+              "kind": "choice",
+              "value": "forgot"
+            },
+            "feedback": "괄호 안의 값만 구하고 괄호 앞의 수를 곱하지 않았습니다. 수 바로 뒤의 괄호는 곱셈이므로 그 수를 곱합니다."
+          },
+          {
+            "match": {
+              "kind": "choice",
+              "value": "concat"
+            },
+            "feedback": "2 와 n 에 넣은 수 5 를 이어 붙여 읽었습니다. 수 바로 뒤의 괄호도 곱셈이므로 2 에 괄호 안의 값을 곱합니다."
+          }
+        ],
+        "solution": "n 에 5 를 넣으면 2 × ((5) + 4) 이다. 괄호 안 먼저: 5 + 4 = 9, 그다음 2 × 9 = 18."
+      },
+      {
+        "id": "pc3",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "n = 7 일 때 3 + 2(n − 1) 의 값은 얼마인가?",
+        "answer": {
+          "kind": "number",
+          "value": 15
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 16
+            },
+            "feedback": "괄호 안을 먼저 계산하지 않고 괄호 밖의 곱셈부터 했습니다. 괄호가 있으면 괄호 안을 먼저 계산합니다."
+          },
+          {
+            "match": {
+              "kind": "number",
+              "value": 30
+            },
+            "feedback": "덧셈을 곱셈보다 먼저 계산했습니다. 2 는 괄호 안의 값에 곱하고, 그 곱을 3 에 더합니다."
+          }
+        ],
+        "solution": "n 에 7 을 넣으면 3 + 2 × ((7) − 1) 이다. 괄호 안 먼저: 7 − 1 = 6, 곱셈: 2 × 6 = 12, 덧셈: 3 + 12 = 15.",
+        "goals": [
+          "g1"
+        ]
+      }
+    ]
+  },
+  "delayedCheck": {
+    "intro": "앞에서 한 방법으로 풀 수 있는 문제입니다. 종이에 적어 가며 풀어도 됩니다.",
+    "items": [
+      {
+        "id": "dc1",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "n = 9 일 때 5n + 6 의 값은 얼마인가?",
+        "answer": {
+          "kind": "number",
+          "value": 51
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 65
+            },
+            "feedback": "5n 에서 5 와 n 에 넣은 수 9 를 이어 붙여 59 로 읽었습니다. 수와 글자가 붙어 있으면 곱셈이므로 5 × 9 로 읽습니다."
+          },
+          {
+            "match": {
+              "kind": "number",
+              "value": 75
+            },
+            "feedback": "덧셈을 곱셈보다 먼저 계산했습니다. 괄호가 없으면 곱셈을 먼저 계산하고, 덧셈 · 뺄셈은 그다음에 합니다."
+          }
+        ],
+        "solution": "n 에 9 를 넣으면 5 × (9) + 6 이다. 곱셈 먼저: 5 × 9 = 45, 그다음 45 + 6 = 51."
+      },
+      {
+        "id": "dc2",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure",
+          "concept"
+        ],
+        "prompt": "n = 4 일 때 6(n + 3) 의 값은 어느 것인가?",
+        "answer": {
+          "kind": "choice",
+          "options": [
+            {
+              "id": "nobracket",
+              "label": "27"
+            },
+            {
+              "id": "forgot",
+              "label": "7"
+            },
+            {
+              "id": "right",
+              "label": "42"
+            },
+            {
+              "id": "concat",
+              "label": "67"
+            }
+          ],
+          "value": "right"
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "choice",
+              "value": "nobracket"
+            },
+            "feedback": "괄호 안을 먼저 계산하지 않고 괄호 밖의 곱셈부터 했습니다. 괄호가 있으면 괄호 안을 먼저 계산합니다."
+          },
+          {
+            "match": {
+              "kind": "choice",
+              "value": "forgot"
+            },
+            "feedback": "괄호 안의 값만 구하고 괄호 앞의 수를 곱하지 않았습니다. 수 바로 뒤의 괄호는 곱셈이므로 그 수를 곱합니다."
+          },
+          {
+            "match": {
+              "kind": "choice",
+              "value": "concat"
+            },
+            "feedback": "6 과 n 에 넣은 수 4 를 이어 붙여 읽었습니다. 수 바로 뒤의 괄호도 곱셈이므로 6 에 괄호 안의 값을 곱합니다."
+          }
+        ],
+        "solution": "n 에 4 를 넣으면 6 × ((4) + 3) 이다. 괄호 안 먼저: 4 + 3 = 7, 그다음 6 × 7 = 42.",
+        "goals": [
+          "g1"
+        ]
+      },
+      {
+        "id": "dc3",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "n = 10 일 때 6 + 4(n − 2) 의 값은 얼마인가?",
+        "answer": {
+          "kind": "number",
+          "value": 38
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 44
+            },
+            "feedback": "괄호 안을 먼저 계산하지 않고 괄호 밖의 곱셈부터 했습니다. 괄호가 있으면 괄호 안을 먼저 계산합니다."
+          },
+          {
+            "match": {
+              "kind": "number",
+              "value": 80
+            },
+            "feedback": "덧셈을 곱셈보다 먼저 계산했습니다. 4 는 괄호 안의 값에 곱하고, 그 곱을 6 에 더합니다."
+          }
+        ],
+        "solution": "n 에 10 을 넣으면 6 + 4 × ((10) − 2) 이다. 괄호 안 먼저: 10 − 2 = 8, 곱셈: 4 × 8 = 32, 덧셈: 6 + 32 = 38.",
+        "goals": [
+          "g1"
+        ]
+      }
+    ]
+  },
+  "review": {
+    "minutes": 5,
+    "items": [
+      {
+        "id": "rv1",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "n = 6 일 때 7n + 2 의 값은 얼마인가?",
+        "answer": {
+          "kind": "number",
+          "value": 44
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 78
+            },
+            "feedback": "7n 에서 7 과 n 에 넣은 수 6 을 이어 붙여 76 으로 읽었습니다. 수와 글자가 붙어 있으면 곱셈이므로 7 × 6 으로 읽습니다."
+          },
+          {
+            "match": {
+              "kind": "number",
+              "value": 56
+            },
+            "feedback": "덧셈을 곱셈보다 먼저 계산했습니다. 괄호가 없으면 곱셈을 먼저 계산하고, 덧셈 · 뺄셈은 그다음에 합니다."
+          }
+        ],
+        "feedback": "n 에 6 을 넣으면 7 × (6) + 2 이다. 곱셈 먼저: 7 × 6 = 42, 그다음 42 + 2 = 44.",
+        "goal": "g1"
+      },
+      {
+        "id": "rv2",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "n = 5 일 때 9n − 4 의 값은 얼마인가?",
+        "answer": {
+          "kind": "number",
+          "value": 41
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 91
+            },
+            "feedback": "9n 에서 9 와 n 에 넣은 수 5 를 이어 붙여 95 로 읽었습니다. 수와 글자가 붙어 있으면 곱셈이므로 9 × 5 로 읽습니다."
+          },
+          {
+            "match": {
+              "kind": "number",
+              "value": 9
+            },
+            "feedback": "뺄셈을 곱셈보다 먼저 계산했습니다. 괄호가 없으면 곱셈을 먼저 계산하고, 덧셈 · 뺄셈은 그다음에 합니다."
+          }
+        ],
+        "feedback": "n 에 5 를 넣으면 9 × (5) − 4 이다. 곱셈 먼저: 9 × 5 = 45, 그다음 45 − 4 = 41.",
+        "goal": "g1"
+      },
+      {
+        "id": "rv3",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "n = 7 일 때 4(n + 5) 의 값은 얼마인가?",
+        "answer": {
+          "kind": "number",
+          "value": 48
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 33
+            },
+            "feedback": "괄호 안을 먼저 계산하지 않고 괄호 밖의 곱셈부터 했습니다. 괄호가 있으면 괄호 안을 먼저 계산합니다."
+          },
+          {
+            "match": {
+              "kind": "number",
+              "value": 12
+            },
+            "feedback": "괄호 안의 값만 구하고 괄호 앞의 수를 곱하지 않았습니다. 수 바로 뒤의 괄호는 곱셈이므로 그 수를 곱합니다."
+          }
+        ],
+        "feedback": "n 에 7 을 넣으면 4 × ((7) + 5) 이다. 괄호 안 먼저: 7 + 5 = 12, 그다음 4 × 12 = 48.",
+        "goal": "g1"
+      },
+      {
+        "id": "rv4",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure",
+          "concept"
+        ],
+        "prompt": "n = 4 일 때 8 + 5(n − 1) 의 값은 어느 것인가?",
+        "answer": {
+          "kind": "choice",
+          "options": [
+            {
+              "id": "nobracket",
+              "label": "27"
+            },
+            {
+              "id": "right",
+              "label": "23"
+            },
+            {
+              "id": "first",
+              "label": "39"
+            },
+            {
+              "id": "forgot",
+              "label": "11"
+            }
+          ],
+          "value": "right"
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "choice",
+              "value": "nobracket"
+            },
+            "feedback": "괄호 안을 먼저 계산하지 않고 괄호 밖의 곱셈부터 했습니다. 괄호가 있으면 괄호 안을 먼저 계산합니다."
+          },
+          {
+            "match": {
+              "kind": "choice",
+              "value": "first"
+            },
+            "feedback": "덧셈을 곱셈보다 먼저 계산했습니다. 5 는 괄호 안의 값에 곱하고, 그 곱을 8 에 더합니다."
+          },
+          {
+            "match": {
+              "kind": "choice",
+              "value": "forgot"
+            },
+            "feedback": "괄호 안의 값을 8 에 더하기만 하고 괄호 앞의 5 를 곱하지 않았습니다. 수 바로 뒤의 괄호는 곱셈입니다."
+          }
+        ],
+        "feedback": "n 에 4 를 넣으면 8 + 5 × ((4) − 1) 이다. 괄호 안 먼저: 4 − 1 = 3, 곱셈: 5 × 3 = 15, 덧셈: 8 + 15 = 23.",
+        "goal": "g1"
+      },
+      {
+        "id": "rv5",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "prompt": "n = 11 일 때 2n + 15 의 값은 얼마인가?",
+        "answer": {
+          "kind": "number",
+          "value": 37
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 226
+            },
+            "feedback": "2n 에서 2 와 n 에 넣은 수 11 을 이어 붙여 211 로 읽었습니다. 수와 글자가 붙어 있으면 곱셈이므로 2 × 11 로 읽습니다."
+          },
+          {
+            "match": {
+              "kind": "number",
+              "value": 52
+            },
+            "feedback": "덧셈을 곱셈보다 먼저 계산했습니다. 괄호가 없으면 곱셈을 먼저 계산하고, 덧셈 · 뺄셈은 그다음에 합니다."
+          }
+        ],
+        "feedback": "n 에 11 을 넣으면 2 × (11) + 15 이다. 곱셈 먼저: 2 × 11 = 22, 그다음 22 + 15 = 37.",
+        "goal": "g1"
+      },
+      {
+        "id": "rv6",
+        "work": [
+          "procedure",
+          "integrate"
+        ],
+        "knowledge": [
+          "procedure",
+          "concept"
+        ],
+        "goal": "g1",
+        "prompt": "한 상자에 연필이 9 자루씩 들어 있다. 상자 수를 b 라 하면 연필은 모두 9b 자루이다. b = 7 일 때 연필은 모두 몇 자루인가?",
+        "answer": {
+          "kind": "number",
+          "value": 63,
+          "unit": "자루"
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "number",
+              "value": 97
+            },
+            "feedback": "9 와 b 에 넣은 수 7 을 이어 붙여 97 로 읽었습니다. 수와 글자가 붙어 있으면 곱셈이므로 9 × 7 입니다."
+          },
+          {
+            "match": {
+              "kind": "number",
+              "value": 16
+            },
+            "feedback": "9 와 7 을 더했습니다. 수와 글자가 붙어 있는 9b 는 더하기가 아니라 곱셈입니다."
+          }
+        ],
+        "feedback": "b 자리에 7 을 넣으면 9 × (7) = 63 이다."
+      }
+    ]
+  }
+}

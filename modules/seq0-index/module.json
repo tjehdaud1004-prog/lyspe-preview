@@ -1,0 +1,234 @@
+{
+  "id": "seq0-index",
+  "next": "seq0-steps",
+  "version": "1.02",
+  "kind": "pairs",
+  "shuffleOptions": true,
+  "order": 6,
+  "needs": ["seq0-down"],
+  "title": "수열 첫걸음 ⑥ 몇째 항을 aₙ 으로 적기",
+  "centralQuestion": "늘어놓은 수 하나하나를 a₁, a₂, a₃ … 처럼 짧은 기호로 적고 읽을 수 있고, aₙ 이 ‘n째 자리의 수’라는 것을 아는가?",
+  "prerequisites": ["수를 차례대로 세고, 늘어놓은 수에서 몇째 자리의 수를 짚을 수 있다."],
+  "ai": {
+    "scope": {
+      "in": "수열의 항을 a₁, a₃, aₙ 같은 기호로 적고 읽는 방법, 아래 첨자와 자리 번호, 자리 번호를 정하지 않고 가리키는 글자 n",
+      "adjacent": ["수열, 항, 첫째항, 몇째 항의 뜻 다시 설명하기","이 화면의 사용 방법","기호를 한국어로 읽는 법"]
+    }
+  },
+  "figures": {
+    "seq-symbols": {
+      "kind": "table",
+      "caption": "5, 9, 14, 20 의 기호와 자리와 놓인 수",
+      "columns": ["기호","자리","놓인 수"],
+      "rows": [
+        ["a₁","첫째 자리","5"],
+        ["a₂","둘째 자리","9"],
+        ["a₃","셋째 자리","14"],
+        ["a₄","넷째 자리","20"]
+      ]
+    },
+    "seq-n": {
+      "kind": "table",
+      "caption": "3, 6, 9, 12, 15 에서 n 에 넣는 수와 기호와 놓인 수",
+      "columns": ["n 에 넣는 수","기호","놓인 수"],
+      "rows": [
+        ["1","a₁","3"],
+        ["2","a₂","6"],
+        ["3","a₃","9"],
+        ["4","a₄","12"],
+        ["5","a₅","15"]
+      ]
+    }
+  },
+  "pairs": [
+    {"id":"a1","term":"a₁","meaning":"수열의 첫째항을 적는 기호"},
+    {"id":"a3","term":"a₃","meaning":"수열의 셋째 항을 적는 기호 — 아래 작은 수가 자리 번호"},
+    {"id":"n","term":"n","meaning":"몇째 자리인지를 아직 정하지 않고 가리키는 글자(자리 번호)"},
+    {"id":"an","term":"aₙ","meaning":"수열의 n째 항 — n 에 자리 번호를 넣어 읽는다"},
+    {"id":"sub","term":"아래 첨자","meaning":"a 오른쪽 아래에 작게 적은 자리 번호"}
+  ],
+  "scenes": [
+    {
+      "id": "s2",
+      "title": "항을 기호로 적기",
+      "focus": ["retrieve"],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s2t1",
+          "units": [
+            "5, 9, 14, 20 의 첫째항 5 는 기호 a₁ 로 적을 수 있습니다.",
+            "글자 a 는 항을 가리키고, 오른쪽 아래에 작게 적은 1 은 첫째 자리라는 뜻입니다.",
+            "셋째 항 14 는 a₃ 으로 적는데, 3 은 값이 아니라 몇째 자리인지를 알려 주는 자리 번호입니다."
+          ]
+        },
+        {
+          "type": "figure",
+          "id": "s2f1",
+          "figure": "seq-symbols",
+          "alt": "5, 9, 14, 20 의 기호를 적은 표. a₁ 은 첫째 자리의 5, a₂ 는 둘째 자리의 9, a₃ 은 셋째 자리의 14, a₄ 는 넷째 자리의 20 이다."
+        },
+        {
+          "type": "round",
+          "id": "s2r1",
+          "mode": "recall",
+          "work": ["retrieve"],
+          "knowledge": ["fact"],
+          "prompt": "뜻을 가리고 떠올려 답합니다. 기호를 적을 때 아래 작은 수는 붙여 적어도 됩니다. 예를 들어 a₈ 은 a8 이라고 적습니다. 수를 적는 문항은 숫자로 적고, 낱말을 적는 문항은 낱말만 적어도 됩니다.",
+          "requeue": {"gap":2,"max":3},
+          "items": [
+            {"id":"r2-a1-a","pair":"a1","cue":"수열 8, 12, 19, 27 의 첫째항을 기호로 적으세요.","answer":{"kind":"term","value":"a₁","accept":["a1","a_1"]},"misconceptions":[{"match":{"kind":"term","value":"a"},"feedback":"a 만으로는 몇째 항인지 알 수 없습니다. 첫째 자리를 알려 주는 아래 첨자가 함께 필요합니다."},{"match":{"kind":"term","value":"8"},"feedback":"8 은 첫째항의 값입니다. 이 물음은 첫째항을 가리키는 기호를 묻습니다."},{"match":{"kind":"term","value":"1"},"feedback":"1 은 첫째 자리의 번호입니다. 항을 가리키는 기호는 a 에 그 번호를 아래 첨자로 붙여 만듭니다."},{"match":{"kind":"term","value":"a8"},"feedback":"a₈ 은 여덟째 항이라는 뜻입니다. 8 은 첫째항의 값이어서, 아래 첨자에 쓸 수 없습니다. 아래 첨자에는 자리 번호를 적습니다."},{"match":{"kind":"term","value":"a_8"},"feedback":"a₈ 은 여덟째 항이라는 뜻입니다. 8 은 첫째항의 값이어서, 아래 첨자에 쓸 수 없습니다. 아래 첨자에는 자리 번호를 적습니다."},{"match":{"kind":"term","value":"a₈"},"feedback":"a₈ 은 여덟째 항이라는 뜻입니다. 8 은 첫째항의 값이어서, 아래 첨자에 쓸 수 없습니다. 아래 첨자에는 자리 번호를 적습니다."}],"why":"첫째항은 a₁ 이라고 적습니다. 아래 첨자 1 은 첫째 자리라는 뜻입니다."},
+            {"id":"r2-a3-a","pair":"a3","cue":"수열 4, 9, 15, 22 의 셋째 항을 기호로 적으세요.","answer":{"kind":"term","value":"a₃","accept":["a3","a_3"]},"misconceptions":[{"match":{"kind":"term","value":"a"},"feedback":"a 만으로는 몇째 항인지 알 수 없습니다. 셋째 자리를 알려 주는 아래 첨자가 함께 필요합니다."},{"match":{"kind":"term","value":"3"},"feedback":"3 은 셋째 자리의 번호입니다. 항을 가리키는 기호는 a 에 그 번호를 아래 첨자로 붙여 만듭니다."},{"match":{"kind":"term","value":"15"},"feedback":"15 는 셋째 항의 값입니다. 이 물음은 셋째 항을 가리키는 기호를 묻습니다."},{"match":{"kind":"term","value":"a15"},"feedback":"a₁₅ 는 열다섯째 항이라는 뜻입니다. 15 는 셋째 항의 값이어서, 아래 첨자에 쓸 수 없습니다."},{"match":{"kind":"term","value":"a_15"},"feedback":"a₁₅ 는 열다섯째 항이라는 뜻입니다. 15 는 셋째 항의 값이어서, 아래 첨자에 쓸 수 없습니다."},{"match":{"kind":"term","value":"a₁₅"},"feedback":"a₁₅ 는 열다섯째 항이라는 뜻입니다. 15 는 셋째 항의 값이어서, 아래 첨자에 쓸 수 없습니다."},{"match":{"kind":"term","value":"a2"},"feedback":"a₂ 는 둘째 항을 가리킵니다. 셋째 항은 한 칸 뒤입니다."},{"match":{"kind":"term","value":"a_2"},"feedback":"a₂ 는 둘째 항을 가리킵니다. 셋째 항은 한 칸 뒤입니다."},{"match":{"kind":"term","value":"a₂"},"feedback":"a₂ 는 둘째 항을 가리킵니다. 셋째 항은 한 칸 뒤입니다."}],"why":"셋째 항은 a₃ 이라고 적습니다. 아래 첨자 3 은 셋째 자리라는 뜻입니다."},
+            {"id":"r2-a1-b","pair":"a1","cue":"수열 11, 16, 22, 29 에서 a₁ 은 얼마인가요?","answer":{"kind":"number","value":11},"misconceptions":[{"match":{"kind":"number","value":1},"feedback":"1 은 아래 첨자, 곧 자리 번호입니다. a₁ 은 첫째 자리에 놓인 수가 얼마인지를 묻습니다."},{"match":{"kind":"number","value":16},"feedback":"16 은 둘째 자리에 놓인 a₂ 입니다. a₁ 은 한 칸 앞입니다."}],"why":"a₁ 은 첫째항, 곧 맨 앞에 놓인 수입니다. 이 수열에서는 11 입니다."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2b",
+      "title": "작게 적는 방식의 이름",
+      "focus": ["retrieve"],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s2t2",
+          "units": [
+            "a₃ 에서 a 의 오른쪽 아래에 작게 적은 3 을 아래 첨자라고 합니다."
+          ]
+        },
+        {
+          "type": "round",
+          "id": "s2r2",
+          "mode": "recall",
+          "work": ["retrieve"],
+          "knowledge": ["fact"],
+          "prompt": "방금 읽은 말을 가리고 떠올려 답합니다. 수를 적는 문항은 숫자로 적고, 낱말을 적는 문항은 낱말만 적어도 됩니다.",
+          "requeue": {"gap":2,"max":3},
+          "items": [
+            {"id":"r2-sub-a","pair":"sub","cue":"a₂ 의 2 는 몇째 자리인지를 알려 줍니다. 이렇게 수를 글자 a 의 오른쪽 아래에 작게 적는 방식을 부르는 이름은 무엇인가요?","answer":{"kind":"term","value":"아래 첨자","accept":["첨자","아랫첨자"]},"misconceptions":[{"match":{"kind":"term","value":"자리 번호"},"feedback":"자리 번호는 그 작은 수가 뜻하는 것이고, 아래 첨자는 그렇게 아래에 작게 적는 방식의 이름입니다. 이 물음은 이름을 묻습니다."},{"match":{"kind":"term","value":"지수"},"feedback":"지수는 글자의 오른쪽 위에 작게 적는 수입니다. 아래쪽에 적는 수는 다른 낱말로 부릅니다."}],"why":"a 의 오른쪽 아래에 작게 적은 수를 아래 첨자라고 합니다. 이 수가 몇째 항인지를 알려 줍니다."},
+            {"id":"r2-a3-b","pair":"a3","cue":"수열 6, 10, 15, 21, 28 에서 a₃ 은 얼마인가요?","answer":{"kind":"number","value":15},"misconceptions":[{"match":{"kind":"number","value":3},"feedback":"3 은 아래 첨자, 곧 자리 번호입니다. a₃ 은 셋째 자리에 놓인 수가 얼마인지를 묻습니다."},{"match":{"kind":"number","value":10},"feedback":"10 은 둘째 자리에 놓인 a₂ 입니다. a₃ 은 한 칸 뒤입니다."},{"match":{"kind":"number","value":21},"feedback":"21 은 넷째 자리에 놓인 a₄ 입니다. a₃ 은 한 칸 앞입니다."},{"match":{"kind":"number","value":18},"feedback":"18 은 첫째항 6 에 3 을 곱한 값입니다. a₃ 은 a 에 3 을 곱한 수가 아니라, 셋째 자리에 놓인 항입니다."}],"why":"a₃ 은 셋째 항, 곧 앞에서 세 번째 자리에 놓인 수입니다. 이 수열에서는 15 입니다."},
+            {"id":"r2-sub-b","pair":"sub","cue":"a₄ 에서 아래 첨자 4 가 알려 주는 것은 어느 것인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"a 에 4 를 곱한 수라는 뜻"},{"id":"b","label":"넷째 자리에 놓인 항이라는 뜻"},{"id":"c","label":"넷째 항의 값이 4 라는 뜻"},{"id":"d","label":"수열에 항이 4 개 있다는 뜻"}],"value":"b"},"misconceptions":[{"match":{"kind":"choice","value":"a"},"feedback":"a₄ 는 곱셈이 아닙니다. 4 는 곱하는 수가 아니라 넷째 자리라는 뜻의 자리 번호입니다."},{"match":{"kind":"choice","value":"c"},"feedback":"4 는 값이 아니라 자리 번호입니다. 넷째 항의 값은 수열의 넷째 자리에 놓인 수입니다."},{"match":{"kind":"choice","value":"d"},"feedback":"4 는 항의 개수가 아니라 몇째 자리인지를 알려 주는 자리 번호입니다."}],"why":"아래 첨자는 몇째 자리인지를 알려 주는 자리 번호입니다. a₄ 는 앞에서 네 번째 자리에 놓인 항입니다."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "몇째 항이든 가리키기",
+      "focus": ["retrieve"],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s3t1",
+          "units": [
+            "3, 6, 9, 12, 15 에서 a₂ 는 6 이고 a₄ 는 12 입니다.",
+            "자리 번호를 아직 정하지 않고 말할 때는 글자 n 을 써서, n째 항을 aₙ 이라고 적습니다.",
+            "aₙ 의 n 에 4 를 넣으면 a₄ 가 되어 넷째 항을 가리킵니다."
+          ]
+        },
+        {
+          "type": "figure",
+          "id": "s3f1",
+          "figure": "seq-n",
+          "alt": "3, 6, 9, 12, 15 에서 n 에 넣는 수를 적은 표. n 이 1 이면 a₁ 로 3, 2 이면 a₂ 로 6, 3 이면 a₃ 으로 9, 4 이면 a₄ 로 12, 5 이면 a₅ 로 15 이다."
+        },
+        {
+          "type": "round",
+          "id": "s3r1",
+          "mode": "recall",
+          "work": ["retrieve"],
+          "knowledge": ["fact"],
+          "prompt": "방금 읽은 말을 가리고 떠올려 답합니다. 기호는 a8 처럼 붙여 적어도 됩니다. 수를 적는 문항은 숫자로 적습니다.",
+          "requeue": {"gap":2,"max":3},
+          "items": [
+            {"id":"r3-n-a","pair":"n","cue":"수열의 몇째 항이든 가리킬 수 있도록, 자리 번호를 아직 정하지 않은 채 대신 쓰는 글자는 무엇인가요?","answer":{"kind":"term","value":"n"},"misconceptions":[{"match":{"kind":"term","value":"a"},"feedback":"a 는 항을 가리키는 글자입니다. 자리 번호를 대신하는 글자는 따로 있습니다."},{"match":{"kind":"term","value":"x"},"feedback":"x 도 문자이지만, 수열에서 자리 번호를 정하지 않고 가리킬 때는 n 을 씁니다."}],"why":"자리 번호를 아직 정하지 않고 가리킬 때는 글자 n 을 씁니다. n 에 1, 2, 3 같은 자리 번호를 넣으면 몇째 자리인지가 정해집니다."},
+            {"id":"r3-an-a","pair":"an","cue":"수열의 n째 항을 기호로 적으세요.","answer":{"kind":"term","value":"aₙ","accept":["an","a_n"]},"misconceptions":[{"match":{"kind":"term","value":"n"},"feedback":"n 은 자리 번호를 대신하는 글자이고, 항을 가리키려면 글자 a 가 함께 있어야 합니다."},{"match":{"kind":"term","value":"a"},"feedback":"a 만으로는 몇째 항인지 알 수 없습니다. n째 자리를 알려 주는 아래 첨자가 함께 필요합니다."}],"why":"n째 항은 aₙ 이라고 적습니다. n 에 자리 번호를 넣으면 그 자리의 항이 됩니다."},
+            {"id":"r3-a1-a","pair":"a1","cue":"수열 7, 12, 18, 25 의 첫째항을 가리키는 기호는 어느 것인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"a₁"},{"id":"b","label":"a₇"},{"id":"c","label":"1"},{"id":"d","label":"aₙ"}],"value":"a"},"misconceptions":[{"match":{"kind":"choice","value":"b"},"feedback":"7 은 이 수열의 첫째항의 값입니다. 아래 첨자에는 값이 아니라 자리 번호를 적습니다."},{"match":{"kind":"choice","value":"c"},"feedback":"1 은 첫째 자리의 번호일 뿐입니다. 항을 가리키려면 a 에 번호를 아래 첨자로 붙인 기호가 필요합니다."},{"match":{"kind":"choice","value":"d"},"feedback":"aₙ 은 자리를 정하지 않은 n째 항입니다. 첫째항은 n 에 1 을 넣은 경우이므로 a₁ 이라고 적습니다."}],"why":"첫째항은 a₁ 이라고 적습니다. 7 은 그 자리에 놓인 값이어서 아래 첨자에 쓰지 않습니다."},
+            {"id":"r3-n-b","pair":"n","cue":"aₙ 에서 n 은 무엇을 뜻하는 글자인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"항이 모두 몇 개인지를 나타내려고 둔 글자"},{"id":"b","label":"맨 앞 첫째항의 값을 나타내려고 둔 글자"},{"id":"c","label":"모든 항에 곱해 주는 수를 나타내려고 둔 글자"},{"id":"d","label":"몇째 자리인지를 나타내려고 둔 글자"}],"value":"d"},"misconceptions":[{"match":{"kind":"choice","value":"a"},"feedback":"n 은 항의 개수가 아닙니다. aₙ 의 n 은 몇째 자리인지를 가리키는 자리 번호입니다."},{"match":{"kind":"choice","value":"b"},"feedback":"첫째항의 값은 수열마다 정해진 수입니다. n 은 값이 아니라 자리 번호를 대신하는 글자입니다."},{"match":{"kind":"choice","value":"c"},"feedback":"n 은 곱하는 수가 아닙니다. aₙ 은 한 항을 가리키는 기호이고 n 은 그 자리를 가리킵니다."}],"why":"aₙ 의 n 은 몇째 항인지를 아직 정하지 않고 가리키는 자리 번호입니다. 1, 2, 3 같은 수를 넣으면 자리가 정해집니다."},
+            {"id":"r3-an-b","pair":"an","cue":"수열 2, 7, 12, 17, 22 에서 n 이 5 일 때 aₙ 은 얼마인가요?","answer":{"kind":"number","value":22},"misconceptions":[{"match":{"kind":"number","value":5},"feedback":"5 는 n 에 넣은 자리 번호입니다. aₙ 은 그 자리에 놓인 수가 얼마인지를 묻습니다."},{"match":{"kind":"number","value":17},"feedback":"17 은 넷째 자리에 놓인 a₄ 입니다. n 이 5 이면 다섯째 자리의 항입니다."}],"why":"n 이 5 이면 aₙ 은 a₅, 곧 다섯째 항입니다. 이 수열에서는 22 입니다."},
+            {"id":"r3-a3-a","pair":"a3","cue":"수열 9, 13, 18, 24 에서 18 이 놓인 항을 기호로 적으세요.","answer":{"kind":"term","value":"a₃","accept":["a3","a_3"]},"misconceptions":[{"match":{"kind":"term","value":"18"},"feedback":"18 은 그 항의 값입니다. 물음은 그 항이 몇째 자리인지를 보여 주는 기호를 묻습니다."},{"match":{"kind":"term","value":"3"},"feedback":"3 은 자리 번호입니다. 항을 가리키는 기호는 a 에 그 번호를 아래 첨자로 붙여 만듭니다."},{"match":{"kind":"term","value":"a18"},"feedback":"a₁₈ 은 열여덟째 항이라는 뜻입니다. 18 은 값이어서 아래 첨자에 쓸 수 없습니다."},{"match":{"kind":"term","value":"a_18"},"feedback":"a₁₈ 은 열여덟째 항이라는 뜻입니다. 18 은 값이어서 아래 첨자에 쓸 수 없습니다."},{"match":{"kind":"term","value":"a₁₈"},"feedback":"a₁₈ 은 열여덟째 항이라는 뜻입니다. 18 은 값이어서 아래 첨자에 쓸 수 없습니다."},{"match":{"kind":"term","value":"a2"},"feedback":"a₂ 는 둘째 항(13)을 가리킵니다. 18 은 한 칸 뒤에 놓여 있습니다."},{"match":{"kind":"term","value":"a_2"},"feedback":"a₂ 는 둘째 항(13)을 가리킵니다. 18 은 한 칸 뒤에 놓여 있습니다."},{"match":{"kind":"term","value":"a₂"},"feedback":"a₂ 는 둘째 항(13)을 가리킵니다. 18 은 한 칸 뒤에 놓여 있습니다."}],"why":"18 은 앞에서 세 번째 자리에 놓여 있어서 셋째 항이고, 기호로는 a₃ 이라고 적습니다."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "섞어 떠올리기와 헷갈리는 짝",
+      "focus": ["retrieve","discriminate"],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s4t1",
+          "units": [
+            "10, 7, 4, 1, −2 에서 a₁ 은 10 이고 a₅ 는 −2 입니다.",
+            "같은 기호 a₄ 라도 수열이 다르면 값이 다릅니다.",
+            "10, 7, 4, 1, −2 에서 a₄ 는 1 이지만, 5, 9, 14, 20 에서 a₄ 는 20 입니다.",
+            "자리 번호를 먼저 읽고, 그다음에 그 자리의 수를 찾습니다."
+          ]
+        },
+        {
+          "type": "round",
+          "id": "s4r1",
+          "mode": "recall",
+          "work": ["retrieve","discriminate"],
+          "knowledge": ["fact","concept"],
+          "prompt": "앞에서 읽은 말을 섞어, 새 줄로 떠올려 답합니다. 기호는 a8 처럼 붙여 적어도 됩니다. 수를 적는 문항은 숫자로, 낱말을 적는 문항은 낱말만 적어도 됩니다.",
+          "requeue": {"gap":2,"max":3},
+          "items": [
+            {"id":"r4-n-a","pair":"n","cue":"몇째 자리인지 아직 정하지 않은 항을 적을 때, 글자 a 의 오른쪽 아래에 숫자 대신 어떤 글자를 쓰나요?","answer":{"kind":"term","value":"n"},"misconceptions":[{"match":{"kind":"term","value":"a"},"feedback":"a 는 항을 가리키는 글자이고, 이미 적혀 있습니다. 묻는 것은 그 오른쪽 아래에 두는 글자입니다."},{"match":{"kind":"term","value":"x"},"feedback":"x 도 문자이지만, 수열에서 자리 번호를 정하지 않고 가리킬 때는 n 을 씁니다."}],"why":"자리 번호를 아직 정하지 않았을 때 아래 첨자에 두는 글자가 n 입니다."},
+            {"id":"r4-a3-a","pair":"a3","cue":"수열 20, 17, 14, 11, 8 에서 a₃ 은 얼마인가요?","answer":{"kind":"number","value":14},"misconceptions":[{"match":{"kind":"number","value":3},"feedback":"3 은 아래 첨자, 곧 자리 번호입니다. a₃ 은 셋째 자리에 놓인 수가 얼마인지를 묻습니다."},{"match":{"kind":"number","value":17},"feedback":"17 은 둘째 자리에 놓인 a₂ 입니다. a₃ 은 한 칸 뒤입니다."},{"match":{"kind":"number","value":11},"feedback":"11 은 넷째 자리에 놓인 a₄ 입니다. a₃ 은 한 칸 앞입니다."},{"match":{"kind":"number","value":60},"feedback":"60 은 첫째항 20 에 3 을 곱한 값입니다. a₃ 은 곱셈이 아니라 셋째 자리에 놓인 항입니다."}],"why":"수가 줄어드는 수열에서도 a₃ 은 셋째 자리에 놓인 항입니다. 이 수열에서는 14 입니다."},
+            {"id":"r4-sub-a","pair":"sub","cue":"선반 칸마다 b₁, b₂, b₃ 처럼 이름표를 붙였습니다. 이름표 글자 b 의 오른쪽 아래에 수를 작게 적는 그 방식을 부르는 수학 낱말은 무엇인가요?","answer":{"kind":"term","value":"아래 첨자","accept":["첨자","아랫첨자"]},"misconceptions":[{"match":{"kind":"term","value":"자리 번호"},"feedback":"자리 번호는 그 작은 수가 뜻하는 것이고, 아래 첨자는 그렇게 아래에 작게 적는 방식의 이름입니다. 이 물음은 이름을 묻습니다."},{"match":{"kind":"term","value":"지수"},"feedback":"지수는 글자의 오른쪽 위에 작게 적는 수입니다. 아래쪽에 적는 수는 다른 낱말로 부릅니다."}],"why":"글자의 오른쪽 아래에 작게 적은 수는 글자가 달라져도 아래 첨자입니다. 수열에서는 이 수가 몇째 항인지를 알려 줍니다."},
+            {"id":"r4-an-a","pair":"an","cue":"수열의 항 aₙ 을 읽는 말로 알맞은 것은 어느 것인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"n 이라는 값을 가진 항"},{"id":"b","label":"첫째 자리부터 n째 자리까지의 항들"},{"id":"c","label":"n째 자리에 놓인 항"},{"id":"d","label":"n째 자리 바로 뒤에 놓인 항"}],"value":"c"},"misconceptions":[{"match":{"kind":"choice","value":"a"},"feedback":"n 은 값이 아니라 자리 번호입니다. aₙ 은 값이 n 인 항이 아니라 n째 자리에 놓인 항입니다."},{"match":{"kind":"choice","value":"b"},"feedback":"aₙ 은 항 하나를 가리킵니다. 첫째 자리부터 n째 자리까지의 여러 항이 아닙니다."},{"match":{"kind":"choice","value":"d"},"feedback":"aₙ 은 n째 자리 바로 그 항입니다. 그 뒤 자리의 항이 아닙니다."}],"why":"aₙ 은 n째 자리에 놓인 항, 곧 n째 항입니다. n 에 자리 번호를 넣으면 그 자리의 항이 됩니다."},
+            {"id":"r4-a1-a","pair":"a1","cue":"수열 −4, −1, 2, 5 에서 a₁ 은 얼마인가요?","answer":{"kind":"number","value":-4},"misconceptions":[{"match":{"kind":"number","value":1},"feedback":"1 은 아래 첨자, 곧 자리 번호입니다. a₁ 은 첫째 자리에 놓인 수가 얼마인지를 묻습니다."},{"match":{"kind":"number","value":-1},"feedback":"−1 은 둘째 자리에 놓인 a₂ 입니다. a₁ 은 한 칸 앞입니다."}],"why":"값이 0 보다 작아도 a₁ 은 첫째 자리에 놓인 첫째항입니다. 이 수열에서는 −4 입니다."},
+            {"id":"r4-an-b","pair":"an","cue":"수열 4, 6, 9, 13, 18 에서 n 이 4 일 때 aₙ 은 얼마인가요?","answer":{"kind":"number","value":13},"misconceptions":[{"match":{"kind":"number","value":4},"feedback":"4 는 n 에 넣은 자리 번호입니다. aₙ 은 그 자리에 놓인 수가 얼마인지를 묻습니다."},{"match":{"kind":"number","value":9},"feedback":"9 는 셋째 자리에 놓인 a₃ 입니다. n 이 4 이면 넷째 자리의 항입니다."},{"match":{"kind":"number","value":18},"feedback":"18 은 다섯째 자리에 놓인 a₅ 입니다. n 이 4 이면 한 칸 앞입니다."}],"why":"n 이 4 이면 aₙ 은 a₄, 곧 넷째 항입니다. 이 수열에서는 13 입니다."},
+            {"id":"r4-sub-b","pair":"sub","cue":"수열 3, 8, 14, 21 에서 a₂ 는 8 입니다. a₂ 의 아래 첨자 2 와 8 에 대한 설명으로 알맞은 것은 어느 것인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"2 는 그 항의 값이고 8 은 자리 번호이다"},{"id":"b","label":"2 와 8 은 모두 자리 번호를 나타내는 수이다"},{"id":"c","label":"2 는 자리 번호이고 8 은 그 자리의 값이다"},{"id":"d","label":"2 와 8 은 모두 그 항의 값을 나타내는 수이다"}],"value":"c"},"misconceptions":[{"match":{"kind":"choice","value":"a"},"feedback":"두 수가 바뀌었습니다. 아래 첨자 2 가 자리 번호이고 8 이 그 자리에 놓인 값입니다."},{"match":{"kind":"choice","value":"b"},"feedback":"자리 번호는 아래 첨자 2 하나입니다. 8 은 그 자리에 놓인 수, 곧 값입니다."},{"match":{"kind":"choice","value":"d"},"feedback":"아래 첨자 2 는 값이 아니라 자리 번호입니다. 값은 8 하나입니다."}],"why":"아래 첨자 2 는 둘째 자리라는 자리 번호이고, 8 은 둘째 자리에 놓인 항의 값입니다."},
+            {"id":"r4-a3-f","pair":"a3","fresh":true,"cue":"수열 7, 15, 19, 31, 50 에서 a₄ 의 값은 얼마인가요?","answer":{"kind":"number","value":31},"misconceptions":[{"match":{"kind":"number","value":4},"feedback":"4 는 아래 첨자, 곧 자리 번호입니다. a₄ 는 넷째 자리에 놓인 수가 얼마인지를 묻습니다."},{"match":{"kind":"number","value":19},"feedback":"19 는 셋째 자리에 놓인 a₃ 입니다. a₄ 는 한 칸 뒤입니다."},{"match":{"kind":"number","value":50},"feedback":"50 은 다섯째 자리에 놓인 a₅ 입니다. a₄ 는 한 칸 앞입니다."},{"match":{"kind":"number","value":28},"feedback":"28 은 첫째항 7 에 4 를 곱한 값입니다. a₄ 는 곱셈이 아니라 넷째 자리에 놓인 항입니다."}],"why":"a₄ 는 앞에서 네 번째 자리에 놓인 항입니다. 7, 15, 19, 31, 50 에서는 31 입니다."}
+          ]
+        }
+      ]
+    }
+  ],
+  "preCheck": {
+    "intro": "시작하기 전에 세 문항을 풉니다. 모르면 ‘모르겠다’를 누르면 됩니다. 기호의 아래 작은 수는 붙여 적어도 됩니다. 예를 들어 a₈ 은 a8 이라고 적습니다. 수를 적는 문항은 숫자로 적습니다.",
+    "items": [
+      {"id":"pc1","pair":"a1","goals":["g1"],"work":["retrieve"],"knowledge":["fact"],"prompt":"수열 6, 11, 17, 24 의 첫째항을 기호로 적으세요.","answer":{"kind":"term","value":"a₁","accept":["a1","a_1"]},"misconceptions":[{"match":{"kind":"term","value":"a"},"feedback":"a 만으로는 몇째 항인지 알 수 없습니다. 첫째 자리를 알려 주는 아래 첨자가 함께 필요합니다."},{"match":{"kind":"term","value":"6"},"feedback":"6 은 첫째항의 값입니다. 이 물음은 첫째항을 가리키는 기호를 묻습니다."},{"match":{"kind":"term","value":"a6"},"feedback":"a₆ 은 여섯째 항이라는 뜻입니다. 6 은 첫째항의 값이어서 아래 첨자에 쓸 수 없습니다."},{"match":{"kind":"term","value":"a_6"},"feedback":"a₆ 은 여섯째 항이라는 뜻입니다. 6 은 첫째항의 값이어서 아래 첨자에 쓸 수 없습니다."},{"match":{"kind":"term","value":"a₆"},"feedback":"a₆ 은 여섯째 항이라는 뜻입니다. 6 은 첫째항의 값이어서 아래 첨자에 쓸 수 없습니다."}],"solution":"첫째항은 a₁ 이라고 적습니다. 아래 첨자 1 은 첫째 자리라는 뜻입니다."},
+      {"id":"pc2","pair":"a3","goals":["g1"],"work":["retrieve"],"knowledge":["fact"],"prompt":"수열 12, 15, 19, 24 에서 a₃ 은 얼마인가요?","answer":{"kind":"number","value":19},"misconceptions":[{"match":{"kind":"number","value":3},"feedback":"3 은 아래 첨자, 곧 자리 번호입니다. a₃ 은 셋째 자리에 놓인 수가 얼마인지를 묻습니다."},{"match":{"kind":"number","value":15},"feedback":"15 는 둘째 자리에 놓인 a₂ 입니다. a₃ 은 한 칸 뒤입니다."},{"match":{"kind":"number","value":24},"feedback":"24 는 넷째 자리에 놓인 a₄ 입니다. a₃ 은 한 칸 앞입니다."},{"match":{"kind":"number","value":36},"feedback":"36 은 첫째항 12 에 3 을 곱한 값입니다. a₃ 은 곱셈이 아니라 셋째 자리에 놓인 항입니다."}],"solution":"a₃ 은 앞에서 세 번째 자리에 놓인 항입니다. 이 수열에서는 19 입니다."},
+      {"id":"pc3","pair":"an","goals":["g1"],"work":["retrieve"],"knowledge":["fact"],"prompt":"수열 8, 13, 19 의 n째 항을 나타내는 기호는 어느 것인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"aₙ"},{"id":"b","label":"a₁"},{"id":"c","label":"n"},{"id":"d","label":"a"}],"value":"a"},"misconceptions":[{"match":{"kind":"choice","value":"b"},"feedback":"a₁ 은 첫째항만 가리킵니다. 몇째 항이든 가리키려면 아래 첨자에 자리 번호를 정하지 않은 글자를 둡니다."},{"match":{"kind":"choice","value":"c"},"feedback":"n 은 자리 번호를 대신하는 글자일 뿐, 항을 가리키는 기호가 아닙니다. 항을 가리키려면 a 가 함께 있어야 합니다."},{"match":{"kind":"choice","value":"d"},"feedback":"a 만으로는 몇째 항인지 알 수 없습니다. 몇째 자리인지를 알려 주는 아래 첨자가 함께 필요합니다."}],"solution":"n째 항은 aₙ 이라고 적습니다. 아래 첨자 n 이 n째 자리를 가리킵니다."}
+    ]
+  },
+  "skipCheck": {
+    "intro": "본문에 없는 다른 수로 묻습니다. 기호의 아래 작은 수는 붙여 적어도 됩니다.",
+    "goals": [
+      {
+        "id": "g1",
+        "kind": "perform",
+        "label": "수열의 항을 a₁, a₃ 같은 기호로 적고 읽기",
+        "scenes": ["s2","s2b","s3"],
+        "items": [
+          {"id":"k1","form":"symbol-of-term","work":["retrieve"],"knowledge":["fact"],"prompt":"수열 5, 10, 16, 23 에서 16 이 놓인 항을 기호로 적으세요.","answer":{"kind":"term","value":"a₃","accept":["a3","a_3"]},"misconceptions":[{"match":{"kind":"term","value":"16"},"feedback":"16 은 그 항의 값입니다. 물음은 그 항이 몇째 자리인지를 보여 주는 기호를 묻습니다."},{"match":{"kind":"term","value":"3"},"feedback":"3 은 자리 번호입니다. 항을 가리키는 기호는 a 에 그 번호를 아래 첨자로 붙여 만듭니다."},{"match":{"kind":"term","value":"a16"},"feedback":"a₁₆ 은 열여섯째 항이라는 뜻입니다. 16 은 값이어서 아래 첨자에 쓸 수 없습니다."},{"match":{"kind":"term","value":"a_16"},"feedback":"a₁₆ 은 열여섯째 항이라는 뜻입니다. 16 은 값이어서 아래 첨자에 쓸 수 없습니다."},{"match":{"kind":"term","value":"a₁₆"},"feedback":"a₁₆ 은 열여섯째 항이라는 뜻입니다. 16 은 값이어서 아래 첨자에 쓸 수 없습니다."}],"solution":"16 은 앞에서 세 번째 자리에 놓여 있어서 셋째 항이고, 기호로는 a₃ 이라고 적습니다."},
+          {"id":"k2","form":"value-of-symbol","work":["retrieve"],"knowledge":["fact"],"prompt":"수열 30, 24, 18, 12, 6 에서 a₅ 는 얼마인가요?","answer":{"kind":"number","value":6},"misconceptions":[{"match":{"kind":"number","value":5},"feedback":"5 는 아래 첨자, 곧 자리 번호입니다. a₅ 는 다섯째 자리에 놓인 수가 얼마인지를 묻습니다."},{"match":{"kind":"number","value":12},"feedback":"12 는 넷째 자리에 놓인 a₄ 입니다. a₅ 는 한 칸 뒤입니다."}],"solution":"a₅ 는 앞에서 다섯 번째 자리에 놓인 항입니다. 이 수열에서는 6 입니다."},
+          {"id":"k3","form":"sum-of-symbols","work":["retrieve"],"knowledge":["fact"],"prompt":"수열 2, 5, 9, 14 에서 a₂ 와 a₄ 의 합은 얼마인가요?","answer":{"kind":"number","value":19},"misconceptions":[{"match":{"kind":"number","value":6},"feedback":"6 은 자리 번호 2 와 4 를 더한 값입니다. 더하는 것은 그 자리에 놓인 수입니다."},{"match":{"kind":"number","value":14},"feedback":"14 는 a₄ 만 말한 값입니다. a₂ 인 5 도 더해야 합니다."}],"solution":"a₂ 는 둘째 자리의 5 이고 a₄ 는 넷째 자리의 14 입니다. 5 + 14 = 19 입니다."}
+        ]
+      }
+    ]
+  },
+  "delayedCheck": {
+    "intro": "며칠 전에 읽은 말을 다시 떠올려 봅니다. 모르면 ‘모르겠다’를 누르면 됩니다. 기호의 아래 작은 수는 붙여 적어도 됩니다. 예를 들어 a₈ 은 a8 이라고 적습니다. 수를 적는 문항은 숫자로 적습니다.",
+    "items": [
+      {"id":"dc1","pair":"a1","goals":["g1"],"work":["retrieve"],"knowledge":["fact"],"prompt":"수열 14, 19, 25, 32 의 첫째항을 기호로 적으세요.","answer":{"kind":"term","value":"a₁","accept":["a1","a_1"]},"misconceptions":[{"match":{"kind":"term","value":"a"},"feedback":"a 만으로는 몇째 항인지 알 수 없습니다. 첫째 자리를 알려 주는 아래 첨자가 함께 필요합니다."},{"match":{"kind":"term","value":"14"},"feedback":"14 는 첫째항의 값입니다. 이 물음은 첫째항을 가리키는 기호를 묻습니다."},{"match":{"kind":"term","value":"a14"},"feedback":"a₁₄ 는 열넷째 항이라는 뜻입니다. 14 는 첫째항의 값이어서 아래 첨자에 쓸 수 없습니다."},{"match":{"kind":"term","value":"a_14"},"feedback":"a₁₄ 는 열넷째 항이라는 뜻입니다. 14 는 첫째항의 값이어서 아래 첨자에 쓸 수 없습니다."},{"match":{"kind":"term","value":"a₁₄"},"feedback":"a₁₄ 는 열넷째 항이라는 뜻입니다. 14 는 첫째항의 값이어서 아래 첨자에 쓸 수 없습니다."}],"solution":"첫째항은 a₁ 이라고 적습니다. 아래 첨자 1 은 첫째 자리라는 뜻입니다."},
+      {"id":"dc2","pair":"a3","goals":["g1"],"work":["retrieve"],"knowledge":["fact"],"prompt":"수열 13, 18, 24, 31 에서 a₃ 은 얼마인가요?","answer":{"kind":"number","value":24},"misconceptions":[{"match":{"kind":"number","value":3},"feedback":"3 은 아래 첨자, 곧 자리 번호입니다. a₃ 은 셋째 자리에 놓인 수가 얼마인지를 묻습니다."},{"match":{"kind":"number","value":18},"feedback":"18 은 둘째 자리에 놓인 a₂ 입니다. a₃ 은 한 칸 뒤입니다."},{"match":{"kind":"number","value":31},"feedback":"31 은 넷째 자리에 놓인 a₄ 입니다. a₃ 은 한 칸 앞입니다."},{"match":{"kind":"number","value":39},"feedback":"39 는 첫째항 13 에 3 을 곱한 값입니다. a₃ 은 곱셈이 아니라 셋째 자리에 놓인 항입니다."}],"solution":"a₃ 은 앞에서 세 번째 자리에 놓인 항입니다. 이 수열에서는 24 입니다."},
+      {"id":"dc3","pair":"an","goals":["g1"],"work":["retrieve"],"knowledge":["fact"],"prompt":"수열 5, 11, 18 의 n째 항을 나타내는 기호는 어느 것인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"aₙ"},{"id":"b","label":"a₂"},{"id":"c","label":"n"},{"id":"d","label":"a"}],"value":"a"},"misconceptions":[{"match":{"kind":"choice","value":"b"},"feedback":"a₂ 는 둘째 항만 가리킵니다. 몇째 항이든 가리키려면 아래 첨자에 자리 번호를 정하지 않은 글자를 둡니다."},{"match":{"kind":"choice","value":"c"},"feedback":"n 은 자리 번호를 대신하는 글자일 뿐, 항을 가리키는 기호가 아닙니다. 항을 가리키려면 a 가 함께 있어야 합니다."},{"match":{"kind":"choice","value":"d"},"feedback":"a 만으로는 몇째 항인지 알 수 없습니다. 몇째 자리인지를 알려 주는 아래 첨자가 함께 필요합니다."}],"solution":"n째 항은 aₙ 이라고 적습니다. 아래 첨자 n 이 n째 자리를 가리킵니다."}
+    ]
+  },
+  "review": {
+    "minutes": 4,
+    "items": [
+      {"id":"rv1","pair":"sub","work":["retrieve"],"knowledge":["fact"],"prompt":"c₉ 처럼 글자의 오른쪽 아래에 수를 작게 적는 방식을 부르는 수학 낱말을 적으세요. 낱말만 적어도 됩니다.","answer":{"kind":"term","value":"아래 첨자","accept":["첨자","아랫첨자"]},"misconceptions":[{"match":{"kind":"term","value":"자리 번호"},"feedback":"자리 번호는 그 작은 수가 뜻하는 것이고, 아래 첨자는 그렇게 아래에 작게 적는 방식의 이름입니다. 이 물음은 이름을 묻습니다."},{"match":{"kind":"term","value":"지수"},"feedback":"지수는 글자의 오른쪽 위에 작게 적는 수입니다. 아래쪽에 적는 수는 다른 낱말로 부릅니다."}],"feedback":"글자의 오른쪽 아래에 작게 적은 수를 아래 첨자라고 합니다. 수열에서는 이 수가 몇째 항인지를 알려 줍니다."},
+      {"id":"rv2","pair":"a3","work":["retrieve"],"knowledge":["fact"],"prompt":"수열 −8, −5, −2, 1, 4 에서 a₃ 은 얼마인가요? 수로 적습니다.","answer":{"kind":"number","value":-2},"misconceptions":[{"match":{"kind":"number","value":3},"feedback":"3 은 아래 첨자, 곧 자리 번호입니다. a₃ 은 셋째 자리에 놓인 수가 얼마인지를 묻습니다."},{"match":{"kind":"number","value":-5},"feedback":"−5 는 둘째 자리에 놓인 a₂ 입니다. a₃ 은 한 칸 뒤입니다."},{"match":{"kind":"number","value":1},"feedback":"1 은 넷째 자리에 놓인 a₄ 입니다. a₃ 은 한 칸 앞입니다."},{"match":{"kind":"number","value":-24},"feedback":"−24 는 첫째항 −8 에 3 을 곱한 값입니다. a₃ 은 곱셈이 아니라 셋째 자리에 놓인 항입니다."}],"feedback":"a₃ 은 앞에서 세 번째 자리에 놓인 항입니다. 이 수열에서는 −2 입니다."},
+      {"id":"rv3","pair":"an","work":["retrieve"],"knowledge":["fact"],"prompt":"수열 25, 21, 17, 13 에서 n 이 2 일 때 aₙ 은 얼마인가요? 수로 적습니다.","answer":{"kind":"number","value":21},"misconceptions":[{"match":{"kind":"number","value":2},"feedback":"2 는 n 에 넣은 자리 번호입니다. aₙ 은 그 자리에 놓인 수가 얼마인지를 묻습니다."},{"match":{"kind":"number","value":25},"feedback":"25 는 첫째 자리에 놓인 a₁ 입니다. n 이 2 이면 둘째 자리의 항입니다."},{"match":{"kind":"number","value":17},"feedback":"17 은 셋째 자리에 놓인 a₃ 입니다. n 이 2 이면 한 칸 앞입니다."}],"feedback":"n 이 2 이면 aₙ 은 a₂, 곧 둘째 항입니다. 이 수열에서는 21 입니다."},
+      {"id":"rv4","pair":"n","work":["retrieve"],"knowledge":["fact"],"prompt":"수열의 몇째 항이든 가리키려고 글자 a 의 오른쪽 아래에 숫자 대신 적는 글자를 적으세요.","answer":{"kind":"term","value":"n"},"misconceptions":[{"match":{"kind":"term","value":"a"},"feedback":"a 는 항을 가리키는 글자입니다. 자리 번호를 대신하는 글자는 아래 첨자에 있습니다."},{"match":{"kind":"term","value":"x"},"feedback":"x 도 문자이지만, 수열에서 자리 번호를 정하지 않고 가리킬 때는 n 을 씁니다."}],"feedback":"aₙ 에서 자리 번호를 대신하는 글자가 n 입니다."},
+      {"id":"rv5","pair":"a1","work":["retrieve"],"knowledge":["fact"],"prompt":"수열 33, 40, 48 에서 a₁ 은 얼마인가요? 수로 적습니다.","answer":{"kind":"number","value":33},"misconceptions":[{"match":{"kind":"number","value":1},"feedback":"1 은 아래 첨자, 곧 자리 번호입니다. a₁ 은 첫째 자리에 놓인 수가 얼마인지를 묻습니다."},{"match":{"kind":"number","value":40},"feedback":"40 은 둘째 자리에 놓인 a₂ 입니다. a₁ 은 한 칸 앞입니다."}],"feedback":"a₁ 은 첫째항, 곧 맨 앞에 놓인 수입니다. 이 수열에서는 33 입니다."},
+      {"id":"rv6","pair":"a3","work":["retrieve"],"knowledge":["fact"],"prompt":"수열 12, 15, 21, 30 에서 21 이 놓인 항을 기호로 적으세요.","answer":{"kind":"term","value":"a₃","accept":["a3","a_3"]},"misconceptions":[{"match":{"kind":"term","value":"21"},"feedback":"21 은 그 항의 값입니다. 물음은 그 항이 몇째 자리인지를 보여 주는 기호를 묻습니다."},{"match":{"kind":"term","value":"3"},"feedback":"3 은 자리 번호입니다. 항을 가리키는 기호는 a 에 그 번호를 아래 첨자로 붙여 만듭니다."},{"match":{"kind":"term","value":"a21"},"feedback":"a₂₁ 은 스물한째 항이라는 뜻입니다. 21 은 값이어서 아래 첨자에 쓸 수 없습니다."},{"match":{"kind":"term","value":"a_21"},"feedback":"a₂₁ 은 스물한째 항이라는 뜻입니다. 21 은 값이어서 아래 첨자에 쓸 수 없습니다."},{"match":{"kind":"term","value":"a₂₁"},"feedback":"a₂₁ 은 스물한째 항이라는 뜻입니다. 21 은 값이어서 아래 첨자에 쓸 수 없습니다."}],"feedback":"21 은 앞에서 세 번째 자리에 놓여 있어서 셋째 항이고, 기호로는 a₃ 이라고 적습니다."}
+    ]
+  }
+}

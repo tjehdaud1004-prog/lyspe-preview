@@ -1,0 +1,1936 @@
+{
+  "id": "seq0-expand",
+  "version": "1.02",
+  "kind": "procedure",
+  "shuffleOptions": true,
+  "order": 12,
+  "needs": [
+    "seq0-plot",
+    "bridge-dist"
+  ],
+  "title": "수열 첫걸음 ⑩ 일반항을 펼쳐 정리하기",
+  "centralQuestion": "몇째 수든 구하는 긴 셈을 괄호를 풀어 짧게 정리할 수 있고, 정리한 것에서 맨 앞의 수와 늘 더하는 수를 다시 읽을 수 있는가?",
+  "prerequisites": [
+    "더하기 · 빼기와 구구단 곱셈을 할 수 있다.",
+    "4, 7, 10, … 처럼 늘 같은 수를 더해 가는 줄에서 몇째 수를 aₙ 으로 적고, 괄호를 풀 수 있다."
+  ],
+  "ai": {
+    "scope": {
+      "in": "일반항 a₁ + (n − 1)d 의 a₁ 과 d 에 수를 넣고 괄호를 풀어 dn + □ 꼴로 정리하는 방법과, 정리한 식에서 공차와 첫째항을 읽는 것",
+      "adjacent": [
+        "일반항의 뜻과 n 에 수를 넣어 항 구하기",
+        "괄호 풀기(분배)",
+        "0 보다 작은 수의 덧셈과 뺄셈",
+        "이 화면의 사용 방법",
+        "낱말의 뜻을 쉬운 말로 다시 설명하기"
+      ]
+    }
+  },
+  "figures": {
+    "gen-4-3": {
+      "kind": "table",
+      "caption": "a₁ = 4, d = 3 인 수열의 n째 항",
+      "columns": [
+        "n",
+        "공차를 더한 횟수 (n − 1)",
+        "aₙ = a₁ + (n − 1) × d"
+      ],
+      "rows": [
+        [
+          "1",
+          "0",
+          "4 + 0 × 3 = 4"
+        ],
+        [
+          "2",
+          "1",
+          "4 + 1 × 3 = 7"
+        ],
+        [
+          "3",
+          "2",
+          "4 + 2 × 3 = 10"
+        ],
+        [
+          "4",
+          "3",
+          "4 + 3 × 3 = 13"
+        ]
+      ]
+    },
+    "minus-bracket": {
+      "kind": "table",
+      "caption": "20 − (3n − 3) 과 20 − 3n + 3 의 값",
+      "columns": [
+        "",
+        "20 − (3n − 3)",
+        "20 − 3n + 3"
+      ],
+      "rows": [
+        [
+          "n = 2",
+          "20 − (6 − 3) = 17",
+          "20 − 6 + 3 = 17"
+        ],
+        [
+          "n = 5",
+          "20 − (15 − 3) = 8",
+          "20 − 15 + 3 = 8"
+        ]
+      ]
+    }
+  },
+  "scenes": [
+    {
+      "id": "s1",
+      "title": "긴 식은 짧게 적을 수 있을까",
+      "focus": [
+        "attend"
+      ],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s1t1",
+          "units": [
+            "수열 4, 7, 10, 13, … 은 첫째항 4 에 공차 3 을 더해 가고, 둘째 항 7 은 4 + 3 이다.",
+            "이 수열의 일반항 4 + (n − 1) × 3 은 3n + 1 로 짧게 정리할 수 있다."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "공차를 글자 d 로",
+      "focus": [
+        "attend",
+        "relate",
+        "discriminate"
+      ],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s2t1",
+          "units": [
+            "수열 4, 7, 10, 13, … 에서 첫째항은 a₁ = 4 이고, 공차는 7 − 4 = 3 이다.",
+            "공차는 글자 d 로 적어서, 이 수열에서는 d = 3 이다.",
+            "수열이 바뀌면 a₁ 과 d 에 들어가는 수도 바뀐다."
+          ]
+        },
+        {
+          "type": "check",
+          "id": "s2c1",
+          "work": [
+            "attend",
+            "discriminate"
+          ],
+          "knowledge": [
+            "fact",
+            "concept"
+          ],
+          "prompt": "수열 6, 11, 16, 21, … 에서 첫째항 a₁ 과 공차 d 를 차례로 적는다. 수만 쉼표로 가른다.",
+          "answer": {
+            "kind": "numbers",
+            "value": [
+              6,
+              5
+            ]
+          },
+          "misconceptions": [
+            {
+              "match": {
+                "kind": "numbers",
+                "value": [
+                  6,
+                  11
+                ]
+              },
+              "feedback": "d 를 둘째 항으로 읽었습니다. 공차는 이웃한 두 항의 차이지, 항 자체가 아닙니다."
+            },
+            {
+              "match": {
+                "kind": "numbers",
+                "value": [
+                  5,
+                  6
+                ]
+              },
+              "feedback": "차례가 바뀌었습니다. 먼저 a₁(첫째항), 다음에 d(공차) 를 적습니다."
+            }
+          ],
+          "hints": [
+            "수열의 맨 앞의 수가 첫째항이다. 공차는 이웃한 두 항의 차이다.",
+            "둘째 항에서 첫째항을 빼면 공차가 나온다."
+          ],
+          "solution": "첫째항은 맨 앞의 6 이다. 이웃한 두 항의 차는 11 − 6 = 5 이므로 공차는 5 이다. 그래서 a₁ = 6, d = 5 이다."
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "몇째 항이든 글자로 적기",
+      "focus": [
+        "attend",
+        "relate",
+        "procedure",
+        "discriminate"
+      ],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s3t1",
+          "units": [
+            "셋째 항 10 은 4 + 3 × 2 이고, 넷째 항 13 은 4 + 3 × 3 이다.",
+            "그래서 n째 항은 4 + 3 × (n − 1) 이다."
+          ]
+        },
+        {
+          "type": "figure",
+          "id": "s3f1",
+          "figure": "gen-4-3",
+          "alt": "표. n 이 1, 2, 3, 4 일 때 공차를 더한 횟수는 0, 1, 2, 3 이고, 각 항은 4, 7, 10, 13 이다."
+        },
+        {
+          "type": "text",
+          "id": "s3t2",
+          "units": [
+            "4 와 3 을 a₁ 과 d 로 바꿔 쓰면 일반항은 aₙ = a₁ + (n − 1) × d 이다."
+          ]
+        },
+        {
+          "type": "check",
+          "id": "s3c1",
+          "work": [
+            "procedure",
+            "discriminate"
+          ],
+          "knowledge": [
+            "procedure",
+            "concept"
+          ],
+          "prompt": "a₁ = 8, d = 3 일 때, aₙ = a₁ + (n − 1)d 의 a₁ 과 d 자리에 수를 넣은 식은 어느 것인가?",
+          "answer": {
+            "kind": "choice",
+            "options": [
+              {
+                "id": "right",
+                "label": "8 + (n − 1) × 3"
+              },
+              {
+                "id": "swap",
+                "label": "3 + (n − 1) × 8"
+              },
+              {
+                "id": "plusd",
+                "label": "11 + (n − 1) × 3"
+              },
+              {
+                "id": "minusd",
+                "label": "5 + (n − 1) × 3"
+              }
+            ],
+            "value": "right"
+          },
+          "misconceptions": [
+            {
+              "match": {
+                "kind": "choice",
+                "value": "swap"
+              },
+              "feedback": "a₁ 과 d 의 자리를 바꿔 넣었습니다. 첫째항 8 은 a₁ 자리에, 공차 3 은 d 자리에 넣습니다."
+            },
+            {
+              "match": {
+                "kind": "choice",
+                "value": "plusd"
+              },
+              "feedback": "a₁ 자리에 둘째 항을 넣었습니다. a₁ 자리에는 첫째항 8 을 그대로 넣고, 공차를 더하는 일은 (n − 1) × d 가 맡습니다."
+            },
+            {
+              "match": {
+                "kind": "choice",
+                "value": "minusd"
+              },
+              "feedback": "a₁ 자리에서 공차를 미리 뺐습니다. 공차를 빼는 일은 괄호를 풀고 모을 때 생기는 일이고, 수를 넣을 때는 a₁ 자리에 첫째항 8 을 그대로 넣습니다."
+            }
+          ],
+          "hints": [
+            "a₁ 은 첫째항이고 d 는 공차이다. 각각의 자리에 주어진 수를 넣는다.",
+            "(n − 1)d 는 (n − 1) × d 이다. 곱하는 모양은 그대로 둔다."
+          ],
+          "solution": "a₁ 자리에 8 을, d 자리에 3 을 넣으면 8 + (n − 1) × 3 이다. (n − 1)d 는 (n − 1) × d 이므로 곱셈 기호도 그대로 둔다."
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "다 푼 풀이 읽기",
+      "focus": [
+        "attend",
+        "relate"
+      ],
+      "condition": "a₁ = 4, d = 3 인 일반항 aₙ = a₁ + (n − 1)d / 구하려는 것: dn + □ 꼴로 정리하기",
+      "blocks": [
+        {
+          "type": "link",
+          "id": "s4l1",
+          "procedure": "expand-general",
+          "work": [
+            "attend",
+            "relate"
+          ],
+          "knowledge": [
+            "procedure",
+            "concept"
+          ],
+          "mode": "show",
+          "goal": "일반항을 dn + □ 꼴로 정리하기",
+          "given": "a₁ = 4, d = 3 인 일반항 aₙ = a₁ + (n − 1)d",
+          "steps": [
+            {
+              "id": "a",
+              "label": "① a₁ 과 d 에 수를 넣는다",
+              "why": "수를 넣어야 어떤 수열의 일반항인지 정해지고, 괄호를 풀 식이 만들어진다. a₁ 은 첫째항 자리에, d 는 공차 자리에 넣는다.",
+              "gives": "a₁ = 4, d = 3 을 넣으면 4 + (n − 1) × 3"
+            },
+            {
+              "id": "b",
+              "label": "② 괄호를 푼다",
+              "why": "괄호가 남아 있으면 n 이 든 부분과 n 이 없는 수를 따로 모을 수 없다. 괄호 앞(뒤)의 수를 괄호 안의 n 과 1 에 각각 곱하고, 괄호 안의 기호 − 는 그대로 두면 괄호가 없어진다.",
+              "gives": "(n − 1) × 3 = 3n − 3 이므로 4 + 3n − 3"
+            },
+            {
+              "id": "c",
+              "label": "③ 수끼리 모은다",
+              "why": "괄호를 푼 식에는 n 이 든 부분과, n 이 없는 수가 섞여 있다. n 이 없는 수끼리 모으면 □n + □ 꼴이 되어 정리가 끝난다.",
+              "gives": "4 − 3 = 1 이므로 3n + 1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "title": "③ 부터 직접 하기",
+      "focus": [
+        "procedure",
+        "discriminate"
+      ],
+      "condition": "a₁ = 9, d = 2 인 일반항 aₙ = a₁ + (n − 1)d / 구하려는 것: 정리한 일반항",
+      "blocks": [
+        {
+          "type": "link",
+          "id": "s5l1",
+          "procedure": "expand-general",
+          "work": [
+            "procedure",
+            "discriminate"
+          ],
+          "knowledge": [
+            "procedure",
+            "concept"
+          ],
+          "mode": "complete",
+          "goal": "일반항을 dn + □ 꼴로 정리하기",
+          "given": "a₁ = 9, d = 2 인 일반항 aₙ = a₁ + (n − 1)d",
+          "steps": [
+            {
+              "id": "a",
+              "label": "① a₁ 과 d 에 수를 넣는다",
+              "why": "수를 넣어야 어떤 수열의 일반항인지 정해지고, 괄호를 풀 식이 만들어진다. a₁ 은 첫째항 자리에, d 는 공차 자리에 넣는다.",
+              "gives": "a₁ = 9, d = 2 를 넣으면 9 + (n − 1) × 2"
+            },
+            {
+              "id": "b",
+              "label": "② 괄호를 푼다",
+              "why": "괄호가 남아 있으면 n 이 든 부분과 n 이 없는 수를 따로 모을 수 없다. 괄호 앞(뒤)의 수를 괄호 안의 n 과 1 에 각각 곱하고, 괄호 안의 기호 − 는 그대로 두면 괄호가 없어진다.",
+              "gives": "(n − 1) × 2 = 2n − 2 이므로 9 + 2n − 2"
+            },
+            {
+              "id": "c",
+              "label": "③ 수끼리 모은다",
+              "why": "괄호를 푼 식에는 n 이 든 부분과, n 이 없는 수가 섞여 있다. n 이 없는 수끼리 모으면 □n + □ 꼴이 되어 정리가 끝난다.",
+              "gives": "9 − 2 = 7 이므로 2n + 7",
+              "blank": {
+                "field": "gives",
+                "prompt": "② 에서 얻은 9 + 2n − 2 에서 n 이 없는 수끼리 모아 □n + □ 꼴로 정리한다. 빈칸의 두 수를 차례로 적는다. 수만 쉼표로 가른다.",
+                "answer": {
+                  "kind": "numbers",
+                  "value": [
+                    2,
+                    7
+                  ]
+                },
+                "misconceptions": [
+                  {
+                    "match": {
+                      "kind": "numbers",
+                      "value": [
+                        2,
+                        9
+                      ]
+                    },
+                    "feedback": "빼는 2 가 빠졌습니다. 괄호를 풀 때 생긴 빼는 수도 n 이 없는 수라서 9 와 함께 모아야 합니다."
+                  },
+                  {
+                    "match": {
+                      "kind": "numbers",
+                      "value": [
+                        2,
+                        11
+                      ]
+                    },
+                    "feedback": "빼는 2 를 더했습니다. 빼는 수는 첫째항에서 빼므로 9 − 2 로 모읍니다."
+                  }
+                ],
+                "hints": [
+                  "n 이 든 부분 2n 은 그대로 둔다. n 이 없는 수는 앞에 있는 수와, 빼는 수이다.",
+                  "n 이 없는 수끼리 앞의 수에서 빼는 수를 뺀다."
+                ],
+                "solution": "9 + 2n − 2 에서 n 이 든 부분은 2n 이고, n 이 없는 수는 9 와 빼는 2 이다. 9 − 2 = 7 이므로 2n + 7 이다. n 앞의 수는 2, 뒤의 수는 7 이다."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s6",
+      "title": "② 와 ③ 을 직접 하기",
+      "focus": [
+        "procedure",
+        "discriminate"
+      ],
+      "condition": "a₁ = 12, d = 5 인 일반항 aₙ = a₁ + (n − 1)d / 구하려는 것: 정리한 일반항",
+      "blocks": [
+        {
+          "type": "link",
+          "id": "s6l1",
+          "procedure": "expand-general",
+          "work": [
+            "procedure",
+            "discriminate"
+          ],
+          "knowledge": [
+            "procedure",
+            "concept"
+          ],
+          "mode": "complete",
+          "goal": "일반항을 dn + □ 꼴로 정리하기",
+          "given": "a₁ = 12, d = 5 인 일반항 aₙ = a₁ + (n − 1)d",
+          "steps": [
+            {
+              "id": "a",
+              "label": "① a₁ 과 d 에 수를 넣는다",
+              "why": "수를 넣어야 어떤 수열의 일반항인지 정해지고, 괄호를 풀 식이 만들어진다. a₁ 은 첫째항 자리에, d 는 공차 자리에 넣는다.",
+              "gives": "a₁ = 12, d = 5 를 넣으면 12 + (n − 1) × 5"
+            },
+            {
+              "id": "b",
+              "label": "② 괄호를 푼다",
+              "why": "괄호가 남아 있으면 n 이 든 부분과 n 이 없는 수를 따로 모을 수 없다. 괄호 앞(뒤)의 수를 괄호 안의 n 과 1 에 각각 곱하고, 괄호 안의 기호 − 는 그대로 두면 괄호가 없어진다.",
+              "gives": "(n − 1) × 5 = 5n − 5 이므로 12 + 5n − 5",
+              "blank": {
+                "field": "gives",
+                "prompt": "① 에서 얻은 식의 괄호를 풀면 □n − □ 꼴이 된다. 빈칸의 두 수를 차례로 적는다. 수만 쉼표로 가른다.",
+                "answer": {
+                  "kind": "numbers",
+                  "value": [
+                    5,
+                    5
+                  ]
+                },
+                "misconceptions": [
+                  {
+                    "match": {
+                      "kind": "numbers",
+                      "value": [
+                        5,
+                        1
+                      ]
+                    },
+                    "feedback": "괄호 안의 1 에는 곱하지 않았습니다. 괄호 앞(뒤)의 수는 n 에도 1 에도 곱합니다."
+                  },
+                  {
+                    "match": {
+                      "kind": "numbers",
+                      "value": [
+                        1,
+                        5
+                      ]
+                    },
+                    "feedback": "n 에는 곱하지 않았습니다. n 앞에는 n 에 괄호 밖의 수를 곱한 결과의 수가 옵니다."
+                  }
+                ],
+                "hints": [
+                  "괄호 밖의 수를 괄호 안의 n 과 1 에 각각 곱한다.",
+                  "n 에 곱한 수가 n 앞에 오고, 1 에 곱한 수가 n 뒤에 온다. 기호 − 는 그대로이다."
+                ],
+                "solution": "괄호 밖의 수 5 를 n 에 곱하면 5n, 1 에 곱하면 5 이다. 괄호 안의 기호가 − 이므로 5n − 5 이다."
+              }
+            },
+            {
+              "id": "c",
+              "label": "③ 수끼리 모은다",
+              "why": "괄호를 푼 식에는 n 이 든 부분과, n 이 없는 수가 섞여 있다. n 이 없는 수끼리 모으면 □n + □ 꼴이 되어 정리가 끝난다.",
+              "gives": "12 − 5 = 7 이므로 5n + 7",
+              "blank": {
+                "field": "gives",
+                "prompt": "② 의 결과를 이어 쓴 식에서 n 이 없는 수끼리 모아 □n + □ 꼴로 정리한다. 빈칸의 두 수를 차례로 적는다. 수만 쉼표로 가른다.",
+                "answer": {
+                  "kind": "numbers",
+                  "value": [
+                    5,
+                    7
+                  ]
+                },
+                "misconceptions": [
+                  {
+                    "match": {
+                      "kind": "numbers",
+                      "value": [
+                        5,
+                        12
+                      ]
+                    },
+                    "feedback": "빼는 수가 빠졌습니다. 괄호를 풀 때 생긴 − 도 n 이 없는 수라서 첫째항과 함께 모아야 합니다."
+                  },
+                  {
+                    "match": {
+                      "kind": "numbers",
+                      "value": [
+                        5,
+                        17
+                      ]
+                    },
+                    "feedback": "빼는 수를 더했습니다. 빼는 수는 첫째항에서 빼서 모읍니다."
+                  }
+                ],
+                "hints": [
+                  "② 에서 n 이 든 부분과 n 이 없는 수를 구분해 본다. n 이 든 부분은 그대로 둔다.",
+                  "n 이 없는 수는 첫째항과, 괄호를 풀어 생긴 빼는 수이다."
+                ],
+                "solution": "12 + 5n − 5 에서 n 이 없는 수는 12 와 빼는 5 이므로 12 − 5 = 7 이다. 그래서 5n + 7 이다."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s7",
+      "title": "① ~ ③ 을 모두 직접 하기",
+      "focus": [
+        "procedure",
+        "hold"
+      ],
+      "condition": "수열 15, 19, 23, 27, … / 구하려는 것: 정리한 일반항",
+      "blocks": [
+        {
+          "type": "link",
+          "id": "s7l1",
+          "procedure": "expand-general",
+          "work": [
+            "procedure",
+            "hold"
+          ],
+          "knowledge": [
+            "procedure"
+          ],
+          "mode": "complete",
+          "stage": "build",
+          "goal": "일반항을 dn + □ 꼴로 정리하기",
+          "given": "수열 15, 19, 23, 27, … 의 일반항 aₙ = a₁ + (n − 1)d",
+          "steps": [
+            {
+              "id": "a",
+              "label": "① a₁ 과 d 에 수를 넣는다",
+              "why": "수를 넣어야 어떤 수열의 일반항인지 정해지고, 괄호를 풀 식이 만들어진다. a₁ 은 첫째항 자리에, d 는 공차 자리에 넣는다.",
+              "gives": "a₁ = 15, d = 4 를 넣으면 15 + (n − 1) × 4",
+              "blank": {
+                "field": "gives",
+                "prompt": "수열의 첫째항과 공차를 찾아 aₙ = a₁ + (n − 1)d 의 a₁ 과 d 자리에 넣은 식은 어느 것인가?",
+                "answer": {
+                  "kind": "choice",
+                  "options": [
+                    {
+                      "id": "right",
+                      "label": "15 + (n − 1) × 4"
+                    },
+                    {
+                      "id": "swap",
+                      "label": "4 + (n − 1) × 15"
+                    },
+                    {
+                      "id": "second",
+                      "label": "15 + (n − 1) × 19"
+                    },
+                    {
+                      "id": "minusd",
+                      "label": "11 + (n − 1) × 4"
+                    }
+                  ],
+                  "value": "right"
+                },
+                "misconceptions": [
+                  {
+                    "match": {
+                      "kind": "choice",
+                      "value": "swap"
+                    },
+                    "feedback": "첫째항과 공차의 자리를 바꿔 넣었습니다. 맨 앞의 수가 첫째항이고, 이웃한 두 항의 차가 공차입니다."
+                  },
+                  {
+                    "match": {
+                      "kind": "choice",
+                      "value": "second"
+                    },
+                    "feedback": "공차 자리에 둘째 항을 넣었습니다. 공차는 항이 아니라 이웃한 두 항의 차입니다."
+                  },
+                  {
+                    "match": {
+                      "kind": "choice",
+                      "value": "minusd"
+                    },
+                    "feedback": "a₁ 자리에서 공차를 미리 뺐습니다. 공차를 빼는 일은 괄호를 풀고 모을 때 생기는 일이고, 수를 넣을 때는 a₁ 자리에 첫째항을 그대로 넣습니다."
+                  }
+                ],
+                "hints": [
+                  "맨 앞의 수가 첫째항이고, 이웃한 두 항의 차가 공차이다.",
+                  "찾은 첫째항을 a₁ 자리에, 공차를 d 자리에 넣고 (n − 1)d 의 모양은 그대로 둔다."
+                ],
+                "solution": "첫째항은 맨 앞의 15 이고 공차는 19 − 15 = 4 이다. a₁ 자리에 15, d 자리에 4 를 넣으면 15 + (n − 1) × 4 이다."
+              }
+            },
+            {
+              "id": "b",
+              "label": "② 괄호를 푼다",
+              "why": "괄호가 남아 있으면 n 이 든 부분과 n 이 없는 수를 따로 모을 수 없다. 괄호 앞(뒤)의 수를 괄호 안의 n 과 1 에 각각 곱하고, 괄호 안의 기호 − 는 그대로 두면 괄호가 없어진다.",
+              "gives": "(n − 1) × 4 = 4n − 4 이므로 15 + 4n − 4",
+              "blank": {
+                "field": "gives",
+                "prompt": "① 에서 얻은 식의 괄호를 풀면 □n − □ 꼴이 된다. 빈칸의 두 수를 차례로 적는다. 수만 쉼표로 가른다.",
+                "answer": {
+                  "kind": "numbers",
+                  "value": [
+                    4,
+                    4
+                  ]
+                },
+                "misconceptions": [
+                  {
+                    "match": {
+                      "kind": "numbers",
+                      "value": [
+                        4,
+                        1
+                      ]
+                    },
+                    "feedback": "괄호 안의 1 에는 곱하지 않았습니다. 괄호 앞(뒤)의 수는 n 에도 1 에도 곱합니다."
+                  },
+                  {
+                    "match": {
+                      "kind": "numbers",
+                      "value": [
+                        1,
+                        4
+                      ]
+                    },
+                    "feedback": "n 에는 곱하지 않았습니다. n 앞에는 n 에 괄호 밖의 수를 곱한 결과의 수가 옵니다."
+                  }
+                ],
+                "hints": [
+                  "괄호 밖의 수를 괄호 안의 n 과 1 에 각각 곱한다.",
+                  "n 에 곱한 수가 n 앞에 오고, 1 에 곱한 수가 n 뒤에 온다. 기호 − 는 그대로이다."
+                ],
+                "solution": "괄호 밖의 수 4 를 n 에 곱하면 4n, 1 에 곱하면 4 이다. 괄호 안의 기호가 − 이므로 4n − 4 이다."
+              }
+            },
+            {
+              "id": "c",
+              "label": "③ 수끼리 모은다",
+              "why": "괄호를 푼 식에는 n 이 든 부분과, n 이 없는 수가 섞여 있다. n 이 없는 수끼리 모으면 □n + □ 꼴이 되어 정리가 끝난다.",
+              "gives": "15 − 4 = 11 이므로 4n + 11",
+              "blank": {
+                "field": "gives",
+                "prompt": "② 의 결과를 이어 쓴 식에서 n 이 없는 수끼리 모아 □n + □ 꼴로 정리한다. 빈칸의 두 수를 차례로 적는다. 수만 쉼표로 가른다.",
+                "answer": {
+                  "kind": "numbers",
+                  "value": [
+                    4,
+                    11
+                  ]
+                },
+                "misconceptions": [
+                  {
+                    "match": {
+                      "kind": "numbers",
+                      "value": [
+                        4,
+                        15
+                      ]
+                    },
+                    "feedback": "빼는 수가 빠졌습니다. 괄호를 풀 때 생긴 − 도 n 이 없는 수라서 첫째항과 함께 모아야 합니다."
+                  },
+                  {
+                    "match": {
+                      "kind": "numbers",
+                      "value": [
+                        4,
+                        19
+                      ]
+                    },
+                    "feedback": "빼는 수를 더했습니다. 빼는 수는 첫째항에서 빼서 모읍니다."
+                  }
+                ],
+                "hints": [
+                  "② 에서 n 이 든 부분은 그대로 두고, n 이 없는 수끼리 모은다.",
+                  "n 이 없는 수는 첫째항과, 괄호를 풀어 생긴 빼는 수이다."
+                ],
+                "solution": "15 + 4n − 4 에서 n 이 없는 수는 15 와 빼는 4 이므로 15 − 4 = 11 이다. 그래서 4n + 11 이다."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s8",
+      "title": "맞게 정리했는지 확인하기",
+      "focus": [
+        "monitor",
+        "relate",
+        "procedure"
+      ],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s8t1",
+          "units": [
+            "4 + (n − 1) × 3 에 n = 1 을 넣으면 4, n = 2 를 넣으면 7 이다.",
+            "정리한 3n + 1 에 n = 1, 2 를 넣어도 4 와 7 이 나오므로 두 식은 같은 수열이다.",
+            "넣은 값이 하나라도 다르면 정리가 틀린 것이다."
+          ]
+        },
+        {
+          "type": "check",
+          "id": "s8c1",
+          "work": [
+            "monitor",
+            "procedure"
+          ],
+          "knowledge": [
+            "procedure"
+          ],
+          "prompt": "다은이가 6 + (n − 1) × 3 을 3n + 9 로 정리했다. 정리한 식과 처음 식에 각각 n = 1 을 넣은 값을 차례로 적는다. 수만 쉼표로 가른다.",
+          "answer": {
+            "kind": "numbers",
+            "value": [
+              12,
+              6
+            ]
+          },
+          "misconceptions": [
+            {
+              "match": {
+                "kind": "numbers",
+                "value": [
+                  6,
+                  12
+                ]
+              },
+              "feedback": "차례가 바뀌었습니다. 먼저 정리한 식 3n + 9 의 값, 다음에 처음 식의 값을 적습니다."
+            }
+          ],
+          "hints": [
+            "n 자리에 1 을 넣어 두 식을 각각 계산한다. 처음 식은 괄호 안을 먼저 계산한다.",
+            "(n − 1) 에 n = 1 을 넣으면 얼마가 되는지 본다."
+          ],
+          "solution": "3n + 9 에 n = 1 을 넣으면 3 × 1 + 9 = 12 이다. 6 + (n − 1) × 3 에 n = 1 을 넣으면 6 + 0 × 3 = 6 이다. 두 값이 다르므로 다은이의 정리는 틀렸다."
+        },
+        {
+          "type": "check",
+          "id": "s8c2",
+          "work": [
+            "procedure",
+            "monitor"
+          ],
+          "knowledge": [
+            "procedure"
+          ],
+          "prompt": "6 + (n − 1) × 3 을 바르게 정리하면 □n + □ 이다. 빈칸의 두 수를 차례로 적는다. 수만 쉼표로 가른다.",
+          "answer": {
+            "kind": "numbers",
+            "value": [
+              3,
+              3
+            ]
+          },
+          "misconceptions": [
+            {
+              "match": {
+                "kind": "numbers",
+                "value": [
+                  3,
+                  9
+                ]
+              },
+              "feedback": "다은이의 답과 같습니다. 괄호를 풀면 3n − 3 인데, 빼는 수를 더해 버렸습니다."
+            },
+            {
+              "match": {
+                "kind": "numbers",
+                "value": [
+                  3,
+                  6
+                ]
+              },
+              "feedback": "괄호를 풀 때 생긴 빼는 수가 빠졌습니다. 6 에서 그 수를 빼서 모아야 합니다."
+            }
+          ],
+          "hints": [
+            "(n − 1) × 3 의 괄호를 먼저 푼다. 그다음 n 이 없는 수끼리 모은다.",
+            "괄호를 풀면 생기는 빼는 수는 앞의 6 에서 뺀다."
+          ],
+          "solution": "(n − 1) × 3 = 3n − 3 이므로 6 + 3n − 3 이다. n 이 없는 수끼리 6 − 3 = 3 이므로 3n + 3 이다."
+        }
+      ]
+    },
+    {
+      "id": "s9",
+      "title": "정리한 식에서 읽기",
+      "focus": [
+        "relate",
+        "monitor",
+        "discriminate"
+      ],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s9t1",
+          "units": [
+            "5n + 2 에서 n 이 1, 2, 3 으로 늘면 5n 은 5, 10, 15 로 5 씩 는다.",
+            "그래서 정리한 식 □n + □ 에서 n 앞의 수가 공차 d 이다."
+          ]
+        },
+        {
+          "type": "text",
+          "id": "s9t2",
+          "units": [
+            "5n + 2 에 n = 1 을 넣으면 첫째항은 5 × 1 + 2 = 7 이다.",
+            "그래서 정리한 식에 n = 1 을 넣으면 첫째항 a₁ 이 나온다."
+          ]
+        },
+        {
+          "type": "check",
+          "id": "s9c1",
+          "work": [
+            "relate",
+            "discriminate"
+          ],
+          "knowledge": [
+            "concept"
+          ],
+          "prompt": "일반항을 정리했더니 6n + 3 이 되었다. 첫째항 a₁ 과 공차 d 를 차례로 적는다. 수만 쉼표로 가른다.",
+          "answer": {
+            "kind": "numbers",
+            "value": [
+              9,
+              6
+            ]
+          },
+          "misconceptions": [
+            {
+              "match": {
+                "kind": "numbers",
+                "value": [
+                  3,
+                  6
+                ]
+              },
+              "feedback": "n 뒤의 3 을 첫째항으로 읽었습니다. 첫째항은 정리한 식에 n = 1 을 넣은 값입니다."
+            },
+            {
+              "match": {
+                "kind": "numbers",
+                "value": [
+                  6,
+                  9
+                ]
+              },
+              "feedback": "차례가 바뀌었습니다. 먼저 a₁(첫째항), 다음에 d(공차) 를 적습니다."
+            },
+            {
+              "match": {
+                "kind": "numbers",
+                "value": [
+                  9,
+                  3
+                ]
+              },
+              "feedback": "n 뒤의 수를 공차로 읽었습니다. 공차는 n 앞의 수입니다."
+            }
+          ],
+          "hints": [
+            "공차는 n 앞의 수이다. 첫째항은 n 자리에 1 을 넣어 구한다.",
+            "n = 1 을 넣으면 6 × 1 + 3 을 계산하게 된다."
+          ],
+          "solution": "n 앞의 수가 공차이므로 d = 6 이다. n = 1 을 넣으면 6 × 1 + 3 = 9 이므로 a₁ = 9 이다."
+        }
+      ]
+    },
+    {
+      "id": "s10",
+      "title": "혼자 풀어 보기",
+      "focus": [
+        "procedure",
+        "plan",
+        "monitor"
+      ],
+      "blocks": [
+        {
+          "type": "problem",
+          "id": "s10q1",
+          "work": [
+            "procedure",
+            "plan",
+            "monitor"
+          ],
+          "knowledge": [
+            "procedure",
+            "concept"
+          ],
+          "unaided": true,
+          "prompt": "다음 네 문제를 푼다. 정리하는 문제는 □n + □ 꼴의 두 수를, 읽는 문제는 첫째항과 공차를 차례로 적는다. 수만 쉼표로 가른다.",
+          "parts": [
+            {
+              "id": "p1",
+              "goals": [
+                "g1"
+              ],
+              "label": "수열 11, 14, 17, 20, … 의 일반항 aₙ = a₁ + (n − 1)d 를 정리한 □n + □",
+              "answer": {
+                "kind": "numbers",
+                "value": [
+                  3,
+                  8
+                ]
+              },
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "numbers",
+                    "value": [
+                      3,
+                      11
+                    ]
+                  },
+                  "feedback": "괄호를 풀 때 생긴 빼는 3 이 빠졌습니다. n 이 없는 수는 11 에서 3 을 빼서 모읍니다."
+                },
+                {
+                  "match": {
+                    "kind": "numbers",
+                    "value": [
+                      3,
+                      14
+                    ]
+                  },
+                  "feedback": "빼는 3 을 더했습니다. 괄호를 풀면 3n − 3 이므로 11 에서 3 을 뺍니다."
+                }
+              ]
+            },
+            {
+              "id": "p2",
+              "goals": [
+                "g1"
+              ],
+              "label": "a₁ = 16, d = 5 인 일반항을 정리한 □n + □",
+              "answer": {
+                "kind": "numbers",
+                "value": [
+                  5,
+                  11
+                ]
+              },
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "numbers",
+                    "value": [
+                      5,
+                      16
+                    ]
+                  },
+                  "feedback": "괄호를 풀 때 생긴 빼는 5 가 빠졌습니다. n 이 없는 수는 16 에서 5 를 빼서 모읍니다."
+                },
+                {
+                  "match": {
+                    "kind": "numbers",
+                    "value": [
+                      5,
+                      21
+                    ]
+                  },
+                  "feedback": "빼는 5 를 더했습니다. 괄호를 풀면 5n − 5 이므로 16 에서 5 를 뺍니다."
+                }
+              ]
+            },
+            {
+              "id": "p3",
+              "goals": [
+                "g1"
+              ],
+              "label": "a₁ = 10, d = 4 인 일반항을 정리한 식",
+              "answer": {
+                "kind": "choice",
+                "options": [
+                  {
+                    "id": "sign",
+                    "label": "4n + 14"
+                  },
+                  {
+                    "id": "right",
+                    "label": "4n + 6"
+                  },
+                  {
+                    "id": "lost",
+                    "label": "4n + 10"
+                  },
+                  {
+                    "id": "swap",
+                    "label": "10n + 4"
+                  }
+                ],
+                "value": "right"
+              },
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "choice",
+                    "value": "sign"
+                  },
+                  "feedback": "괄호를 풀면 4n − 4 인데 빼는 4 를 더했습니다. n 이 없는 수는 10 에서 4 를 뺍니다."
+                },
+                {
+                  "match": {
+                    "kind": "choice",
+                    "value": "lost"
+                  },
+                  "feedback": "괄호를 풀 때 생긴 빼는 4 가 빠졌습니다. 10 + 4n − 4 에서 10 과 빼는 4 를 모아야 합니다."
+                },
+                {
+                  "match": {
+                    "kind": "choice",
+                    "value": "swap"
+                  },
+                  "feedback": "a₁ 과 d 의 자리를 바꿨습니다. n 앞에는 공차가, 뒤에는 첫째항에서 공차를 뺀 수가 옵니다."
+                }
+              ]
+            },
+            {
+              "id": "p4",
+              "label": "정리한 식 7n + 3 이 나타내는 수열의 첫째항과 공차",
+              "answer": {
+                "kind": "numbers",
+                "value": [
+                  10,
+                  7
+                ]
+              },
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "numbers",
+                    "value": [
+                      3,
+                      7
+                    ]
+                  },
+                  "feedback": "n 뒤의 3 을 첫째항으로 읽었습니다. 첫째항은 n = 1 을 넣은 값입니다."
+                },
+                {
+                  "match": {
+                    "kind": "numbers",
+                    "value": [
+                      7,
+                      10
+                    ]
+                  },
+                  "feedback": "차례가 바뀌었습니다. 먼저 첫째항, 다음에 공차를 적습니다."
+                },
+                {
+                  "match": {
+                    "kind": "numbers",
+                    "value": [
+                      10,
+                      3
+                    ]
+                  },
+                  "feedback": "n 뒤의 수를 공차로 읽었습니다. 공차는 n 앞의 수입니다."
+                }
+              ]
+            }
+          ],
+          "hints": [
+            "정리하는 문제는 a₁ 과 d 에 수를 넣고, 괄호를 풀고, n 이 없는 수끼리 모은다. 읽는 문제는 n 앞의 수가 공차이다.",
+            "괄호를 풀면 생기는 빼는 수는 첫째항에서 뺀다. 첫째항은 정리한 식에 n = 1 을 넣어 구한다."
+          ],
+          "solution": "p1: a₁ = 11, d = 3 이므로 11 + 3n − 3 = 3n + 8. p2: 16 + 5n − 5 = 5n + 11. p3: 10 + 4n − 4 = 4n + 6. p4: 공차는 7 이고 첫째항은 7 × 1 + 3 = 10."
+        }
+      ]
+    },
+    {
+      "id": "s11",
+      "title": "처음 보는 상황에서 풀어 보기",
+      "focus": [
+        "integrate",
+        "procedure"
+      ],
+      "blocks": [
+        {
+          "type": "transfer",
+          "id": "s11q1",
+          "work": [
+            "integrate",
+            "procedure"
+          ],
+          "knowledge": [
+            "procedure",
+            "concept"
+          ],
+          "unaided": true,
+          "fresh": true,
+          "prompt": "한 극장에서 앞줄부터 좌석 수를 세었더니 셋째 줄은 57 석, 넷째 줄은 73 석이었다. 뒤로 한 줄 갈 때마다 늘어나는 좌석 수는 늘 같다. n째 줄의 좌석 수를 aₙ 이라 한다. 두 수를 적을 때는 차례로 적고, 수만 쉼표로 가른다.",
+          "parts": [
+            {
+              "id": "p1",
+              "label": "뒤로 한 줄 갈 때마다 늘어나는 좌석 수",
+              "answer": {
+                "kind": "number",
+                "value": 16,
+                "unit": "석"
+              },
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 73
+                  },
+                  "feedback": "넷째 줄의 좌석 수를 적었습니다. 늘어나는 수는 이웃한 두 줄의 좌석 수의 차입니다."
+                },
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 57
+                  },
+                  "feedback": "셋째 줄의 좌석 수를 적었습니다. 늘어나는 수는 이웃한 두 줄의 좌석 수의 차입니다."
+                }
+              ]
+            },
+            {
+              "id": "p2",
+              "label": "첫째 줄의 좌석 수",
+              "answer": {
+                "kind": "number",
+                "value": 25,
+                "unit": "석"
+              },
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 41
+                  },
+                  "feedback": "둘째 줄의 좌석 수입니다. 셋째 줄은 첫째 줄에서 두 줄 뒤이므로 늘어나는 수를 두 번 빼야 첫째 줄이 됩니다."
+                },
+                {
+                  "match": {
+                    "kind": "number",
+                    "value": 89
+                  },
+                  "feedback": "늘어나는 수를 뺀 것이 아니라 두 번 더했습니다. 앞줄로 갈수록 좌석 수는 줄어듭니다."
+                }
+              ]
+            },
+            {
+              "id": "p3",
+              "label": "n째 줄의 좌석 수 aₙ 을 □n + □ 꼴로 정리했을 때의 두 수",
+              "answer": {
+                "kind": "numbers",
+                "value": [
+                  16,
+                  9
+                ]
+              },
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "numbers",
+                    "value": [
+                      16,
+                      25
+                    ]
+                  },
+                  "feedback": "빼는 수가 빠졌습니다. a₁ + (n − 1)d 를 풀면 생기는 빼는 d 를 첫째항에서 빼야 합니다."
+                },
+                {
+                  "match": {
+                    "kind": "numbers",
+                    "value": [
+                      16,
+                      41
+                    ]
+                  },
+                  "feedback": "빼는 수를 더했습니다. n 이 없는 수는 첫째항에서 d 를 뺀 수입니다."
+                },
+                {
+                  "match": {
+                    "kind": "numbers",
+                    "value": [
+                      9,
+                      16
+                    ]
+                  },
+                  "feedback": "n 앞과 뒤의 수의 차례가 바뀌었습니다. n 앞에는 공차가, 뒤에는 첫째항에서 공차를 뺀 수가 옵니다."
+                }
+              ]
+            }
+          ],
+          "hints": [
+            "좌석 수가 수열의 항이다. 이웃한 두 줄의 좌석 수의 차가 늘어나는 수, 곧 공차이다.",
+            "셋째 줄은 첫째 줄에서 공차를 두 번 더한 것이므로, 셋째 줄에서 공차를 두 번 빼면 첫째 줄이다. 그다음 aₙ = a₁ + (n − 1)d 에 넣고 괄호를 풀어 n 이 없는 수끼리 모은다."
+          ],
+          "solution": "넷째 줄과 셋째 줄의 차는 73 − 57 = 16 이므로 늘어나는 좌석 수는 16 석이다. 셋째 줄은 첫째 줄에서 공차를 두 번 더한 것이므로 첫째 줄은 57 − 16 − 16 = 25 석이다. a₁ = 25, d = 16 을 넣으면 25 + (n − 1) × 16 = 25 + 16n − 16 이고, 25 − 16 = 9 이므로 16n + 9 이다. 두 수는 16, 9 이다."
+        }
+      ]
+    },
+    {
+      "id": "s12",
+      "title": "다른 사람의 식 가려내기",
+      "focus": [
+        "monitor",
+        "integrate"
+      ],
+      "blocks": [
+        {
+          "type": "transfer",
+          "id": "s12q1",
+          "work": [
+            "monitor",
+            "integrate"
+          ],
+          "knowledge": [
+            "procedure",
+            "concept"
+          ],
+          "unaided": true,
+          "fresh": true,
+          "prompt": "앞의 극장에서 셋째 줄은 57 석, 넷째 줄은 73 석이고, 늘어나는 좌석 수는 늘 같다. 하은이는 n째 줄의 좌석 수를 aₙ = 16n + 10 이라고 적었다.",
+          "parts": [
+            {
+              "id": "p1",
+              "label": "하은이의 식에 대해 알맞은 것",
+              "answer": {
+                "kind": "choice",
+                "options": [
+                  {
+                    "id": "same",
+                    "label": "정리한 식과 같아서 맞게 적었다"
+                  },
+                  {
+                    "id": "first",
+                    "label": "셋째 줄만 실제보다 많고 넷째 줄은 맞는다"
+                  },
+                  {
+                    "id": "right",
+                    "label": "늘어나는 수는 같지만 모든 줄이 실제보다 1 석 많다"
+                  },
+                  {
+                    "id": "diff",
+                    "label": "한 줄마다 늘어나는 수가 달라서 틀렸다"
+                  }
+                ],
+                "value": "right"
+              },
+              "misconceptions": [
+                {
+                  "match": {
+                    "kind": "choice",
+                    "value": "same"
+                  },
+                  "feedback": "n = 3 을 넣어 보면 16 × 3 + 10 = 58 로, 실제 셋째 줄의 57 석과 다릅니다. 값이 하나라도 다르면 맞게 적은 식이 아닙니다."
+                },
+                {
+                  "match": {
+                    "kind": "choice",
+                    "value": "first"
+                  },
+                  "feedback": "n = 4 도 넣어 보세요. 16 × 4 + 10 = 74 로, 실제 넷째 줄의 73 석보다 많습니다. 한 줄만 틀린 것이 아닙니다."
+                },
+                {
+                  "match": {
+                    "kind": "choice",
+                    "value": "diff"
+                  },
+                  "feedback": "n 앞의 수 16 이 늘어나는 좌석 수와 같습니다. 늘어나는 수는 맞고, n 뒤의 수가 다릅니다."
+                }
+              ]
+            }
+          ],
+          "hints": [
+            "하은이의 식에 줄 번호 3 과 4 를 넣어 값을 구하고, 이야기에 나온 좌석 수와 견준다.",
+            "값이 모두 같으면 맞는 식이고, 하나라도 다르면 틀린 식이다. 다를 때는 얼마나 다른지, 줄마다 같은지도 본다."
+          ],
+          "solution": "16n + 10 에 n = 3 을 넣으면 58, n = 4 를 넣으면 74 이다. 실제는 57 석과 73 석이므로 두 줄 모두 1 석 많다. n 앞의 수 16 은 늘어나는 좌석 수와 같지만, 바르게 정리한 식은 16n + 9 이다."
+        }
+      ]
+    }
+  ],
+  "skipCheck": {
+    "intro": "본문에 없는 다른 수로 묻습니다. 종이에 계산해도 됩니다.",
+    "goals": [
+      {
+        "id": "g1",
+        "kind": "perform",
+        "label": "첫째항과 공차가 주어진 일반항의 괄호를 풀어 □n + □ 꼴로 정리하기",
+        "scenes": [
+          "s2",
+          "s3",
+          "s4",
+          "s5",
+          "s6",
+          "s7"
+        ],
+        "items": [
+          {
+            "id": "k1",
+            "work": [
+              "procedure"
+            ],
+            "knowledge": [
+              "procedure"
+            ],
+            "form": "from-values",
+            "prompt": "a₁ = 17, d = 5 인 일반항 aₙ = a₁ + (n − 1)d 를 □n + □ 꼴로 정리한다. 빈칸의 두 수를 차례로 적는다. 수만 쉼표로 가른다.",
+            "answer": {
+              "kind": "numbers",
+              "value": [
+                5,
+                12
+              ]
+            },
+            "misconceptions": [
+              {
+                "match": {
+                  "kind": "numbers",
+                  "value": [
+                    5,
+                    17
+                  ]
+                },
+                "feedback": "괄호를 풀 때 생긴 빼는 5 가 빠졌습니다. n 이 없는 수는 17 에서 5 를 빼서 모읍니다."
+              },
+              {
+                "match": {
+                  "kind": "numbers",
+                  "value": [
+                    5,
+                    22
+                  ]
+                },
+                "feedback": "빼는 5 를 더했습니다. 괄호를 풀면 5n − 5 이므로 17 에서 5 를 뺍니다."
+              }
+            ],
+            "solution": "a₁ 자리에 17, d 자리에 5 를 넣으면 17 + (n − 1) × 5 이고, 괄호를 풀면 17 + 5n − 5 이다. 17 − 5 = 12 이므로 5n + 12 이다."
+          },
+          {
+            "id": "k2",
+            "work": [
+              "procedure"
+            ],
+            "knowledge": [
+              "procedure"
+            ],
+            "form": "from-list",
+            "prompt": "수열 23, 29, 35, 41, … 의 일반항 aₙ = a₁ + (n − 1)d 를 □n + □ 꼴로 정리한다. 빈칸의 두 수를 차례로 적는다. 수만 쉼표로 가른다.",
+            "answer": {
+              "kind": "numbers",
+              "value": [
+                6,
+                17
+              ]
+            },
+            "misconceptions": [
+              {
+                "match": {
+                  "kind": "numbers",
+                  "value": [
+                    6,
+                    23
+                  ]
+                },
+                "feedback": "괄호를 풀 때 생긴 빼는 수가 빠졌습니다. n 이 없는 수는 첫째항에서 공차를 빼서 모읍니다."
+              },
+              {
+                "match": {
+                  "kind": "numbers",
+                  "value": [
+                    6,
+                    29
+                  ]
+                },
+                "feedback": "빼는 수를 더했습니다. 괄호를 풀면 생기는 빼는 수는 첫째항에서 뺍니다."
+              }
+            ],
+            "solution": "첫째항은 23, 공차는 29 − 23 = 6 이다. 23 + (n − 1) × 6 = 23 + 6n − 6 이고, 23 − 6 = 17 이므로 6n + 17 이다."
+          }
+        ]
+      }
+    ]
+  },
+  "preCheck": {
+    "intro": "일반항 aₙ = a₁ + (n − 1)d 를 정리하는 문제를 세 개 풉니다. 글자 d 는 공차를 나타내고, (n − 1)d 는 (n − 1) × d 입니다. 종이에 써서 풀어도 되고, 모르면 ‘모르겠다’를 눌러도 됩니다.",
+    "items": [
+      {
+        "id": "pc1",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "goals": [
+          "g1"
+        ],
+        "prompt": "a₁ = 14, d = 3 인 일반항 aₙ = a₁ + (n − 1)d 를 □n + □ 꼴로 정리한다. 빈칸의 두 수를 차례로 적는다. 수만 쉼표로 가른다.",
+        "answer": {
+          "kind": "numbers",
+          "value": [
+            3,
+            11
+          ]
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                3,
+                14
+              ]
+            },
+            "feedback": "괄호를 풀 때 생긴 빼는 3 이 빠졌습니다. n 이 없는 수는 14 에서 3 을 빼서 모읍니다."
+          },
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                3,
+                17
+              ]
+            },
+            "feedback": "빼는 3 을 더했습니다. 괄호를 풀면 3n − 3 이므로 14 에서 3 을 뺍니다."
+          }
+        ],
+        "solution": "a₁ 자리에 14, d 자리에 3 을 넣으면 14 + (n − 1) × 3 이고, 괄호를 풀면 14 + 3n − 3 이다. 14 − 3 = 11 이므로 3n + 11 이다."
+      },
+      {
+        "id": "pc2",
+        "work": [
+          "procedure",
+          "discriminate"
+        ],
+        "knowledge": [
+          "procedure",
+          "concept"
+        ],
+        "goals": [
+          "g1"
+        ],
+        "prompt": "a₁ = 6, d = 4 인 일반항 aₙ = a₁ + (n − 1)d 를 정리한 식은 어느 것인가?",
+        "answer": {
+          "kind": "choice",
+          "options": [
+            {
+              "id": "sign",
+              "label": "4n + 10"
+            },
+            {
+              "id": "right",
+              "label": "4n + 2"
+            },
+            {
+              "id": "swap",
+              "label": "6n + 4"
+            },
+            {
+              "id": "lost",
+              "label": "4n + 6"
+            }
+          ],
+          "value": "right"
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "choice",
+              "value": "sign"
+            },
+            "feedback": "괄호를 풀면 4n − 4 인데 빼는 4 를 더했습니다. n 이 없는 수는 6 에서 4 를 뺍니다."
+          },
+          {
+            "match": {
+              "kind": "choice",
+              "value": "lost"
+            },
+            "feedback": "괄호를 풀 때 생긴 빼는 4 가 빠졌습니다. 6 + 4n − 4 에서 6 과 빼는 4 를 모아야 합니다."
+          },
+          {
+            "match": {
+              "kind": "choice",
+              "value": "swap"
+            },
+            "feedback": "a₁ 과 d 의 자리를 바꿨습니다. n 앞에는 공차가, 뒤에는 첫째항에서 공차를 뺀 수가 옵니다."
+          }
+        ],
+        "solution": "6 + (n − 1) × 4 = 6 + 4n − 4 이고, 6 − 4 = 2 이므로 4n + 2 이다."
+      },
+      {
+        "id": "pc3",
+        "work": [
+          "relate"
+        ],
+        "knowledge": [
+          "concept"
+        ],
+        "goals": [
+          "g1"
+        ],
+        "prompt": "일반항을 정리했더니 8n + 1 이 되었다. 첫째항 a₁ 과 공차 d 를 차례로 적는다. 수만 쉼표로 가른다.",
+        "answer": {
+          "kind": "numbers",
+          "value": [
+            9,
+            8
+          ]
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                1,
+                8
+              ]
+            },
+            "feedback": "n 뒤의 1 을 첫째항으로 읽었습니다. 첫째항은 정리한 식에 n = 1 을 넣은 값입니다."
+          },
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                8,
+                9
+              ]
+            },
+            "feedback": "차례가 바뀌었습니다. 먼저 a₁(첫째항), 다음에 d(공차) 를 적습니다."
+          }
+        ],
+        "solution": "n 앞의 수가 공차이므로 d = 8 이다. n = 1 을 넣으면 8 × 1 + 1 = 9 이므로 a₁ = 9 이다."
+      }
+    ]
+  },
+  "delayedCheck": {
+    "intro": "앞에서 한 방법으로 풀 수 있는 문제입니다. 종이에 계산해도 됩니다.",
+    "items": [
+      {
+        "id": "dc1",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "goals": [
+          "g1"
+        ],
+        "prompt": "a₁ = 21, d = 4 인 일반항 aₙ = a₁ + (n − 1)d 를 □n + □ 꼴로 정리한다. 빈칸의 두 수를 차례로 적는다. 수만 쉼표로 가른다.",
+        "answer": {
+          "kind": "numbers",
+          "value": [
+            4,
+            17
+          ]
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                4,
+                21
+              ]
+            },
+            "feedback": "괄호를 풀 때 생긴 빼는 4 가 빠졌습니다. n 이 없는 수는 21 에서 4 를 빼서 모읍니다."
+          },
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                4,
+                25
+              ]
+            },
+            "feedback": "빼는 4 를 더했습니다. 괄호를 풀면 4n − 4 이므로 21 에서 4 를 뺍니다."
+          }
+        ],
+        "solution": "a₁ 자리에 21, d 자리에 4 를 넣으면 21 + (n − 1) × 4 이고, 괄호를 풀면 21 + 4n − 4 이다. 21 − 4 = 17 이므로 4n + 17 이다."
+      },
+      {
+        "id": "dc2",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "goals": [
+          "g1"
+        ],
+        "prompt": "수열 32, 40, 48, 56, … 의 일반항 aₙ = a₁ + (n − 1)d 를 □n + □ 꼴로 정리한다. 빈칸의 두 수를 차례로 적는다. 수만 쉼표로 가른다.",
+        "answer": {
+          "kind": "numbers",
+          "value": [
+            8,
+            24
+          ]
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                8,
+                32
+              ]
+            },
+            "feedback": "괄호를 풀 때 생긴 빼는 수가 빠졌습니다. n 이 없는 수는 첫째항에서 공차를 빼서 모읍니다."
+          },
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                8,
+                40
+              ]
+            },
+            "feedback": "빼는 수를 더했습니다. 괄호를 풀면 생기는 빼는 수는 첫째항에서 뺍니다."
+          }
+        ],
+        "solution": "첫째항은 32, 공차는 40 − 32 = 8 이다. 32 + (n − 1) × 8 = 32 + 8n − 8 이고, 32 − 8 = 24 이므로 8n + 24 이다."
+      },
+      {
+        "id": "dc3",
+        "work": [
+          "relate"
+        ],
+        "knowledge": [
+          "concept"
+        ],
+        "goals": [
+          "g1"
+        ],
+        "prompt": "일반항을 정리했더니 9n + 4 가 되었다. 첫째항 a₁ 과 공차 d 를 차례로 적는다. 수만 쉼표로 가른다.",
+        "answer": {
+          "kind": "numbers",
+          "value": [
+            13,
+            9
+          ]
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                4,
+                9
+              ]
+            },
+            "feedback": "n 뒤의 4 를 첫째항으로 읽었습니다. 첫째항은 정리한 식에 n = 1 을 넣은 값입니다."
+          },
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                9,
+                13
+              ]
+            },
+            "feedback": "차례가 바뀌었습니다. 먼저 a₁(첫째항), 다음에 d(공차) 를 적습니다."
+          }
+        ],
+        "solution": "n 앞의 수가 공차이므로 d = 9 이다. n = 1 을 넣으면 9 × 1 + 4 = 13 이므로 a₁ = 13 이다."
+      }
+    ]
+  },
+  "review": {
+    "minutes": 5,
+    "items": [
+      {
+        "id": "rv1",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "goal": "g1",
+        "prompt": "a₁ = 22, d = 7 인 일반항 aₙ = a₁ + (n − 1)d 를 □n + □ 꼴로 정리한다. 빈칸의 두 수를 차례로 적는다. 수만 쉼표로 가른다.",
+        "answer": {
+          "kind": "numbers",
+          "value": [
+            7,
+            15
+          ]
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                7,
+                22
+              ]
+            },
+            "feedback": "괄호를 풀 때 생긴 빼는 7 이 빠졌습니다. n 이 없는 수는 22 에서 7 을 빼서 모읍니다."
+          },
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                7,
+                29
+              ]
+            },
+            "feedback": "빼는 7 을 더했습니다. 괄호를 풀면 7n − 7 이므로 22 에서 7 을 뺍니다."
+          }
+        ],
+        "feedback": "a₁ 자리에 22, d 자리에 7 을 넣으면 22 + (n − 1) × 7 이고, 괄호를 풀면 22 + 7n − 7 이다. 22 − 7 = 15 이므로 7n + 15 이다."
+      },
+      {
+        "id": "rv2",
+        "work": [
+          "procedure",
+          "discriminate"
+        ],
+        "knowledge": [
+          "procedure",
+          "concept"
+        ],
+        "goal": "g1",
+        "prompt": "a₁ = 9, d = 5 인 일반항 aₙ = a₁ + (n − 1)d 를 정리한 식은 어느 것인가?",
+        "answer": {
+          "kind": "choice",
+          "options": [
+            {
+              "id": "sign",
+              "label": "5n + 14"
+            },
+            {
+              "id": "right",
+              "label": "5n + 4"
+            },
+            {
+              "id": "swap",
+              "label": "9n + 5"
+            },
+            {
+              "id": "lost",
+              "label": "5n + 9"
+            }
+          ],
+          "value": "right"
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "choice",
+              "value": "sign"
+            },
+            "feedback": "괄호를 풀면 5n − 5 인데 빼는 5 를 더했습니다. n 이 없는 수는 9 에서 5 를 뺍니다."
+          },
+          {
+            "match": {
+              "kind": "choice",
+              "value": "lost"
+            },
+            "feedback": "괄호를 풀 때 생긴 빼는 5 가 빠졌습니다. 9 + 5n − 5 에서 9 와 빼는 5 를 모아야 합니다."
+          },
+          {
+            "match": {
+              "kind": "choice",
+              "value": "swap"
+            },
+            "feedback": "a₁ 과 d 의 자리를 바꿨습니다. n 앞에는 공차가, 뒤에는 첫째항에서 공차를 뺀 수가 옵니다."
+          }
+        ],
+        "feedback": "9 + (n − 1) × 5 = 9 + 5n − 5 이고, 9 − 5 = 4 이므로 5n + 4 이다."
+      },
+      {
+        "id": "rv3",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "goal": "g1",
+        "prompt": "a₁ = 31, d = 9 인 일반항 aₙ = a₁ + (n − 1)d 를 □n + □ 꼴로 정리한다. 빈칸의 두 수를 차례로 적는다. 수만 쉼표로 가른다.",
+        "answer": {
+          "kind": "numbers",
+          "value": [
+            9,
+            22
+          ]
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                9,
+                31
+              ]
+            },
+            "feedback": "괄호를 풀 때 생긴 빼는 9 가 빠졌습니다. n 이 없는 수는 31 에서 9 를 빼서 모읍니다."
+          },
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                9,
+                40
+              ]
+            },
+            "feedback": "빼는 9 를 더했습니다. 괄호를 풀면 9n − 9 이므로 31 에서 9 를 뺍니다."
+          }
+        ],
+        "feedback": "a₁ 자리에 31, d 자리에 9 를 넣으면 31 + (n − 1) × 9 이고, 괄호를 풀면 31 + 9n − 9 이다. 31 − 9 = 22 이므로 9n + 22 이다."
+      },
+      {
+        "id": "rv4",
+        "work": [
+          "relate"
+        ],
+        "knowledge": [
+          "concept"
+        ],
+        "goal": "g1",
+        "prompt": "일반항을 정리했더니 3n + 20 이 되었다. 첫째항 a₁ 과 공차 d 를 차례로 적는다. 수만 쉼표로 가른다.",
+        "answer": {
+          "kind": "numbers",
+          "value": [
+            23,
+            3
+          ]
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                20,
+                3
+              ]
+            },
+            "feedback": "n 뒤의 20 을 첫째항으로 읽었습니다. 첫째항은 정리한 식에 n = 1 을 넣은 값입니다."
+          },
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                3,
+                23
+              ]
+            },
+            "feedback": "차례가 바뀌었습니다. 먼저 a₁(첫째항), 다음에 d(공차) 를 적습니다."
+          }
+        ],
+        "feedback": "n 앞의 수가 공차이므로 d = 3 이다. n = 1 을 넣으면 3 × 1 + 20 = 23 이므로 a₁ = 23 이다."
+      },
+      {
+        "id": "rv5",
+        "work": [
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "goal": "g1",
+        "prompt": "수열 30, 36, 42, 48, … 의 일반항 aₙ = a₁ + (n − 1)d 를 □n + □ 꼴로 정리한다. 빈칸의 두 수를 차례로 적는다. 수만 쉼표로 가른다.",
+        "answer": {
+          "kind": "numbers",
+          "value": [
+            6,
+            24
+          ]
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                6,
+                30
+              ]
+            },
+            "feedback": "괄호를 풀 때 생긴 빼는 수가 빠졌습니다. n 이 없는 수는 첫째항에서 공차를 빼서 모읍니다."
+          },
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                6,
+                36
+              ]
+            },
+            "feedback": "빼는 수를 더했습니다. 괄호를 풀면 생기는 빼는 수는 첫째항에서 뺍니다."
+          }
+        ],
+        "feedback": "첫째항은 30, 공차는 36 − 30 = 6 이다. 30 + (n − 1) × 6 = 30 + 6n − 6 이고, 30 − 6 = 24 이므로 6n + 24 이다."
+      },
+      {
+        "id": "rv6",
+        "work": [
+          "monitor",
+          "procedure"
+        ],
+        "knowledge": [
+          "procedure"
+        ],
+        "goal": "g1",
+        "prompt": "10 + (n − 1) × 3 을 3n + 10 으로 정리했다. 정리한 식과 처음 식에 각각 n = 1 을 넣은 값을 차례로 적는다. 수만 쉼표로 가른다.",
+        "answer": {
+          "kind": "numbers",
+          "value": [
+            13,
+            10
+          ]
+        },
+        "misconceptions": [
+          {
+            "match": {
+              "kind": "numbers",
+              "value": [
+                10,
+                13
+              ]
+            },
+            "feedback": "차례가 바뀌었습니다. 먼저 정리한 식의 값, 다음에 처음 식의 값을 적습니다."
+          }
+        ],
+        "feedback": "3n + 10 에 n = 1 을 넣으면 3 × 1 + 10 = 13 이다. 10 + (n − 1) × 3 에 n = 1 을 넣으면 10 + 0 × 3 = 10 이다. 두 값이 다르므로 정리가 틀렸다."
+      }
+    ]
+  }
+}
