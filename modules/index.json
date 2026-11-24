@@ -16,5 +16,33 @@
     "version": "1.01",
     "needs": [],
     "order": 2
+  },
+  {
+    "id": "seq0-list",
+    "title": "수열 첫걸음 ① 수를 차례로 늘어놓기",
+    "kind": "pairs",
+    "centralQuestion": "수를 늘어놓은 줄을 보고, 맨 앞의 수와 몇 번째 자리의 수를 바로 짚을 수 있는가?",
+    "version": "1.12",
+    "needs": [],
+    "order": 1,
+    "next": "seq0-diff"
+  },
+  {
+    "id": "seq-terms",
+    "title": "수열을 읽는 말과 기호",
+    "kind": "pairs",
+    "centralQuestion": "수를 차례대로 늘어놓은 줄(수열)을 다루는 문제에 나오는 말과 기호를 보면 그것이 무엇을 가리키는지, 뜻을 보면 그 말이 무엇인지를 곧바로 떠올릴 수 있는가?",
+    "version": "1.02",
+    "needs": [],
+    "order": 1
+  },
+  {
+    "id": "read-leap-year",
+    "title": "글 읽어내기 — 윤년은 왜 있을까",
+    "kind": "read",
+    "centralQuestion": "설명하는 글을 읽고, 글에 적힌 것·글에서 따라 나오는 것·글만으로는 알 수 없는 것을 그 판단을 받치는 글의 덩어리와 함께 가를 수 있는가?",
+    "version": "1.06",
+    "needs": [],
+    "order": 1
   }
 ]

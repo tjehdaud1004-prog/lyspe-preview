@@ -1,0 +1,278 @@
+{
+  "id": "seq-terms",
+  "version": "1.02",
+  "kind": "pairs",
+  "order": 1,
+  "needs": [],
+  "title": "수열을 읽는 말과 기호",
+  "centralQuestion": "수를 차례대로 늘어놓은 줄(수열)을 다루는 문제에 나오는 말과 기호를 보면 그것이 무엇을 가리키는지, 뜻을 보면 그 말이 무엇인지를 곧바로 떠올릴 수 있는가?",
+  "prerequisites": [
+    "3, 7, 11, 15 처럼 수를 한 줄로 늘어놓은 것을 읽을 수 있다.",
+    "수에 4 를 더하거나 3 을 곱하는 계산을 할 수 있다."
+  ],
+  "ai": {
+    "scope": {
+      "in": "수열, 항, 첫째항, 제n항, 일반항, 등차수열, 공차, 등비수열, 공비의 뜻과 기호(a₁, aₙ, d, r)",
+      "adjacent": ["수열의 항을 구하는 간단한 계산","이 화면의 사용 방법","낱말의 뜻을 쉬운 말로 다시 설명하기"]
+    }
+  },
+  "pairs": [
+    {"id":"seq","term":"수열","meaning":"차례대로 늘어놓은 수의 줄"},
+    {"id":"term","term":"항","meaning":"수열을 이루는 수 하나하나"},
+    {"id":"first","term":"첫째항","meaning":"맨 앞의 항 (a₁)"},
+    {"id":"nth","term":"제n항","meaning":"앞에서 n번째 항 (aₙ)"},
+    {"id":"general","term":"일반항","meaning":"제n항 aₙ 을 n 의 식으로 나타낸 것"},
+    {"id":"arith","term":"등차수열","meaning":"앞의 항에 일정한 수를 더해 다음 항이 되는 수열"},
+    {"id":"cd","term":"공차","meaning":"등차수열에서 더해 가는 일정한 수 (이웃한 두 항의 차, d)"},
+    {"id":"geo","term":"등비수열","meaning":"앞의 항에 일정한 수를 곱해 다음 항이 되는 수열"},
+    {"id":"cr","term":"공비","meaning":"등비수열에서 곱해 가는 일정한 수 (이웃한 두 항의 비, r)"}
+  ],
+  "scenes": [
+    {
+      "id": "s2",
+      "title": "수를 늘어놓은 줄을 읽는 말",
+      "focus": ["retrieve"],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s2t1",
+          "units": [
+            "3, 7, 11, 15, … 처럼 수를 차례대로 늘어놓은 줄을 수열이라고 합니다. 이 줄 속의 수 하나하나는 항이라고 합니다.",
+            "맨 앞에 있는 항 3 을 첫째항이라 하고, 기호로는 a₁ 이라고 적습니다. a₁ 의 아래에 쓴 1 은 몇 번째 항인지를 가리키는 번호입니다.",
+            "예를 들어 3, 7, 11, 15 에는 항이 4 개 있고, 그중 첫째항은 3 입니다. 거꾸로, 7 은 항이지만 맨 앞에 있지 않으므로 첫째항이 아닙니다. 그래서 줄은 수열, 줄 속의 수는 항, 맨 앞의 항은 첫째항입니다."
+          ]
+        },
+        {
+          "type": "round",
+          "id": "s2r1",
+          "mode": "recall",
+          "work": ["retrieve"],
+          "knowledge": ["fact"],
+          "prompt": "뜻을 가리고 떠올려 답합니다. 낱말을 적는 문항은 낱말만 적어도 되고, 수를 적는 문항은 숫자로 적습니다. 음수는 앞에 − 를 붙여 적습니다.",
+          "requeue": {"gap":2,"max":3},
+          "items": [
+            {"id":"r2-seq-a","pair":"seq","cue":"5, 8, 11, 14, … 처럼 수들을 한 줄로 차례로 세워 놓은 것 전체를 부르는 말은 무엇인가요?","answer":{"kind":"term","value":"수열"},"misconceptions":[{"match":{"kind":"term","value":"항"},"feedback":"항은 줄 전체가 아니라 줄 속의 수 하나하나입니다. 이 물음은 줄 전체를 묻고 있습니다."}],"why":"수를 차례대로 늘어놓은 줄 전체가 수열입니다. 줄 속의 수 하나하나는 항이라고 따로 부릅니다."},
+            {"id":"r2-first-a","pair":"first","cue":"수열 5, 8, 11, 14, … 에서 맨 앞에 놓인 항 5 의 이름은 무엇인가요?","answer":{"kind":"term","value":"첫째항","accept":["첫항","초항","제1항","첫번째항","1번째항","제1번째항"]},"misconceptions":[{"match":{"kind":"term","value":"a₁"},"feedback":"a₁ 은 첫째항을 적는 기호입니다. 이 물음은 기호가 아니라 이름을 묻습니다."},{"match":{"kind":"term","value":"항"},"feedback":"항은 줄 속의 수 하나하나를 모두 부르는 이름입니다. 맨 앞에 있는 항에는 따로 정한 이름이 있습니다."}],"why":"맨 앞에 있는 항이 첫째항이고 a₁ 로 적습니다. 번호가 1 인 항이라서 제1항이라고도 합니다."},
+            {"id":"r2-term-c","pair":"term","cue":"수열 3, 7, 11, 15, … 에서 ‘항’ 이라고 부르는 것은 어느 것인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"3, 7, 11, 15, … 줄 전체"},{"id":"b","label":"3 이나 11 처럼 줄 속의 수 하나하나"},{"id":"c","label":"3 에서 7 로 갈 때 늘어난 수 4"},{"id":"d","label":"맨 앞에 있는 수 3 하나만"}],"value":"b"},"misconceptions":[{"match":{"kind":"choice","value":"a"},"feedback":"줄 전체는 항이 아니라 수열입니다. 항은 그 줄 속의 수 하나하나입니다."},{"match":{"kind":"choice","value":"c"},"feedback":"이웃한 두 수의 차는 줄 속의 수가 아니라 수와 수 사이의 값입니다. 항은 줄 속의 수 하나하나입니다."},{"match":{"kind":"choice","value":"d"},"feedback":"맨 앞의 수 3 도 항이지만 항은 그것만이 아닙니다. 줄 속의 어느 자리의 수든 항입니다."}],"why":"항은 수열을 이루는 수 하나하나입니다. 3 도 11 도 이 수열의 항입니다."},
+            {"id":"r2-first-b","pair":"first","cue":"수열 31, 36, 41, 46, … 의 첫째항은 얼마인가요?","answer":{"kind":"number","value":31},"misconceptions":[{"match":{"kind":"number","value":36},"feedback":"36 은 앞에서 두 번째 항입니다. 첫째항은 맨 앞에 있는 항입니다."},{"match":{"kind":"number","value":5},"feedback":"5 는 이웃한 두 항의 차입니다. 첫째항은 맨 앞에 있는 항 그 자체입니다."}],"why":"첫째항은 맨 앞에 있는 항입니다. 이 수열에서는 31 입니다."},
+            {"id":"r2-term-b","pair":"term","cue":"10, 20, 30, 40, 50 에서 항은 모두 몇 개인가요?","answer":{"kind":"number","value":5},"misconceptions":[{"match":{"kind":"number","value":50},"feedback":"50 은 마지막 항의 값입니다. 물음은 항이 몇 개인지, 곧 수가 몇 개 늘어서 있는지입니다."},{"match":{"kind":"number","value":4},"feedback":"4 는 하나를 빠뜨리고 센 값입니다. 10 부터 50 까지 하나씩 세어 보세요."}],"why":"항은 수열을 이루는 수 하나하나이므로 항의 개수는 늘어선 수의 개수와 같습니다. 10 부터 50 까지 모두 5개입니다."},
+            {"id":"r2-seq-c","pair":"seq","cue":"‘수열’ 이라는 말이 가리키는 것은 어느 것인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"줄 속에 놓인 수 하나하나"},{"id":"b","label":"줄의 맨 앞에 놓인 수 하나"},{"id":"c","label":"차례를 지켜 줄지어 놓은 수 전체"},{"id":"d","label":"이웃한 두 수의 차이 하나"}],"value":"c"},"misconceptions":[{"match":{"kind":"choice","value":"a"},"feedback":"줄 속의 수 하나하나는 항입니다. 수열은 그 항들을 줄지어 놓은 것 전체입니다."},{"match":{"kind":"choice","value":"b"},"feedback":"줄의 맨 앞에 있는 수는 첫째항입니다. 수열은 줄 전체를 부르는 말입니다."},{"match":{"kind":"choice","value":"d"},"feedback":"이웃한 두 수의 차는 줄 속의 한 값일 뿐입니다. 수열은 줄 전체를 부르는 말입니다."}],"why":"수열은 수를 차례대로 줄지어 놓은 것 전체를 부르는 말입니다. 줄 속의 수 하나하나는 항입니다."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "번호로 부르기",
+      "focus": ["retrieve"],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s3t1",
+          "units": [
+            "3, 7, 11, 15, … 에서 앞에서 2번째 항을 제2항이라 하고 a₂ 로 적으므로, a₂ 는 7 입니다. 같은 식으로 앞에서 3번째 항은 제3항이라 하고 a₃ 으로 적으며, a₃ 은 11 입니다.",
+            "번호를 정하지 않고 글자 n 으로 두면, n번째 항을 제n항이라 하며 aₙ 으로 적습니다. 예를 들어 n 이 4 이면 aₙ 은 a₄ 이고, 위의 줄에서 그 값은 15 입니다.",
+            "수열 전체는 {aₙ} 처럼 중괄호로 묶어 적습니다. 위의 줄에서 a₂ = 7 은 항 하나이고, {aₙ} 은 3, 7, 11, 15, … 전체입니다."
+          ]
+        },
+        {
+          "type": "round",
+          "mode": "recall",
+          "work": ["retrieve"],
+          "knowledge": ["fact"],
+          "requeue": {"gap":2,"max":3},
+          "id": "s3r1",
+          "prompt": "뜻을 가리고 떠올려 답합니다. 낱말을 적는 문항은 낱말만 적어도 되고, 수를 적는 문항은 숫자로 적습니다. 음수는 앞에 − 를 붙여 적습니다.",
+          "items": [
+            {"id":"r3-nth-d","pair":"nth","cue":"수열 8, 11, 14, 17, … 에서 제3항은 어느 것인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"8"},{"id":"b","label":"11"},{"id":"c","label":"14"},{"id":"d","label":"17"}],"value":"c"},"misconceptions":[{"match":{"kind":"choice","value":"a"},"feedback":"8 은 앞에서 첫 번째 항, 곧 제1항입니다."},{"match":{"kind":"choice","value":"b"},"feedback":"11 은 앞에서 두 번째 항, 곧 제2항입니다."},{"match":{"kind":"choice","value":"d"},"feedback":"17 은 앞에서 네 번째 항, 곧 제4항입니다."}],"why":"제3항은 앞에서 세 번째에 있는 항입니다. 이 수열에서는 14 입니다."},
+            {"id":"r3-seq-c","pair":"seq","cue":"{aₙ} 은 무엇을 나타내는 기호인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"수열 전체"},{"id":"b","label":"항 하나"},{"id":"c","label":"첫째항"},{"id":"d","label":"이웃한 두 항의 차"}],"value":"a"},"misconceptions":[{"match":{"kind":"choice","value":"b"},"feedback":"aₙ 하나는 항 하나이지만, 중괄호로 묶은 {aₙ} 은 항들의 줄 전체입니다."},{"match":{"kind":"choice","value":"c"},"feedback":"첫째항은 맨 앞의 항 하나(a₁)입니다. 중괄호로 묶은 {aₙ} 은 줄 전체를 가리킵니다."},{"match":{"kind":"choice","value":"d"},"feedback":"이웃한 두 항의 차는 줄 속의 한 값일 뿐입니다. {aₙ} 은 줄 전체를 가리킵니다."}],"why":"중괄호로 묶은 {aₙ} 은 수열 전체를 나타냅니다. aₙ 하나는 그 수열의 항 하나입니다."},
+            {"id":"r3-nth-c","pair":"nth","cue":"a₁₀ 에서 아래에 쓴 10 은 무엇을 뜻하나요?","answer":{"kind":"choice","options":[{"id":"a","label":"그 항의 값이 10 이라는 뜻입니다"},{"id":"b","label":"앞에서 10번째 항이라는 뜻입니다"},{"id":"c","label":"이웃한 두 항의 차가 10 이라는 뜻입니다"},{"id":"d","label":"항이 모두 10개라는 뜻입니다"}],"value":"b"},"misconceptions":[{"match":{"kind":"choice","value":"a"},"feedback":"항의 값은 a₁₀ 자체이고, 아래에 쓴 수는 몇 번째 항인지입니다. a₁₀ 의 값은 따로 구해야 합니다."},{"match":{"kind":"choice","value":"c"},"feedback":"이웃한 두 항의 차는 d 로 적습니다. 아래에 쓴 수는 몇 번째 항인지 가리킵니다."},{"match":{"kind":"choice","value":"d"},"feedback":"항이 몇 개인지는 아래에 쓴 수로 나타내지 않습니다. 아래에 쓴 수는 몇 번째 항인지 가리킵니다."}],"why":"aₙ 에서 아래에 쓴 n 은 앞에서 몇 번째 항인지를 가리킵니다. a₁₀ 은 앞에서 10번째 항입니다."},
+            {"id":"r3-first-c","pair":"first","cue":"‘첫째항’ 을 나타내는 기호는 어느 것인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"aₙ"},{"id":"b","label":"a₂"},{"id":"c","label":"{aₙ}"},{"id":"d","label":"a₁"}],"value":"d"},"misconceptions":[{"match":{"kind":"choice","value":"a"},"feedback":"aₙ 은 앞에서 n번째 항을 두루 가리키는 기호입니다. 맨 앞의 항은 번호가 1 인 a₁ 입니다."},{"match":{"kind":"choice","value":"b"},"feedback":"a₂ 는 앞에서 두 번째 항입니다. 맨 앞의 항은 번호가 1 인 a₁ 입니다."},{"match":{"kind":"choice","value":"c"},"feedback":"{aₙ} 은 항들의 줄 전체를 가리킵니다. 맨 앞의 항 하나는 a₁ 입니다."}],"why":"맨 앞의 항은 번호가 1 이므로 a₁ 로 적습니다. aₙ 은 번호를 정하지 않은 항이고 {aₙ} 은 줄 전체입니다."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "번호로 항을 구하는 규칙 적기",
+      "focus": ["retrieve"],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s4t1",
+          "units": [
+            "3, 7, 11, 15, … 에서 a₁ = 4 × 1 − 1 = 3 이고, a₂ = 4 × 2 − 1 = 7 입니다. 이 규칙대로 n번째 항은 aₙ = 4n − 1 입니다.",
+            "제n항 aₙ 을 n 의 식으로 나타낸 것을 일반항이라고 합니다. 위의 줄의 일반항은 aₙ = 4n − 1 입니다.",
+            "일반항에 번호를 넣으면 그 번호의 항을 구할 수 있습니다. 예를 들어 n = 4 를 넣으면 4 × 4 − 1 = 15 이고, 이것이 a₄ 의 값입니다. 거꾸로, 15 는 일반항이 아니라 a₄ 의 값입니다."
+          ]
+        },
+        {
+          "type": "round",
+          "mode": "recall",
+          "work": ["retrieve"],
+          "knowledge": ["fact"],
+          "requeue": {"gap":2,"max":3},
+          "id": "s4r1",
+          "prompt": "뜻을 가리고 떠올려 답합니다. 낱말을 적는 문항은 낱말만 적어도 되고, 수를 적는 문항은 숫자로 적습니다. 음수는 앞에 − 를 붙여 적습니다.",
+          "items": [
+            {"id":"r4-general-a","pair":"general","cue":"제n항 aₙ 을 n 의 식으로 나타낸 것을 그 수열의 무엇이라 하나요?","answer":{"kind":"term","value":"일반항"},"misconceptions":[{"match":{"kind":"term","value":"제n항"},"feedback":"제n항은 물음에 이미 나온 말입니다. 그것을 n 의 식으로 나타낸 것의 이름을 묻고 있습니다."},{"match":{"kind":"term","value":"수열"},"feedback":"수열은 항들을 늘어놓은 줄 전체입니다. 이 물음은 항을 구하는 식의 이름을 묻습니다."}],"why":"제n항 aₙ 을 n 의 식으로 나타낸 것이 일반항입니다. 일반항에 번호를 넣으면 그 번호의 항이 나옵니다."},
+            {"id":"r4-nth-b","pair":"nth","cue":"수열 5, 9, 13, 17, … 에서 a₃ 은 얼마인가요?","answer":{"kind":"number","value":13},"misconceptions":[{"match":{"kind":"number","value":3},"feedback":"3 은 a₃ 의 아래에 적은 번호입니다. a₃ 은 앞에서 세 번째 항의 값입니다."},{"match":{"kind":"number","value":9},"feedback":"9 는 앞에서 두 번째 항 a₂ 입니다. a₃ 은 한 칸 뒤의 항입니다."},{"match":{"kind":"number","value":17},"feedback":"17 은 앞에서 네 번째 항 a₄ 입니다. a₃ 은 한 칸 앞의 항입니다."}],"why":"a₃ 은 앞에서 세 번째 항입니다. 아래에 적은 3 은 번호이고, 그 자리에 있는 항의 값은 13 입니다."},
+            {"id":"r4-general-c","pair":"general","cue":"수열 2, 6, 10, 14, … 의 일반항에 해당하는 것은 어느 것인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"a₁ = 2"},{"id":"b","label":"a₂ = 6"},{"id":"c","label":"2, 6, 10, 14, …"},{"id":"d","label":"aₙ = 4n − 2"}],"value":"d"},"misconceptions":[{"match":{"kind":"choice","value":"a"},"feedback":"a₁ = 2 는 맨 앞의 항 하나를 적은 것입니다. 일반항은 n 의 식으로 쓴 것입니다."},{"match":{"kind":"choice","value":"b"},"feedback":"a₂ = 6 은 두 번째 항 하나의 값을 적은 것입니다. 일반항은 n 의 식으로 쓴 것입니다."},{"match":{"kind":"choice","value":"c"},"feedback":"수를 늘어놓은 줄 전체는 수열입니다. 일반항은 n 의 식으로 쓴 것입니다."}],"why":"일반항은 제n항 aₙ 을 n 의 식으로 나타낸 것이므로 aₙ = 4n − 2 입니다. n 에 1, 2, 3, 4 를 넣으면 2, 6, 10, 14 가 나옵니다."},
+            {"id":"r4-nth-e","pair":"nth","cue":"수열 6, 10, 14, 18, … 에서 제2항은 얼마인가요?","answer":{"kind":"number","value":10},"misconceptions":[{"match":{"kind":"number","value":2},"feedback":"2 는 제2항의 번호입니다. 제2항의 값은 앞에서 두 번째에 있는 항입니다."},{"match":{"kind":"number","value":6},"feedback":"6 은 앞에서 첫 번째 항, 곧 제1항입니다."},{"match":{"kind":"number","value":14},"feedback":"14 는 앞에서 세 번째 항, 곧 제3항입니다."}],"why":"제2항은 앞에서 두 번째에 있는 항입니다. 이 수열에서는 10 입니다."},
+            {"id":"r4-general-b","pair":"general","cue":"일반항이 aₙ = 3n + 2 인 수열에서 제4항 a₄ 는 얼마인가요?","answer":{"kind":"number","value":14},"misconceptions":[{"match":{"kind":"number","value":12},"feedback":"12 는 3 × 4 만 계산한 값입니다. 일반항 aₙ = 3n + 2 에서는 2 를 더해야 합니다."},{"match":{"kind":"number","value":11},"feedback":"11 은 n 에 3 을 넣은 값입니다. 제4항은 n 에 4 를 넣습니다."}],"why":"제4항은 일반항의 n 에 4 를 넣어 구합니다. a₄ = 3 × 4 + 2 = 14 입니다."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "title": "더해 가는 수열",
+      "focus": ["retrieve"],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s5t1",
+          "units": [
+            "3, 7, 11, 15, … 는 7 = 3 + 4, 11 = 7 + 4, 15 = 11 + 4 처럼 앞의 항에 4 를 더하면 다음 항이 됩니다. 앞의 항에 일정한 수를 더해 다음 항이 되는 수열을 등차수열이라고 합니다.",
+            "등차수열에서 더해 가는 일정한 수를 공차라 하고, 보통 d 로 적습니다. 위의 수열의 공차는 4 이므로 d = 4 입니다.",
+            "공차는 이웃한 두 항의 차, 곧 뒤의 항에서 앞의 항을 뺀 값입니다. 7 − 3, 11 − 7, 15 − 11 이 모두 4 이므로 공차는 4 입니다. 항이 줄어드는 9, 6, 3, 0, … 에서는 6 − 9 = −3 이므로 공차가 −3 입니다."
+          ]
+        },
+        {
+          "type": "round",
+          "mode": "recall",
+          "work": ["retrieve"],
+          "knowledge": ["fact"],
+          "requeue": {"gap":2,"max":3},
+          "id": "s5r1",
+          "prompt": "이번에는 새로 읽은 말을 가리고 떠올려 답합니다. 낱말을 적는 문항은 낱말만 적어도 되고, 수를 적는 문항은 숫자로 적습니다. 음수는 앞에 − 를 붙여 적습니다.",
+          "items": [
+            {"id":"r5-arith-a","pair":"arith","cue":"3, 7, 11, 15, … 처럼 이웃한 두 항의 차가 모두 같은 수열의 이름은 무엇인가요?","answer":{"kind":"term","value":"등차수열"},"misconceptions":[{"match":{"kind":"term","value":"등비수열"},"feedback":"등비수열은 비가 같은 수열입니다(다음 장면에서 읽습니다). 이 물음은 차가 같은 수열을 묻습니다."},{"match":{"kind":"term","value":"공차"},"feedback":"공차는 더해 가는 그 일정한 수의 이름입니다. 이 물음은 수열 자체의 이름을 묻습니다."},{"match":{"kind":"term","value":"등차"},"feedback":"등차는 줄인 말입니다. 수열의 이름을 끝까지 적습니다."}],"why":"앞의 항에 일정한 수를 더해 가서 이웃한 두 항의 차가 모두 같은 수열이 등차수열입니다. 비가 같은 수열은 등비수열입니다."},
+            {"id":"r5-cd-a","pair":"cd","cue":"3, 7, 11, 15, … 에서 항과 항 사이에 늘 더해지는 수 4 의 이름은 무엇인가요?","answer":{"kind":"term","value":"공차"},"misconceptions":[{"match":{"kind":"term","value":"차"},"feedback":"‘차’ 는 두 수를 뺀 값을 뜻하는 말입니다. 늘 더해지는 일정한 수의 이름은 공차입니다."},{"match":{"kind":"term","value":"등차"},"feedback":"등차는 수열의 이름(등차수열)에 쓰이는 말입니다. 늘 더해지는 일정한 수는 공차입니다."},{"match":{"kind":"term","value":"공비"},"feedback":"공비는 곱해 가는 일정한 수의 이름입니다(다음 장면에서 읽습니다). 이 물음은 더해지는 수를 묻습니다."},{"match":{"kind":"term","value":"d"},"feedback":"d 는 공차를 적는 기호입니다. 이 물음은 기호가 아니라 이름을 묻습니다."}],"why":"등차수열에서 항과 항 사이에 늘 더해지는 일정한 수가 공차입니다. 이웃한 두 항의 차와 같고 기호로는 d 로 적습니다."},
+            {"id":"r5-arith-c","pair":"arith","cue":"다음 가운데 등차수열은 어느 것인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"2, 4, 8, 16, …"},{"id":"b","label":"1, 4, 9, 16, …"},{"id":"c","label":"4, 10, 16, 22, …"}],"value":"c"},"misconceptions":[{"match":{"kind":"choice","value":"a"},"feedback":"2, 4, 8, 16 은 차가 2, 4, 8 로 달라서 등차수열이 아닙니다. 앞의 항에 2 를 곱하고 있습니다."},{"match":{"kind":"choice","value":"b"},"feedback":"1, 4, 9, 16 은 차가 3, 5, 7 로 달라서 등차수열이 아닙니다."}],"why":"이웃한 두 항의 차가 모두 6 으로 같은 것은 4, 10, 16, 22, … 입니다. 차가 늘 같은 수열이 등차수열입니다."},
+            {"id":"r5-cd-b","pair":"cd","cue":"25, 21, 17, 13, … 의 공차는 얼마인가요?","answer":{"kind":"number","value":-4},"misconceptions":[{"match":{"kind":"number","value":4},"feedback":"부호를 놓쳤습니다. 항이 줄어드는 수열이므로 공차는 음수입니다. 뒤의 항에서 앞의 항을 빼면 21 − 25 = −4 입니다."},{"match":{"kind":"number","value":25},"feedback":"25 는 첫째항입니다. 공차는 이웃한 두 항의 차입니다."}],"why":"공차는 (뒤의 항) − (앞의 항) 입니다. 21 − 25 = −4 이고, 17 − 21, 13 − 17 도 모두 −4 입니다. 항이 줄어드는 등차수열의 공차는 음수입니다."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s6",
+      "title": "곱해 가는 수열",
+      "focus": ["retrieve"],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s6t1",
+          "units": [
+            "2, 6, 18, 54, … 는 6 = 2 × 3, 18 = 6 × 3, 54 = 18 × 3 처럼 앞의 항에 3 을 곱하면 다음 항이 됩니다. 앞의 항에 일정한 수를 곱해 다음 항이 되는 수열을 등비수열이라고 합니다.",
+            "등비수열에서 곱해 가는 일정한 수를 공비라 하고, 보통 r 로 적습니다. 위의 수열의 공비는 3 이므로 r = 3 입니다.",
+            "공비는 이웃한 두 항의 비, 곧 뒤의 항을 앞의 항으로 나눈 값입니다. 6 ÷ 2, 18 ÷ 6, 54 ÷ 18 이 모두 3 이므로 공비는 3 입니다."
+          ]
+        },
+        {
+          "type": "round",
+          "mode": "recall",
+          "work": ["retrieve"],
+          "knowledge": ["fact"],
+          "requeue": {"gap":2,"max":3},
+          "id": "s6r1",
+          "prompt": "이번에는 새로 읽은 말을 가리고 떠올려 답합니다. 낱말을 적는 문항은 낱말만 적어도 되고, 수를 적는 문항은 숫자로 적습니다. 음수는 앞에 − 를 붙여 적습니다.",
+          "items": [
+            {"id":"r6-geo-a","pair":"geo","cue":"2, 6, 18, 54, … 처럼 이웃한 두 항의 비가 모두 같은 수열의 이름은 무엇인가요?","answer":{"kind":"term","value":"등비수열"},"misconceptions":[{"match":{"kind":"term","value":"등차수열"},"feedback":"등차수열은 이웃한 두 항의 차가 같은 수열입니다. 이 물음은 비가 같은 수열을 묻습니다."},{"match":{"kind":"term","value":"공비"},"feedback":"공비는 곱해 가는 그 일정한 수의 이름입니다. 이 물음은 수열 자체의 이름을 묻습니다."},{"match":{"kind":"term","value":"등비"},"feedback":"등비는 줄인 말입니다. 수열의 이름을 끝까지 적습니다."}],"why":"앞의 항에 일정한 수를 곱해 가서 이웃한 두 항의 비가 모두 같은 수열이 등비수열입니다. 차가 같은 수열은 등차수열입니다."},
+            {"id":"r6-cr-a","pair":"cr","cue":"2, 6, 18, 54, … 에서 항과 항 사이에 늘 곱해지는 수 3 의 이름은 무엇인가요?","answer":{"kind":"term","value":"공비"},"misconceptions":[{"match":{"kind":"term","value":"비"},"feedback":"‘비’ 는 두 수를 나눈 값을 뜻하는 말입니다. 늘 곱해지는 일정한 수의 이름은 공비입니다."},{"match":{"kind":"term","value":"등비"},"feedback":"등비는 수열의 이름(등비수열)에 쓰이는 말입니다. 늘 곱해지는 일정한 수는 공비입니다."},{"match":{"kind":"term","value":"공차"},"feedback":"공차는 더해 가는 일정한 수입니다. 이 물음은 곱해지는 수를 묻습니다."},{"match":{"kind":"term","value":"r"},"feedback":"r 은 공비를 적는 기호입니다. 이 물음은 기호가 아니라 이름을 묻습니다."}],"why":"등비수열에서 항과 항 사이에 늘 곱해지는 일정한 수가 공비입니다. 이웃한 두 항의 비와 같고 기호로는 r 로 적습니다."},
+            {"id":"r6-geo-c","pair":"geo","cue":"다음 가운데 등비수열은 어느 것인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"3, 6, 9, 12, …"},{"id":"b","label":"3, 6, 12, 24, …"},{"id":"c","label":"3, 6, 11, 18, …"}],"value":"b"},"misconceptions":[{"match":{"kind":"choice","value":"a"},"feedback":"3, 6, 9, 12 는 차가 3 으로 같은 등차수열입니다. 등비수열은 비가 같은 수열입니다."},{"match":{"kind":"choice","value":"c"},"feedback":"3, 6, 11, 18 은 차도 비도 일정하지 않아 등비수열이 아닙니다."}],"why":"이웃한 두 항의 비가 모두 2 로 같은 것은 3, 6, 12, 24, … 입니다. 비가 늘 같은 수열이 등비수열입니다."},
+            {"id":"r6-cr-b","pair":"cr","cue":"7, 14, 28, 56, … 의 공비는 얼마인가요?","answer":{"kind":"number","value":2},"misconceptions":[{"match":{"kind":"number","value":7},"feedback":"7 은 첫째항이면서 14 − 7 의 값이기도 합니다. 공비는 차가 아니라 비(나눈 값)이고 14 ÷ 7 = 2 입니다."}],"why":"공비는 (뒤의 항) ÷ (앞의 항) 입니다. 14 ÷ 7 = 2 이고, 28 ÷ 14, 56 ÷ 28 도 모두 2 입니다."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s7",
+      "title": "섞어 떠올리기",
+      "focus": ["retrieve"],
+      "blocks": [
+        {
+          "type": "round",
+          "id": "s7r1",
+          "mode": "recall",
+          "work": ["retrieve"],
+          "knowledge": ["fact","concept"],
+          "prompt": "여러 장면의 말을 섞어, 새 수열로 떠올립니다. 낱말을 적는 문항은 낱말만 적어도 되고, 수를 적는 문항은 숫자로 적습니다. 음수는 앞에 − 를 붙여 적습니다.",
+          "requeue": {"gap":2,"max":3},
+          "items": [
+            {"id":"r7-cd-s","pair":"cd","cue":"10, 7, 4, 1, … 에서 d = −3 이라고 적었습니다. 이 d 는 무엇을 나타내는 기호인가요?","answer":{"kind":"term","value":"공차"},"misconceptions":[{"match":{"kind":"term","value":"공비"},"feedback":"공비는 곱해 가는 일정한 수이고 기호는 r 입니다. d 는 더해 가는 일정한 수를 나타냅니다."},{"match":{"kind":"term","value":"항"},"feedback":"항은 줄 속의 수 하나하나입니다. d 는 이웃한 두 항의 차를 나타내는 기호입니다."}],"why":"d 는 등차수열에서 더해 가는 일정한 수, 곧 공차를 나타내는 기호입니다. 이 수열은 3 씩 줄어들어 d = −3 입니다."},
+            {"id":"r7-nth-b","pair":"nth","cue":"20, 25, 30, 35, … 에서 a₄ 는 얼마인가요?","answer":{"kind":"number","value":35},"misconceptions":[{"match":{"kind":"number","value":4},"feedback":"4 는 a₄ 의 아래에 적은 번호입니다. a₄ 는 앞에서 네 번째 항의 값입니다."},{"match":{"kind":"number","value":30},"feedback":"30 은 앞에서 세 번째 항 a₃ 입니다. a₄ 는 한 칸 뒤의 항입니다."}],"why":"a₄ 는 앞에서 네 번째 항입니다. 아래에 적은 4 는 번호이고, 그 자리에 있는 항의 값은 35 입니다."},
+            {"id":"r7-geo-s","pair":"geo","cue":"a₂ = a₁ × 5, a₃ = a₂ × 5, a₄ = a₃ × 5 처럼 이어지는 수열의 이름은 무엇인가요?","answer":{"kind":"term","value":"등비수열"},"misconceptions":[{"match":{"kind":"term","value":"등차수열"},"feedback":"등차수열은 일정한 수를 더해 가는 수열입니다. 여기서는 5 를 곱해 가고 있습니다."},{"match":{"kind":"term","value":"공비"},"feedback":"공비는 곱해 가는 수 5 의 이름입니다. 이 물음은 이렇게 이어지는 수열의 이름을 묻습니다."}],"why":"앞의 항에 일정한 수 5 를 곱해 가며 이어지므로 등비수열입니다. 곱해 가는 수 5 가 공비입니다."},
+            {"id":"r7-cr-s","pair":"cr","cue":"5, 10, 20, 40, … 에서 r = 2 라고 적었습니다. 이 r 은 무엇을 나타내는 기호인가요?","answer":{"kind":"term","value":"공비"},"misconceptions":[{"match":{"kind":"term","value":"공차"},"feedback":"공차는 더해 가는 일정한 수이고 기호는 d 입니다. r 은 곱해 가는 일정한 수를 나타냅니다."},{"match":{"kind":"term","value":"항"},"feedback":"항은 줄 속의 수 하나하나입니다. r 은 이웃한 두 항의 비를 나타내는 기호입니다."}],"why":"r 은 등비수열에서 곱해 가는 일정한 수, 곧 공비를 나타내는 기호입니다. 이 수열은 2 배씩 커져 r = 2 입니다."},
+            {"id":"r7-arith-s","pair":"arith","cue":"a₂ = a₁ + 6, a₃ = a₂ + 6, a₄ = a₃ + 6 처럼 이어지는 수열의 이름은 무엇인가요?","answer":{"kind":"term","value":"등차수열"},"misconceptions":[{"match":{"kind":"term","value":"등비수열"},"feedback":"등비수열은 일정한 수를 곱해 가는 수열입니다. 여기서는 6 을 더해 가고 있습니다."},{"match":{"kind":"term","value":"공차"},"feedback":"공차는 더해 가는 수 6 의 이름입니다. 이 물음은 이렇게 이어지는 수열의 이름을 묻습니다."}],"why":"앞의 항에 일정한 수 6 을 더해 가며 이어지므로 등차수열입니다. 더해 가는 수 6 이 공차입니다."},
+            {"id":"r7-cr-c","pair":"cr","cue":"81, 27, 9, 3, … 의 공비는 어느 것인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"1/3"},{"id":"b","label":"3"},{"id":"c","label":"−3"},{"id":"d","label":"1/27"}],"value":"a"},"misconceptions":[{"match":{"kind":"choice","value":"b"},"feedback":"3 은 앞의 항을 뒤의 항으로 나눈 값(81 ÷ 27)입니다. 공비는 (뒤의 항) ÷ (앞의 항) 이므로 27 ÷ 81 = 1/3 입니다."},{"match":{"kind":"choice","value":"c"},"feedback":"모든 항이 양수이므로 공비도 양수입니다. 항이 줄어든다고 공비가 음수가 되는 것은 아닙니다."},{"match":{"kind":"choice","value":"d"},"feedback":"1/27 은 첫째항 81 과 넷째 항 3 의 비입니다. 공비는 이웃한 두 항의 비입니다."}],"why":"공비는 (뒤의 항) ÷ (앞의 항) 입니다. 27 ÷ 81 = 1/3 이고, 9 ÷ 27, 3 ÷ 9 도 모두 1/3 입니다."},
+            {"id":"r7-term-b","pair":"term","cue":"8, 6, 4, 2, 0, −2, −4 에서 항은 모두 몇 개인가요?","answer":{"kind":"number","value":7},"misconceptions":[{"match":{"kind":"number","value":5},"feedback":"5 는 8 부터 0 까지만 센 값입니다. 음수인 항도 항이므로 모두 세어야 합니다."},{"match":{"kind":"number","value":4},"feedback":"4 는 양수인 항만 센 값입니다. 0 과 음수인 항도 항이므로 모두 세어야 합니다."}],"why":"항은 수열을 이루는 수 하나하나이고 음수인 수도 항입니다. 8 부터 −4 까지 모두 7개입니다."},
+            {"id":"r7-general-s","pair":"general","cue":"제n항 aₙ 에 대해 aₙ = 13 − 3n 이라고 적은 이런 식을 무엇이라 하나요?","answer":{"kind":"term","value":"일반항"},"misconceptions":[{"match":{"kind":"term","value":"제n항"},"feedback":"제n항은 물음에 이미 나온 말입니다. 그것을 n 의 식으로 나타낸 것의 이름을 묻고 있습니다."},{"match":{"kind":"term","value":"공차"},"feedback":"공차는 등차수열에서 더해 가는 일정한 수입니다. n 의 식으로 쓴 aₙ = 13 − 3n 의 이름은 일반항입니다."}],"why":"제n항 aₙ 을 n 의 식으로 나타낸 것이 일반항입니다. aₙ = 13 − 3n 에 n = 1 을 넣으면 a₁ = 10 입니다."}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s8",
+      "title": "헷갈리는 짝",
+      "focus": ["retrieve","discriminate"],
+      "blocks": [
+        {
+          "type": "text",
+          "id": "s8t1",
+          "units": [
+            "20, 15, 10, 5, … 에서 a₂ 의 번호는 2 이고 값은 15 입니다. aₙ 에서 아래에 쓴 n 은 항의 번호이고, aₙ 자체는 그 번호에 있는 항의 값입니다. a₂ 를 2 로 읽거나 15 를 번호로 읽으면 틀립니다.",
+            "공차와 공비는 이름이 비슷해 헷갈리기 쉽습니다. 차는 두 수를 뺀 값이고, 비는 두 수를 나눈 값입니다. 예를 들어 4 와 12 에서 차는 12 − 4 = 8 이고, 비는 12 ÷ 4 = 3 입니다."
+          ]
+        },
+        {
+          "type": "round",
+          "id": "s8r1",
+          "mode": "recall",
+          "work": ["retrieve","discriminate"],
+          "knowledge": ["fact","concept"],
+          "prompt": "헷갈리기 쉬운 짝을 이어서 묻습니다. 낱말을 적는 문항은 낱말만 적어도 되고, 수를 적는 문항은 숫자로 적습니다. 음수는 앞에 − 를 붙여 적습니다.",
+          "requeue": {"gap":2,"max":3},
+          "items": [
+            {"id":"r8-nth-b","pair":"nth","cue":"4, 9, 14, 19, … 에서 a₂ 는 얼마인가요?","answer":{"kind":"number","value":9},"misconceptions":[{"match":{"kind":"number","value":2},"feedback":"2 는 a₂ 의 아래에 적은 번호입니다. a₂ 의 값은 그 번호에 있는 항, 곧 앞에서 두 번째 항입니다."},{"match":{"kind":"number","value":4},"feedback":"4 는 맨 앞의 항 a₁ 입니다. a₂ 는 앞에서 두 번째 항입니다."},{"match":{"kind":"number","value":14},"feedback":"14 는 앞에서 세 번째 항 a₃ 입니다. a₂ 는 한 칸 앞의 항입니다."}],"why":"a₂ 의 2 는 번호이고, a₂ 는 앞에서 두 번째 항의 값입니다. 이 수열에서는 9 입니다."},
+            {"id":"r8-cd-a","pair":"cd","cue":"첫날 4쪽, 둘째 날 7쪽, 셋째 날 10쪽 … 처럼 날마다 3쪽씩 더 읽는 수열이 있습니다. 날마다 더해지는 3 을 부르는 수학 낱말은 무엇인가요?","answer":{"kind":"term","value":"공차"},"misconceptions":[{"match":{"kind":"term","value":"공비"},"feedback":"공비는 곱해 가는 일정한 수입니다. 이 이야기에서는 3 쪽씩 더해 가고 있습니다."},{"match":{"kind":"term","value":"차"},"feedback":"‘차’ 는 두 수를 뺀 값을 뜻하는 말입니다. 늘 더해지는 일정한 수의 이름은 공차입니다."},{"match":{"kind":"term","value":"d"},"feedback":"d 는 공차를 적는 기호입니다. 이 물음은 기호가 아니라 이름을 묻습니다."}],"why":"날마다 일정하게 더해지는 수 3 은 공차입니다. 4, 7, 10 에서 이웃한 항의 차가 모두 3 입니다."},
+            {"id":"r8-cr-a","pair":"cr","cue":"종이를 한 번 접을 때마다 겹친 두께가 2 배가 되어 1, 2, 4, 8, … 로 늘어납니다. 이때 곱해지는 2 를 부르는 수학 낱말은 무엇인가요?","answer":{"kind":"term","value":"공비"},"misconceptions":[{"match":{"kind":"term","value":"공차"},"feedback":"공차는 더해 가는 일정한 수입니다. 이 이야기에서는 2 배씩 곱해 가고 있습니다."},{"match":{"kind":"term","value":"비"},"feedback":"‘비’ 는 두 수를 나눈 값을 뜻하는 말입니다. 늘 곱해지는 일정한 수의 이름은 공비입니다."},{"match":{"kind":"term","value":"r"},"feedback":"r 은 공비를 적는 기호입니다. 이 물음은 기호가 아니라 이름을 묻습니다."}],"why":"접을 때마다 일정하게 곱해지는 수 2 는 공비입니다. 1, 2, 4, 8 에서 이웃한 항의 비가 모두 2 입니다."},
+            {"id":"r8-general-c","pair":"general","cue":"수열 4, 9, 14, 19, … 에서 다음 가운데 일반항은 어느 것인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"4, 9, 14, 19, …"},{"id":"b","label":"a₄ = 19"},{"id":"c","label":"a₂ = 9"},{"id":"d","label":"aₙ = 5n − 1"}],"value":"d"},"misconceptions":[{"match":{"kind":"choice","value":"a"},"feedback":"수를 늘어놓은 줄 전체는 수열입니다. 일반항은 n 의 식으로 쓴 것입니다."},{"match":{"kind":"choice","value":"b"},"feedback":"a₄ = 19 는 네 번째 항 하나의 값입니다. 일반항은 그 값을 구하는 n 의 식입니다."},{"match":{"kind":"choice","value":"c"},"feedback":"a₂ = 9 는 두 번째 항 하나의 값을 적은 것입니다. 일반항은 n 의 식으로 쓴 것입니다."}],"why":"일반항은 제n항 aₙ 을 n 의 식으로 나타낸 것이므로 aₙ = 5n − 1 입니다. a₄ = 19 는 그 식에 n = 4 를 넣어 얻은 값입니다."},
+            {"id":"r8-cd-b","pair":"cd","cue":"4, 9, 14, 19, … 의 공차는 얼마인가요?","answer":{"kind":"number","value":5},"misconceptions":[{"match":{"kind":"number","value":4},"feedback":"4 는 첫째항입니다. 공차는 이웃한 두 항의 차입니다."},{"match":{"kind":"number","value":9},"feedback":"9 는 a₂ 의 값입니다. 공차는 뒤의 항에서 앞의 항을 뺀 값입니다."}],"why":"공차는 (뒤의 항) − (앞의 항) 입니다. 9 − 4 = 5 이고, 14 − 9, 19 − 14 도 모두 5 입니다."},
+            {"id":"r8-cr-b","pair":"cr","cue":"3, 12, 48, 192, … 의 공비는 얼마인가요?","answer":{"kind":"number","value":4},"misconceptions":[{"match":{"kind":"number","value":3},"feedback":"3 은 첫째항입니다. 공비는 이웃한 두 항의 비이고, 12 ÷ 3 = 4 입니다."},{"match":{"kind":"number","value":9},"feedback":"9 는 12 − 3 의 값, 곧 첫 두 항의 차입니다. 공비는 차가 아니라 비(나눈 값)입니다."}],"why":"공비는 (뒤의 항) ÷ (앞의 항) 입니다. 12 ÷ 3 = 4 이고, 48 ÷ 12, 192 ÷ 48 도 모두 4 입니다."},
+            {"id":"r8-cd-f","pair":"cd","fresh":true,"cue":"등차수열 {aₙ} 에서 a₁ = 8, a₂ = 3 일 때, 공차는 얼마인가요?","answer":{"kind":"number","value":-5},"misconceptions":[{"match":{"kind":"number","value":5},"feedback":"부호를 놓쳤습니다. 둘째 항 3 이 첫째항 8 보다 작아서 항이 줄어들므로 공차는 음수입니다."},{"match":{"kind":"number","value":11},"feedback":"8 과 3 을 더한 값입니다. 공차는 이웃한 두 항을 더하지 않고 뒤의 항에서 앞의 항을 빼서 구합니다."}],"why":"a₁ 은 첫째항, a₂ 는 둘째 항입니다. 공차는 (뒤의 항) − (앞의 항) 이므로 3 − 8 = −5 입니다."}
+          ]
+        }
+      ]
+    }
+  ],
+  "preCheck": {
+    "intro": "시작하기 전에 세 문항을 풉니다. 모르면 ‘모르겠다’를 누르면 됩니다. 낱말을 적는 문항은 낱말만 적어도 되고, 수를 적는 문항은 숫자로 적습니다. 음수는 앞에 − 를 붙여 적습니다.",
+    "items": [
+      {"id":"pc1","work":["retrieve"],"knowledge":["fact"],"prompt":"수열 17, 21, 25, 29, … 에서 a₁ 은 어느 것인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"25"},{"id":"b","label":"17"},{"id":"c","label":"29"},{"id":"d","label":"21"}],"value":"b"},"misconceptions":[{"match":{"kind":"choice","value":"a"},"feedback":"25 는 a₃ 입니다. a₁ 의 아래에 쓴 1 은 맨 앞이라는 뜻입니다."},{"match":{"kind":"choice","value":"c"},"feedback":"29 는 a₄ 입니다. a₁ 의 아래에 쓴 1 은 맨 앞이라는 뜻입니다."},{"match":{"kind":"choice","value":"d"},"feedback":"21 은 a₂ 입니다. a₁ 의 아래에 쓴 1 은 맨 앞이라는 뜻입니다."}],"solution":"a₁ 은 번호가 1 인 항, 곧 맨 앞의 항 17 입니다."},
+      {"id":"pc2","work":["retrieve"],"knowledge":["fact"],"prompt":"수열 35, 28, 21, 14, … 의 공차를 구하세요.","answer":{"kind":"number","value":-7},"misconceptions":[{"match":{"kind":"number","value":7},"feedback":"부호를 놓쳤습니다. 항이 줄어드는 수열이므로 공차는 음수입니다."}],"solution":"공차는 (뒤의 항) − (앞의 항) 입니다. 28 − 35 = −7 이고, 21 − 28, 14 − 21 도 모두 −7 입니다."},
+      {"id":"pc3","work":["retrieve"],"knowledge":["fact"],"prompt":"앞의 항에 4 를 곱해 가는 2, 8, 32, 128, … 수열에는 이름이 있습니다. 그 이름을 적으세요.","answer":{"kind":"term","value":"등비수열"},"misconceptions":[{"match":{"kind":"term","value":"등차수열"},"feedback":"등차수열은 일정한 수를 더해 가는 수열입니다. 이 수열은 4 를 곱해 가고 있습니다."},{"match":{"kind":"term","value":"공비"},"feedback":"공비는 곱해 가는 그 일정한 수의 이름입니다. 이 물음은 수열 자체의 이름을 묻습니다."}],"solution":"앞의 항에 같은 수를 곱해 가는 수열을 등비수열이라고 합니다. 곱해 가는 수 4 는 공비입니다."}
+    ]
+  },
+  "delayedCheck": {
+    "intro": "며칠 전에 읽은 말을 다시 떠올려 봅니다. 모르면 ‘모르겠다’를 누르면 됩니다. 낱말을 적는 문항은 낱말만 적어도 되고, 수를 적는 문항은 숫자로 적습니다. 음수는 앞에 − 를 붙여 적습니다.",
+    "items": [
+      {"id":"dc1","work":["retrieve"],"knowledge":["fact"],"prompt":"수열 52, 47, 42, 37, … 에서 a₁ 은 어느 것인가요?","answer":{"kind":"choice","options":[{"id":"a","label":"42"},{"id":"b","label":"52"},{"id":"c","label":"37"},{"id":"d","label":"47"}],"value":"b"},"misconceptions":[{"match":{"kind":"choice","value":"a"},"feedback":"42 는 a₃ 입니다. a₁ 의 아래에 쓴 1 은 맨 앞이라는 뜻입니다."},{"match":{"kind":"choice","value":"c"},"feedback":"37 은 a₄ 입니다. a₁ 의 아래에 쓴 1 은 맨 앞이라는 뜻입니다."},{"match":{"kind":"choice","value":"d"},"feedback":"47 은 a₂ 입니다. a₁ 의 아래에 쓴 1 은 맨 앞이라는 뜻입니다."}],"solution":"a₁ 은 번호가 1 인 항, 곧 맨 앞의 항 52 입니다."},
+      {"id":"dc2","work":["retrieve"],"knowledge":["fact"],"prompt":"수열 60, 51, 42, 33, … 의 공차를 구하세요.","answer":{"kind":"number","value":-9},"misconceptions":[{"match":{"kind":"number","value":9},"feedback":"부호를 놓쳤습니다. 항이 줄어드는 수열이므로 공차는 음수입니다."}],"solution":"공차는 (뒤의 항) − (앞의 항) 입니다. 51 − 60 = −9 이고, 42 − 51, 33 − 42 도 모두 −9 입니다."},
+      {"id":"dc3","work":["retrieve"],"knowledge":["fact"],"prompt":"앞의 항에 5 를 곱해 가는 3, 15, 75, 375, … 수열에는 이름이 있습니다. 그 이름을 적으세요.","answer":{"kind":"term","value":"등비수열"},"misconceptions":[{"match":{"kind":"term","value":"등차수열"},"feedback":"등차수열은 일정한 수를 더해 가는 수열입니다. 이 수열은 5 를 곱해 가고 있습니다."},{"match":{"kind":"term","value":"공비"},"feedback":"공비는 곱해 가는 그 일정한 수의 이름입니다. 이 물음은 수열 자체의 이름을 묻습니다."}],"solution":"앞의 항에 같은 수를 곱해 가는 수열을 등비수열이라고 합니다. 곱해 가는 수 5 는 공비입니다."}
+    ]
+  },
+  "review": {
+    "minutes": 4,
+    "items": [
+      {"id":"rv1","pair":"seq","work":["retrieve"],"knowledge":["fact"],"prompt":"1, 2, 4, 7, 11, … 처럼 어떤 규칙에 따라 차례로 놓은 수의 줄을 통틀어 무엇이라 하나요? 낱말만 적어도 됩니다.","answer":{"kind":"term","value":"수열"},"misconceptions":[{"match":{"kind":"term","value":"항"},"feedback":"항은 줄 속의 수 하나하나입니다. 이 물음은 줄 전체를 묻고 있습니다."},{"match":{"kind":"term","value":"등차수열"},"feedback":"이 줄은 차가 점점 커져서 등차수열이 아닙니다. 수를 차례대로 놓은 줄 전체는 수열입니다."}],"feedback":"수를 차례대로 늘어놓은 줄 전체가 수열입니다. 차나 비가 일정하지 않아도 수열입니다."},
+      {"id":"rv2","pair":"term","work":["retrieve"],"knowledge":["fact"],"prompt":"수열 2, 4, 6, 8, 10, 12, 14, 16 에는 항이 모두 몇 개 있나요? 수로 적습니다. 음수는 앞에 − 를 붙입니다.","answer":{"kind":"number","value":8},"misconceptions":[{"match":{"kind":"number","value":16},"feedback":"16 은 마지막 항의 값입니다. 물음은 항이 몇 개인지입니다."}],"feedback":"항은 수열을 이루는 수 하나하나이므로 개수는 늘어선 수의 개수와 같습니다. 2 부터 16 까지 모두 8개입니다."},
+      {"id":"rv3","pair":"first","work":["retrieve"],"knowledge":["fact"],"prompt":"첫째항이 얼마인지 적으세요. 수열은 −16, −10, −4, 2, … 입니다. 수로 적습니다. 음수는 앞에 − 를 붙입니다.","answer":{"kind":"number","value":-16},"misconceptions":[{"match":{"kind":"number","value":-10},"feedback":"−10 은 앞에서 두 번째 항입니다. 첫째항은 맨 앞에 있는 항입니다."}],"feedback":"첫째항은 맨 앞에 있는 항입니다. 이 수열에서는 −16 입니다."},
+      {"id":"rv4","pair":"nth","work":["retrieve"],"knowledge":["fact"],"prompt":"수열 {aₙ} 이 7, 14, 21, 28, … 일 때 a₃ 의 값을 적으세요. 수로 적습니다. 음수는 앞에 − 를 붙입니다.","answer":{"kind":"number","value":21},"misconceptions":[{"match":{"kind":"number","value":3},"feedback":"3 은 a₃ 의 아래에 적은 번호입니다. a₃ 은 앞에서 세 번째 항의 값입니다."},{"match":{"kind":"number","value":14},"feedback":"14 는 앞에서 두 번째 항 a₂ 입니다. a₃ 은 한 칸 뒤의 항입니다."}],"feedback":"a₃ 은 앞에서 세 번째 항입니다. 아래에 적은 3 은 번호이고, 그 자리에 있는 항의 값은 21 입니다."},
+      {"id":"rv5","pair":"general","work":["retrieve"],"knowledge":["fact"],"prompt":"제n항 aₙ 이 aₙ = 7n − 3 일 때, n 에 번호를 넣으면 그 번호의 항이 나오는 이 식을 무엇이라 하나요? 낱말만 적어도 됩니다.","answer":{"kind":"term","value":"일반항"},"misconceptions":[{"match":{"kind":"term","value":"제n항"},"feedback":"제n항은 물음에 이미 나온 말입니다. 그것을 n 의 식으로 나타낸 것의 이름을 묻고 있습니다."}],"feedback":"제n항 aₙ 을 n 의 식으로 나타낸 것이 일반항입니다. aₙ = 7n − 3 이 그런 식입니다."},
+      {"id":"rv6","pair":"arith","work":["retrieve"],"knowledge":["fact"],"prompt":"30, 26, 22, 18, … 은 이웃한 두 항의 차가 모두 −4 입니다. 이런 수열의 이름은 무엇인가요? 낱말만 적어도 됩니다.","answer":{"kind":"term","value":"등차수열"},"misconceptions":[{"match":{"kind":"term","value":"등비수열"},"feedback":"등비수열은 이웃한 두 항의 비가 같은 수열입니다. 여기서는 차가 같습니다."},{"match":{"kind":"term","value":"공차"},"feedback":"공차는 그 일정한 수 −4 의 이름입니다. 이 물음은 수열 자체의 이름을 묻습니다."}],"feedback":"이웃한 두 항의 차가 모두 같은 수열이 등차수열입니다. 이 수열의 공차는 −4 입니다."},
+      {"id":"rv7","pair":"cd","work":["retrieve"],"knowledge":["fact"],"prompt":"수열 7, 19, 31, 43, … 의 공차를 적으세요. 수로 적습니다. 음수는 앞에 − 를 붙입니다.","answer":{"kind":"number","value":12},"misconceptions":[{"match":{"kind":"number","value":19},"feedback":"19 는 앞에서 두 번째 항입니다. 공차는 이웃한 두 항의 차입니다."}],"feedback":"공차는 (뒤의 항) − (앞의 항) 입니다. 19 − 7 = 12 이고, 31 − 19, 43 − 31 도 모두 12 입니다."},
+      {"id":"rv8","pair":"cr","work":["retrieve"],"knowledge":["fact"],"prompt":"등비수열 2, 14, 98, 686, … 에서 이웃한 두 항으로 14 ÷ 2, 98 ÷ 14 처럼 구한 값 7 을 이 수열의 무엇이라 하나요? 낱말만 적어도 됩니다.","answer":{"kind":"term","value":"공비"},"misconceptions":[{"match":{"kind":"term","value":"공차"},"feedback":"공차는 이웃한 두 항의 차입니다. 나눈 값 7 은 공비입니다."},{"match":{"kind":"term","value":"비"},"feedback":"‘비’ 는 줄인 말입니다. 등비수열에서 이웃한 두 항의 비를 부르는 이름은 공비입니다."},{"match":{"kind":"term","value":"몫"},"feedback":"몫은 나눗셈의 결과를 부르는 말입니다. 등비수열에서 이웃한 두 항으로 구한 이 값에는 따로 정한 이름이 있습니다."},{"match":{"kind":"term","value":"r"},"feedback":"r 은 공비를 적는 기호입니다. 이 물음은 기호가 아니라 이름을 묻습니다."}],"feedback":"등비수열에서 이웃한 두 항의 비 7 이 공비입니다. 14 ÷ 2 = 7 이고, 98 ÷ 14, 686 ÷ 98 도 모두 7 입니다."}
+    ]
+  }
+}
