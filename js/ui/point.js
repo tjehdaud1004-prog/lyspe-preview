@@ -89,7 +89,9 @@ export function createPointer({ flow, mod, steps, stepEls, handles, reading, red
       shown.push({ e, rects });
       if (e.step !== rd.step || dismissed.has(`${e.step}:${e.sentence}`) || (rd.sentence !== null && rd.sentence !== e.sentence)) continue;
       const spot = targetSpot(e.target);
-      if (spot) arrow = { e, rects, spot }; // 한 화면에 화살표는 하나 — 가장 나중 것
+      // 대상이 지금 화면(머리 띠 아래 ~ 창 아래)에 없으면 긋지 않는다 — 화면 밖까지 뻗는 선은 가리키는 것이 보이지 않는다
+      const viewTop = Math.max(0, document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0);
+      if (spot && spot.bottom > viewTop && spot.top < window.innerHeight) arrow = { e, rects, spot }; // 한 화면에 화살표는 하나 — 가장 나중 것
     }
     for (const { e, rects } of shown) {
       kids.push(timed(svg('path', { class: `point-under${arrow?.e === e ? '' : ' is-quiet'}`, pathLength: 1, d: underPath(rects, box) }), `u:${e.key}`, now));

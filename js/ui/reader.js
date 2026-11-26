@@ -736,7 +736,18 @@ export function createReader(ctx) {
         if (lastView === 'scene') stepEls.get(session.progress.step)?.scrollIntoView({ block: 'center', behavior: 'auto' });
       }
     },
-    scrollToCurrent() { stepEls.get(session.progress.step)?.scrollIntoView({ block: 'center' }); },
+    scrollToCurrent() { // 이어 하기: 읽는 글 단위를 가운데로 두되, 같은 장면의 그림이 화면에 다 들어갈 수 있으면 머리 띠 아래로 잘리지 않게 내린다(SPEC_SENTENCE_STEP B)
+      const el = stepEls.get(session.progress.step);
+      if (!el) return;
+      el.scrollIntoView({ block: 'center', behavior: 'auto' });
+      const top = Math.max(0, document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0);
+      for (const fig of el.closest('.scene')?.querySelectorAll('[data-block-type="figure"]') ?? []) {
+        const r = fig.getBoundingClientRect();
+        const shift = r.top - top - 8; // 음수: 내용을 아래로 내린다
+        // 읽는 글 단위가 조작 줄에 가리게 되면 그림보다 글이 먼저다 — 내리지 않는다
+        if (r.height > 0 && r.top < top && r.height <= visibleBottom() - top && el.getBoundingClientRect().bottom - shift <= visibleBottom()) window.scrollBy({ top: shift, behavior: 'auto' });
+      }
+    },
     currentStepInfo: stepInfo,
     setActive(value) { active = value; flow.dataset.reading = String(value); applyView(); updateControls(); },
     updateControls,
