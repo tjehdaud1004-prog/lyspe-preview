@@ -455,17 +455,24 @@ export function createReader(ctx) {
     const typing = isTyping();
     const st = typing ? typer.state() : null;
     const atEnd = session.progress.step >= lastIndex;
+    // 한 화면에 지금 할 일 하나(K04 A123 · A175, 사용자 기준 3 — 제작 판단): 문항 블록이 제 '도움'을 지니면 조작 줄의 '도움'은 숨긴다(같은 단추 둘).
+    const onBlock = currentStep().kind === 'block';
+    const ownHelp = onBlock && [...(stepEls.get(session.progress.step)?.querySelectorAll('[data-action="help"]') ?? [])].some((b) => !b.hidden && b.getClientRects().length > 0);
+    helpBtn.hidden = ownHelp;
     continueBtn.textContent = typing ? '바로 펼치기' : atEnd ? '중심 질문으로 돌아가기' : '계속';
     const blocked = !typing && !canContinue();
     continueBtn.setAttribute('aria-disabled', String(blocked));
     continueBtn.classList.toggle('is-blocked', blocked);
     continueBtn.classList.toggle('is-typing', typing); // 글이 나타나는 동안의 '바로 펼치기'는 윤곽만(지금 단위보다 무겁지 않게)
+    // 문항을 풀기 전에는 막힌 '계속'을 보이지 않는다 — 할 일은 문항 하나(풀거나 '모르겠다' · '건너뛰기'). 풀면 다시 나온다.
+    const waitingOnBlock = blocked && onBlock;
+    continueBtn.hidden = waitingOnBlock;
     pauseBtn.hidden = !typing || typer.drawing === true; // 그리는 동안은 '정지'가 없다(바로 펼치기만)
     pauseBtn.textContent = st?.paused ? '이어서 쓰기' : '정지';
     let text = '';
     if (st?.held) text = '입력 중이라 글이 잠시 멈췄습니다. 입력을 마치거나 ‘바로 펼치기’를 누르면 이어집니다.';
     else if (st?.paused) text = '정지했습니다.';
-    else if (blocked) text = '문항을 풀거나 ‘건너뛰기’를 누르면 이어집니다.';
+    else if (blocked && !waitingOnBlock) text = '문항을 풀거나 ‘건너뛰기’를 누르면 이어집니다.';
     if (status.textContent !== text) status.textContent = text;
   }
 
