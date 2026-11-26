@@ -306,6 +306,7 @@ export function createReader(ctx) {
   // 규칙(어느 블록이 가려지는가)은 core/round.js recallVeils 가 정한다. '앞 장면 보기'는 막지 않는다(unit_revisit via scene 이 남는다).
   const veiledEls = new Set();
   const veilNotes = new Map(); // 묶음 id → 한 줄 요소
+  let veiledScenes = new Set(); // 앞 글이 가려진 장면 id(접은 설명의 '펼치기'를 그동안 숨긴다)
   function applyVeil() {
     const live = recallVeils(mod, session.progress.rounds).filter((v) => handles.has(v.roundId));
     const wantEls = new Set();
@@ -321,6 +322,9 @@ export function createReader(ctx) {
     for (const el of veiledEls) if (!wantEls.has(el)) { el.hidden = false; veiledEls.delete(el); }
     for (const el of wantEls) { el.hidden = true; veiledEls.add(el); }
     for (const [id, note] of veilNotes) if (!wantNotes.has(id)) { note.remove(); veilNotes.delete(id); }
+    // 접은 설명이 묶음의 앞 글 가리기 아래에 있으면 '펼치기'를 숨긴다 — 눌러도 글이 안 보이기 때문(따로 확인이 찾음, 2026-11-26). 가림이 풀리면 다시 보인다.
+    veiledScenes = new Set(live.map((v) => v.sceneId));
+    for (const id of session.progress.folded ?? []) { const i = mod.scenes.findIndex((sc) => sc.id === id); const entry = scenes.get(i); if (entry) entry.foldOpen.hidden = veiledScenes.has(id); }
   }
 
   // ---------- 진행 ----------
@@ -385,7 +389,7 @@ export function createReader(ctx) {
     if (!range) return;
     for (const i of range.units) { const el = stepEls.get(i); if (el) el.hidden = folded; }
     const entry = scenes.get(sceneIndex);
-    if (entry) entry.foldOpen.hidden = !folded;
+    if (entry) entry.foldOpen.hidden = !folded || veiledScenes.has(mod.scenes[sceneIndex].id);
   }
 
   function fold({ byKeyboard = false } = {}) {
