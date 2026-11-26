@@ -12,6 +12,7 @@ import { sanitizeSkip, skippedScenes } from './skip.js';
 import { sanitizeRounds } from './round.js';
 import { sanitizeOpener } from './opener.js';
 import { isShuffleSeed } from './shuffle.js';
+import { sanitizeFolded } from './fold.js';
 
 export const VERSION = 1;
 export const PHASES = ['reading', 'final', 'summary'];
@@ -48,6 +49,7 @@ export function createProgress(moduleId, now = 0) {
     rounds: {}, // 묶음 돌리기(core/round.js)의 상태. 블록 id → { queue, shown, first, ok, later, missed, left, done, skipped, view }. 옛 저장에는 이 칸이 없다 → {}
     skip: null, // 건너뛰기 확인(core/skip.js). 없으면 null → { status, startedAt, endedAt, answers, verdicts, scenes, decidedAt }
     opener: null, // 여는 카드(core/opener.js). 없으면 null → { status, chosen, result, at, revisit? }. 처음 고른 답을 끝 화면의 다시 보기가 쓴다. 옛 저장에는 이 칸이 없다 → null
+    folded: [], // '설명 접고 문항으로'(core/fold.js)로 접은 장면 id. 접은 채 다시 그린다. 옛 저장에는 이 칸이 없다 → []
   };
 }
 
@@ -66,6 +68,23 @@ export function moveTo(state, target, lastIndex) {
   if (!Number.isInteger(to) || to <= state.step) return state;
   const next = clone(state);
   next.step = to;
+  return next;
+}
+
+// 설명을 접고 그 장면의 첫 문항 걸음으로 옮긴다(앞으로만). 접은 장면 id 를 남긴다.
+export function foldScene(state, sceneId, target, lastIndex) {
+  const moved = moveTo(state, target, lastIndex);
+  if ((state.folded ?? []).includes(sceneId)) return moved;
+  const next = moved === state ? clone(state) : moved;
+  next.folded = [...(state.folded ?? []), sceneId];
+  return next;
+}
+
+// 접은 설명을 펼쳤다 — 접은 장면 목록에서 뺀다.
+export function unfoldScene(state, sceneId) {
+  if (!(state.folded ?? []).includes(sceneId)) return state;
+  const next = clone(state);
+  next.folded = next.folded.filter((id) => id !== sceneId);
   return next;
 }
 
@@ -253,6 +272,7 @@ export function deserialize(text, moduleId, index) {
   s.skip = sanitizeSkip(raw.skip, index.skip);
   s.rounds = sanitizeRounds(raw.rounds, index.rounds ?? new Map()); // 칸이 없는 옛 저장은 {}
   s.opener = sanitizeOpener(raw.opener, index.mod);
+  s.folded = sanitizeFolded(raw.folded, index.mod, s.step); // 칸이 없는 옛 저장은 []
   if (isShuffleSeed(raw.shuffleSeed)) s.shuffleSeed = raw.shuffleSeed; // 보기 섞기의 씨앗(core/shuffle.js) — 모듈이 shuffleOptions 를 켠 때만 생긴다
   return s;
 }

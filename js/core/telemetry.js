@@ -194,9 +194,11 @@ export function createTelemetry({ mod, store, learnerKey, sessionId, now = Date.
     // | 'scene'(장면별로 보기에서 '앞 장면 보기'로 지난 장면을 엶 — blockId = 그 장면의 첫 블록)
     unitRevisit({ fromBlockId, blockId, via }) {
       const data = { fromBlockId };
-      if (via === 'end' || via === 'scroll' || via === 'scene') data.via = via;
+      if (via === 'end' || via === 'scroll' || via === 'scene' || via === 'fold') data.via = via; // 'fold': 접은 설명을 펼침(blockId = 접은 첫 글 블록)
       emit('unit_revisit', data, blockId ?? null);
     },
+    // '설명 접고 문항으로'를 눌렀다(K04 A177).
+    explainFold({ sceneId, atBlockId, foldedUnits, shownUnits }) { emit('explain_fold', { sceneId, atBlockId, foldedUnits: int(foldedUnits), shownUnits: int(shownUnits) }, atBlockId); },
 
     settingChange({ key, from, to }) { emit('setting_change', { key, from, to }); },
 

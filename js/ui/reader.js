@@ -2,7 +2,8 @@
 // 상태(어디까지 열렸나)는 session.progress.step 하나가 정본이고, 여기는 그것을 화면에 맞춘다.
 import { h, clear, isInteractive } from './dom.js';
 import { flattenSteps, conditionFor } from '../core/module.js';
-import { advance, moveTo } from '../core/progress.js';
+import { advance, moveTo, foldScene, unfoldScene } from '../core/progress.js';
+import { foldRange, foldOffer, FOLD_TEXT } from '../core/fold.js';
 import { skippedScenes, jumpTarget, formatSceneNos, SKIP_TEXT } from '../core/skip.js';
 import { isSceneShown, browseBy, sceneNav } from '../core/sceneview.js';
 import { createRevisitTracker } from '../core/revisit.js';
@@ -52,6 +53,7 @@ export function createReader(ctx) {
     const body = h('div', { class: 'scene-body' });
     const title = h('h2', { class: 'scene-title', id: titleId, text: scene.title });
     const isSkipped = skipped().has(scene.id);
+    const foldOpen = h('button', { type: 'button', class: 'btn btn-quiet fold-open', hidden: true, 'aria-expanded': 'false', dataset: { action: 'unfold' }, onClick: (e) => unfold(sceneIndex, { byKeyboard: e.detail === 0 }) }, FOLD_TEXT.unfold);
     // 건너뛴 장면: 머리에 띠를 달고, '이어서 쌓기'에서는 접힌 한 줄로 둔다(펼치면 skip_return).
     const section = h('section', { class: 'scene', 'aria-labelledby': titleId, dataset: { sceneId: scene.id, ...(isSkipped ? { skipped: 'true' } : {}) } },
       isSkipped && h('button', { type: 'button', class: 'btn skip-fold', onClick: () => openSkippedScene(scene.id, 'browse') }, SKIP_TEXT.fold({ no: sceneIndex + 1, title: scene.title })),
@@ -59,9 +61,11 @@ export function createReader(ctx) {
       h('header', { class: 'scene-head' },
         title,
         isSkipped && h('p', { class: 'skip-banner', text: SKIP_TEXT.banner })),
+      // 접은 설명이 있는 장면의 머리 바로 아래 한 줄('설명 접고 문항으로', K04 A177). 접은 장면만 보인다.
+      foldOpen,
       body);
     flow.append(section);
-    entry = { section, body, title, titlePending: true, typedAny: false }; // titlePending: 제목을 아직 타자로 치지 않았다(K04 A143) · typedAny: 이 장면에서 타자로 나온 것이 있다
+    entry = { section, body, title, titlePending: true, typedAny: false, foldOpen };// titlePending: 제목을 아직 타자로 치지 않았다(K04 A143) · typedAny: 이 장면에서 타자로 나온 것이 있다
     scenes.set(sceneIndex, entry);
     return entry;
   }
@@ -372,6 +376,64 @@ export function createReader(ctx) {
     if (byKeyboard && step.kind === 'block') handles.get(step.blockId)?.el.focus({ preventScroll: true });
   }
 
+  // ---------- 설명 접고 문항으로 (K04 A177) ----------
+  // 규칙(어디서 단추가 보이나 · 무엇을 접나 · 어디로 옮기나)은 core/fold.js. 접으면 그 장면의 첫 문항 앞 글 단위를 hidden 으로 가리고(읽는 프로그램에도 안 읽힌다) 첫 문항 걸음으로 옮긴다.
+  const foldedList = () => session.progress.folded ?? [];
+
+  function setFoldShown(sceneIndex, folded) {
+    const range = foldRange(steps, mod, sceneIndex);
+    if (!range) return;
+    for (const i of range.units) { const el = stepEls.get(i); if (el) el.hidden = folded; }
+    const entry = scenes.get(sceneIndex);
+    if (entry) entry.foldOpen.hidden = !folded;
+  }
+
+  function fold({ byKeyboard = false } = {}) {
+    const cur = session.progress.step;
+    const plan = active && !drawing ? foldOffer(steps, mod, cur, foldedList()) : null;
+    if (!plan) return;
+    clearTimeout(autoTimer);
+    const here = steps[cur];
+    const shownUnits = plan.units.filter((i) => unitDone.has(i)).length;
+    if (isTyping()) { // 나타나는 중이면 멈추고(바로 펼치지 않는다) 글 전체를 채워 둔다 — 나중에 펼치면 온전히 보인다. 읽음으로 치지 않는다
+      typer.pause(); typer = null; typerEl = null;
+      const sc = sceneOf(here.sceneIndex);
+      sc.titlePending = false;
+      sc.title.classList.remove('is-typing');
+      sc.title.textContent = mod.scenes[here.sceneIndex].title;
+      const block = mod.scenes[here.sceneIndex].blocks[here.blockIndex];
+      const text = block.units[here.unitIndex];
+      const p = stepEls.get(cur);
+      p.classList.remove('is-typing');
+      fillText(p, text, sentencePartsOf(block, text));
+    } else if (unitDone.has(cur)) rec.unitDone({ expandedEarly: expandedEarly.get(cur) === true });
+    rec.explainFold({ sceneId: here.sceneId, atBlockId: here.blockId, foldedUnits: plan.units.length, shownUnits });
+    browsing = null;
+    session.update((s) => foldScene(s, here.sceneId, plan.target, lastIndex));
+    // 사이의 걸음(그림 · 지문 …)은 바로 보임으로 그리고, 아직 못 본 글 단위는 읽음으로 치지 않는다
+    for (let i = cur + 1; i < plan.target; i += 1) { showStep(i, { instant: true, track: false }); if (steps[i].kind === 'unit') unitDone.delete(i); }
+    showStep(plan.target, { instant: false });
+    setFoldShown(here.sceneIndex, true);
+    applyView();
+    ctx.onStep(stepInfo());
+    scrollToStep(plan.target);
+    updateControls();
+    if (byKeyboard) handles.get(steps[plan.target].blockId)?.el.focus({ preventScroll: true });
+  }
+
+  function unfold(sceneIndex, { byKeyboard = false } = {}) {
+    const sceneId = mod.scenes[sceneIndex].id;
+    const range = foldRange(steps, mod, sceneIndex);
+    if (!range || !foldedList().includes(sceneId)) return;
+    setFoldShown(sceneIndex, false);
+    session.update((s) => unfoldScene(s, sceneId));
+    tracker.reset();
+    rec.unitRevisit({ fromBlockId: currentStep().blockId, blockId: steps[range.units[0]].blockId, via: 'fold' });
+    announce('접은 설명을 폈습니다.');
+    const first = stepEls.get(range.units[0]);
+    if (byKeyboard && first) { first.tabIndex = -1; first.focus({ preventScroll: true }); }
+  }
+
   function afterUnitDone(index) {
     // 자동 이어가기: 다음이 글 단위일 때만. 문항·그림 앞에서는 항상 멈춘다.
     clearTimeout(autoTimer);
@@ -442,6 +504,9 @@ export function createReader(ctx) {
       if (passage) openPassageDialog(ctx, passage, { opener: passageBtn, from: step.blockId });
     },
   }, PASSAGE_TEXT.open);
+  // 설명 접기(K04 A177): 글을 읽는 동안, 같은 장면의 뒤에 문항 블록이 있을 때만 지금 읽는 글 단위 바로 아래에 붙는 조용한 한 줄.
+  // 조작 줄에 두지 않는다 — 375 폭에서 조작 줄이 두세 줄로 늘어 읽을 자리를 먹었다(2026-11-26 잼). 문항에 닿으면 떨어지고 그 자리에 문항이 온다.
+  const foldBtn = h('button', { type: 'button', class: 'btn btn-quiet fold-open', dataset: { action: 'fold' }, onClick: (e) => fold({ byKeyboard: e.detail === 0 }) }, FOLD_TEXT.fold);
   const passageBar = h('div', { class: 'controls-passage', hidden: true });
   const status = h('p', { class: 'controls-status small', role: 'status', 'aria-live': 'polite' });
 
@@ -451,6 +516,9 @@ export function createReader(ctx) {
     helpBtn.hidden = !active;
     passageBtn.hidden = !active || passageBefore(mod, currentStep().blockId) === null;
     passageBar.hidden = passageBtn.hidden;
+    const offerFold = active && drawing === null && foldOffer(steps, mod, session.progress.step, foldedList()) !== null;
+    const foldAt = offerFold ? stepEls.get(session.progress.step) : null;
+    if (foldAt) { if (foldAt.nextElementSibling !== foldBtn) foldAt.after(foldBtn); } else foldBtn.remove();
     if (!active) { pauseBtn.hidden = true; status.textContent = ''; return; }
     const typing = isTyping();
     const st = typing ? typer.state() : null;
@@ -516,6 +584,7 @@ export function createReader(ctx) {
       announce(text);
       noteJump(steps[upTo].sceneIndex, text);
     }
+    foldedList().forEach((id) => { const i = mod.scenes.findIndex((sc) => sc.id === id); if (scenes.has(i)) setFoldShown(i, true); }); // 접은 장면은 접힌 채 다시 그린다
     applyView();
     ctx.onStep(stepInfo());
     updateControls();
