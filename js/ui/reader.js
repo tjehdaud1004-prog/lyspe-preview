@@ -10,6 +10,7 @@ import { createRevisitTracker } from '../core/revisit.js';
 import { createTyper, fillText } from './typing.js';
 import { RAMP, FIRST_GAP_MS } from '../core/segment.js';
 import { sentencePartsOf } from '../core/sentences.js';
+import { createPointer } from './point.js';
 import { renderBlock } from './blocks/index.js';
 import { openPassageDialog } from './blocks/passage.js';
 import { passageBefore, PASSAGE_TEXT } from '../core/passage.js';
@@ -17,6 +18,10 @@ import { recallVeils, ROUND_TEXT } from '../core/round.js';
 
 const AUTO_CONTINUE_MS = 1400;
 const REVISIT_CHECK_MS = 500; // 앞 글을 보고 있는지 살피는 간격(머문 시간 규칙은 core/revisit.js)
+// 읽는 구간 고정(K04 A181 — 제작 판단, 근거 없음): 읽는 자리(머리 띠 아래 ~ 조작 줄 위)에서 쓰는 줄의 아랫변이 TRIGGER 아래로 내려가면 TARGET 쯤에 오도록 올린다.
+const FOLLOW_TRIGGER = 0.62;
+const FOLLOW_TARGET = 0.45;
+const FOLLOW_SMOOTH_MS = 450; // 부드럽게 올라가는 동안 다음 올림을 미룬다(겹쳐 넘치지 않게)
 
 export function createReader(ctx) {
   const { mod, session, guard, announce } = ctx;
@@ -24,7 +29,7 @@ export function createReader(ctx) {
   const lastIndex = steps.length - 1;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  const flow = h('div', { class: 'flow', id: 'flow' });
+  const flow = h('div', { class: 'flow', id: 'flow', dataset: { reading: 'true' } }); // reading: 읽는 중 — 아래에 빈자리를 둔다(읽는 구간 고정이 맨 끝 글에서도 줄을 올릴 수 있게, css/reader.css)
   const scenes = new Map();     // sceneIndex → { section, body }
   const textBlocks = new Map(); // blockId → 컨테이너 요소
   const handles = new Map();    // blockId → { el, resolved, refresh, focus }
@@ -42,6 +47,17 @@ export function createReader(ctx) {
   let lastView = session.settings.view;
   const expanded = new Set(); // '이어서 쌓기'에서 펼친 건너뛴 장면 번호
   const skipped = () => skippedScenes(session.progress); // 건너뛰기 확인으로 건너뛴 장면 id
+
+  // 낱말에서 위를 가리키는 밑줄 화살표(K04 A179, ui/point.js). 화살표는 '그 문장을 읽는 동안'만 — 문장 끝 멈춤(문 gated)의 문장에 맞춘다:
+  // 타자 중이면 타자기가 쓰는(문에서는 방금 끝난) 문장, 다 나타난 뒤에는 마지막 문장, 바로 보임이면 문장 가림 없이 지금 글 단위 전체.
+  const typedUnits = new Set(); // 타자기로 나온 글 단위 걸음
+  function readingNow() {
+    const step = session.progress.step;
+    if (typer?.drawing) return { step, sentence: -1 };
+    if (typer) return { step, sentence: typer.state().sentence ?? -1 };
+    return { step, sentence: typedUnits.has(step) ? Math.max(0, (stepEls.get(step)?.querySelectorAll('.sent').length ?? 1) - 1) : null };
+  }
+  const points = createPointer({ flow, mod, steps, stepEls, handles, reading: readingNow, reducedMotion });
 
   // ---------- 조각 만들기 ----------
 
@@ -240,17 +256,19 @@ export function createReader(ctx) {
     }
     announce(text); // 눈에 보이는 글자는 aria-hidden 이므로, 단위 전체를 한 번만 알려 준다
     rec.unitShown({ blockId: block.id, chars: text.length, mode: 'typing' });
-    const common = { getSpeed: () => session.settings.speed, getUnit: () => session.settings.unit, isHeld: () => guard.held(), onTick: followTyping };
+    const common = { getSpeed: () => session.settings.speed, getUnit: () => session.settings.unit, isHeld: () => guard.held(), onTick: () => { followTyping(); points.sync(); } };
     // 본문 글 단위를 친다. 장면의 첫 글(제목이 아니면 이 단위)이면 틈 · 느린 가속(K04 A143).
     const typeBody = (first) => {
       scene.typedAny = true;
+      typedUnits.add(index);
       typerEl = p;
       typer = createTyper({
-        el: p, text, parts, ...common,
+        el: p, text, parts, ...common, stopAtSentences: true, // 문장마다 멈춤(K04 A180) — 문장이 하나인 글은 타자기가 알아서 문 없이 간다
         ...(first ? { ramp: RAMP.first, gap: FIRST_GAP_MS } : {}),
         onStateChange: (st) => {
-          rec.unitStalled(st.paused || st.held);
+          rec.unitStalled(st.paused || st.held); // 문에서 기다리는 시간은 '멈춤'으로 치지 않는다
           if (st.done) { rec.unitFullyShown(); expandedEarly.set(index, st.early); typer = null; unitDone.add(index); afterUnitDone(index); }
+          else if (st.gated) { afterGate(index); followTyping({ force: true }); }
           updateControls();
         },
       });
@@ -266,7 +284,7 @@ export function createReader(ctx) {
       el: scene.title, text: scene.title.textContent, ...common, ramp: RAMP.first, gap: FIRST_GAP_MS,
       onStateChange: (st) => {
         rec.unitStalled(st.paused || st.held);
-        if (st.done) { typer = null; typeBody(false); if (st.early) typer.finish(); }
+        if (st.done) { typer = null; typeBody(false); if (st.early) typer.finishSentence(); }
         updateControls();
       },
     });
@@ -286,7 +304,7 @@ export function createReader(ctx) {
     const mine = { done: false, queue: [] };
     drawing = mine;
     typerEl = null;
-    typer = { drawing: true, state: () => ({ done: mine.done, paused: false, held: false, early: false }), finish: () => d.finish(), pause() {}, resume() {} };
+    typer = { drawing: true, state: () => ({ done: mine.done, paused: false, held: false, early: false }), finish: () => d.finish(), finishSentence: () => d.finish(), pause() {}, resume() {} };
     d.done.then(() => {
       if (drawing !== mine) return;
       mine.done = true;
@@ -347,7 +365,7 @@ export function createReader(ctx) {
   // byKeyboard: 키보드로 눌렀을 때만, 새로 나온 문항 블록으로 초점을 옮긴다(마우스·터치에서는 화면 키보드가 뜨지 않게 옮기지 않는다).
   function proceed({ byKeyboard = false } = {}) {
     clearTimeout(autoTimer);
-    if (isTyping()) { typer.finish(); return; }
+    if (isTyping()) { if (typer.state().gated) nextSentence('continue'); else typer.finishSentence(); return; } // 나오는 중이면 그 문장 끝까지만(마지막 문장이면 단위 전체)
     if (!canContinue()) { ctx.toast.show('먼저 이 문항을 풀거나 ‘건너뛰기’를 눌러 주세요.'); return; }
     // 글 단위를 떠난다(다음으로 가거나 끝으로 간다): 이 단위를 보는 데 걸린 활동 시간을 기록한다.
     if (steps[session.progress.step].kind === 'unit') rec.unitDone({ expandedEarly: expandedEarly.get(session.progress.step) === true });
@@ -451,6 +469,78 @@ export function createReader(ctx) {
     autoTimer = setTimeout(attempt, AUTO_CONTINUE_MS);
   }
 
+  // ---------- 문장마다 멈춤 · ▼ (K04 A180) ----------
+  // 걸음(step)은 글 단위 그대로다. 한 문장이 끝나면 타자기가 문에 서고(typer.state().gated), '계속' · ▼ · 키 · 자동 이어가기가 next() 로 다음 문장을 잇는다.
+  function nextSentence(via) {
+    clearTimeout(autoTimer);
+    const st = typer?.state();
+    if (!st?.gated) return;
+    if (browsing !== null) returnToCurrent({ scroll: true });
+    rec.sentenceNext({ blockId: currentStep().blockId, sentence: st.sentence, via });
+    points.dismiss(session.progress.step, st.sentence); // 읽던 문장의 화살표는 곧바로 사라진다
+    typer.next();
+  }
+
+  // 자동 이어가기가 켜져 있으면 문에서도 같은 보류 규칙(입력 중 · 화면 숨김이면 미룸)으로 잇는다.
+  function afterGate(index) {
+    clearTimeout(autoTimer);
+    if (!session.settings.autoContinue) return;
+    const attempt = () => {
+      if (index !== session.progress.step || !session.settings.autoContinue || !typer?.state().gated) return;
+      if (guard.held() || document.hidden) { autoTimer = setTimeout(attempt, AUTO_CONTINUE_MS); return; }
+      nextSentence('auto');
+    };
+    autoTimer = setTimeout(attempt, AUTO_CONTINUE_MS);
+  }
+
+  // ▼ 는 읽기 흐름이 갖는 요소 하나가 옮겨 다닌다(글 안에 넣지 않는다 — 글이 다시 채워져도 남는다). 눈과 손가락용 덧길이라 읽는 프로그램에는 숨기고(조작 줄의 '계속'이 같은 일을 한다) 초점 순서에도 넣지 않는다.
+  const sentMarker = h('button', { type: 'button', class: 'sent-marker', hidden: true, tabindex: '-1', 'aria-hidden': 'true', dataset: { action: 'next-sentence' }, onClick: () => { if (typer?.state().gated) nextSentence('marker'); else proceed(); } }, h('span', { class: 'sent-marker-glyph', text: '▼' }));
+
+  // 어느 문장 끝에 ▼ 를 둘까: 문에 서 있으면 방금 끝난 문장, 단위가 다 나타났고 '계속'이 다음으로 갈 수 있으면 마지막 문장. 없는 때는 null.
+  function markerSpot() {
+    const cur = session.progress.step;
+    if (!active || browsing !== null || drawing || steps[cur].kind !== 'unit') return null;
+    const p = stepEls.get(cur);
+    if (!p) return null;
+    const st = typer?.state();
+    const sents = p.querySelectorAll('.sent');
+    if (st?.gated) return sents[st.sentence] ?? p;
+    if (!typer && unitDone.has(cur) && cur < lastIndex) return sents[sents.length - 1] ?? p;
+    return null;
+  }
+
+  // el 안에서 마지막으로 나온 글자의 줄 모양(화면 좌표). 타자 중인 글의 숨은 전체 글(.sr-only)은 건너뛴다.
+  function lastCharRect(el) {
+    const walker = document.createTreeWalker(el.querySelector('.typed') ?? el, NodeFilter.SHOW_TEXT);
+    let last = null;
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) if (n.data.trim() !== '') last = n;
+    if (!last) return null;
+    const end = last.data.trimEnd().length;
+    const range = document.createRange();
+    range.setStart(last, end - 1);
+    range.setEnd(last, end);
+    const rects = range.getClientRects();
+    const rect = rects[rects.length - 1];
+    return rect && rect.width + rect.height > 0 ? rect : null;
+  }
+
+  // 마지막 글자의 오른쪽 아래에 44×44 누를 자리를 둔다(보이는 ▼ 는 그 가운데 작게). 줄 끝이 칸 오른쪽 끝에 닿으면 글을 덮지 않도록 아래로 내린다.
+  function placeMarker() {
+    const spot = markerSpot();
+    const rect = spot ? lastCharRect(spot) : null;
+    if (!rect) { sentMarker.hidden = true; return; }
+    sentMarker.hidden = false;
+    const box = flow.getBoundingClientRect();
+    const size = sentMarker.offsetWidth || 44;
+    let left = rect.right - box.left - 10;
+    let top = rect.bottom - box.top - 20;
+    if (left > box.width - size) { left = box.width - size; top += 18; }
+    sentMarker.style.left = `${Math.round(left)}px`;
+    sentMarker.style.top = `${Math.round(top)}px`;
+  }
+
+  const relayout = () => { placeMarker(); points.sync(); }; // 글 · 칸 · 문장 상태가 바뀌면 ▼ 와 화살표를 다시 잰다
+
   function stepInfo() {
     const step = currentStep();
     return {
@@ -475,16 +565,34 @@ export function createReader(ctx) {
     if (rect.top < 72 || rect.top > visibleBottom() - 96 || covered) el.scrollIntoView({ block: 'start', behavior: reducedMotion.matches ? 'auto' : 'smooth' });
   }
 
+  // 읽는 구간 고정(K04 A181): 쓰는 줄이 읽는 자리(머리 띠 아래 ~ 조작 줄 위)의 TRIGGER 아래로 내려가면 TARGET 쯤으로 올린다 — 읽는 자리가 늘 화면 아래끝에 붙지 않게.
+  // 그림이 지금 화면에 다 보이면 그림 윗변이 머리 띠 위로 나가지 않는 만큼만 올린다(그래도 아래끝을 넘치면 옛 규칙: 넘친 만큼).
   let lastFollow = 0;
-  function followTyping() {
+  let lastLift = 0;
+  function followTyping({ force = false } = {}) {
     if (guard.held() || !typerEl) return;
     const now = performance.now();
-    if (now - lastFollow < 120) return;
+    if (!force && now - lastFollow < 120) return;
     lastFollow = now;
-    const rect = typerEl.getBoundingClientRect();
-    if (rect.top > visibleBottom()) return; // 나타나는 글이 통째로 화면 아래에 있다 = 학습자가 앞 글을 보러 올라갔다. 도로 끌어내리지 않는다
-    const overflow = rect.bottom - (visibleBottom() - 24);
-    if (overflow > 0) window.scrollBy({ top: overflow, behavior: 'auto' });
+    const bottom = visibleBottom();
+    if (typerEl.getBoundingClientRect().top > bottom) return; // 나타나는 글이 통째로 화면 아래에 있다 = 학습자가 앞 글을 보러 올라갔다. 도로 끌어내리지 않는다
+    const line = lastCharRect(typerEl);
+    if (!line) return;
+    const smooth = !reducedMotion.matches;
+    if (smooth && now - lastLift < FOLLOW_SMOOTH_MS) return; // 올라가는 중
+    const top = Math.max(0, document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0);
+    const zone = bottom - top;
+    if (line.bottom <= top + zone * FOLLOW_TRIGGER) return;
+    let lift = line.bottom - (top + zone * FOLLOW_TARGET);
+    let room = Infinity;
+    for (const fig of typerEl.closest('.scene')?.querySelectorAll('[data-block-type="figure"]') ?? []) {
+      const r = fig.getBoundingClientRect();
+      if (r.height > 0 && r.top >= top && r.bottom <= bottom) room = Math.min(room, r.top - top);
+    }
+    if (room < lift) lift = Math.max(room, line.bottom - (bottom - 24));
+    if (lift < 1) return;
+    lastLift = now;
+    window.scrollBy({ top: lift, behavior: smooth ? 'smooth' : 'auto' });
   }
 
   // ---------- 조작 단추 ----------
@@ -523,7 +631,7 @@ export function createReader(ctx) {
     const offerFold = active && drawing === null && foldOffer(steps, mod, session.progress.step, foldedList()) !== null;
     const foldAt = offerFold ? stepEls.get(session.progress.step) : null;
     if (foldAt) { if (foldAt.nextElementSibling !== foldBtn) foldAt.after(foldBtn); } else foldBtn.remove();
-    if (!active) { pauseBtn.hidden = true; status.textContent = ''; return; }
+    if (!active) { pauseBtn.hidden = true; status.textContent = ''; relayout(); return; }
     const typing = isTyping();
     const st = typing ? typer.state() : null;
     const atEnd = session.progress.step >= lastIndex;
@@ -531,21 +639,23 @@ export function createReader(ctx) {
     const onBlock = currentStep().kind === 'block';
     const ownHelp = onBlock && [...(stepEls.get(session.progress.step)?.querySelectorAll('[data-action="help"]') ?? [])].some((b) => !b.hidden && b.getClientRects().length > 0);
     helpBtn.hidden = ownHelp;
-    continueBtn.textContent = typing ? '바로 펼치기' : atEnd ? '중심 질문으로 돌아가기' : '계속';
+    const gated = st?.gated === true; // 한 문장이 끝나 기다리는 중: 글은 '계속'(다음 문장), 나오는 중이면 '바로 펼치기'(그 문장 끝까지)
+    continueBtn.textContent = gated ? '계속' : typing ? '바로 펼치기' : atEnd ? '중심 질문으로 돌아가기' : '계속';
     const blocked = !typing && !canContinue();
     continueBtn.setAttribute('aria-disabled', String(blocked));
     continueBtn.classList.toggle('is-blocked', blocked);
-    continueBtn.classList.toggle('is-typing', typing); // 글이 나타나는 동안의 '바로 펼치기'는 윤곽만(지금 단위보다 무겁지 않게)
+    continueBtn.classList.toggle('is-typing', typing && !gated); // 글이 나타나는 동안의 '바로 펼치기'는 윤곽만(지금 단위보다 무겁지 않게)
     // 문항을 풀기 전에는 막힌 '계속'을 보이지 않는다 — 할 일은 문항 하나(풀거나 '모르겠다' · '건너뛰기'). 풀면 다시 나온다.
     const waitingOnBlock = blocked && onBlock;
     continueBtn.hidden = waitingOnBlock;
-    pauseBtn.hidden = !typing || typer.drawing === true; // 그리는 동안은 '정지'가 없다(바로 펼치기만)
+    pauseBtn.hidden = !typing || typer.drawing === true || gated; // 그리는 동안 · 문에서 기다리는 동안은 '정지'가 없다
     pauseBtn.textContent = st?.paused ? '이어서 쓰기' : '정지';
     let text = '';
     if (st?.held) text = '입력 중이라 글이 잠시 멈췄습니다. 입력을 마치거나 ‘바로 펼치기’를 누르면 이어집니다.';
     else if (st?.paused) text = '정지했습니다.';
     else if (blocked && !waitingOnBlock) text = '문항을 풀거나 ‘건너뛰기’를 누르면 이어집니다.';
     if (status.textContent !== text) status.textContent = text;
+    relayout();
   }
 
   // ---------- 화면 어디든 탭 / 스페이스 / Enter ----------
@@ -554,14 +664,15 @@ export function createReader(ctx) {
     if (!isTyping() || isInteractive(e.target)) return;
     if (!(e.target instanceof Element) || e.target.closest('.note, .topbar, dialog, .controls, .selection-bar')) return;
     if (String(window.getSelection?.() ?? '') !== '') return; // 글을 고르는 중이면 펼치지 않는다
-    typer.finish();
+    if (typer.state().gated) return; // 문에서는 아무 데나 탭해도 넘어가지 않는다 — ▼ 나 '계속'으로만(스크롤하다 닿아 건너뛰지 않게)
+    typer.finishSentence();
   }
 
   function onDocumentKey(e) {
     if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
     if (document.querySelector('dialog[open]')) return;
     if (isInteractive(e.target)) return;
-    if (e.key === ' ' && isTyping()) { e.preventDefault(); typer.finish(); return; }
+    if (e.key === ' ' && isTyping()) { e.preventDefault(); if (typer.state().gated) nextSentence('continue'); else typer.finishSentence(); return; }
     if (e.key === 'Enter' && (isTyping() || canContinue()) && session.progress.phase === 'reading') { e.preventDefault(); proceed({ byKeyboard: true }); }
   }
 
@@ -570,10 +681,10 @@ export function createReader(ctx) {
   function mount() {
     clear(flow);
     veiledEls.clear(); veilNotes.clear();
-    scenes.clear(); textBlocks.clear(); handles.clear(); stepEls.clear(); unitDone.clear(); expandedEarly.clear(); expanded.clear();
+    scenes.clear(); textBlocks.clear(); handles.clear(); stepEls.clear(); unitDone.clear(); expandedEarly.clear(); expanded.clear(); typedUnits.clear();
     typer = null; typerEl = null; drawing = null; browsing = null;
     bandObserver?.disconnect(); viewObserver?.disconnect(); inBand.clear(); inView.clear(); tracker.reset();
-    flow.append(nav);
+    flow.append(nav, sentMarker, points.layer);
     // 이어 보기: 이미 열린 단계는 모두 바로 펼친다. 처음 시작이면 첫 단위만 설정대로(점진 표시 등) 연다.
     // 학습 기록(unit_shown)은 지금 화면 앞에 있는 단계 하나에 대해서만 남긴다(이어 보기로 다시 펼친 앞 단계는 남기지 않는다).
     // 건너뛴 장면의 걸음은 이어 보기와 같이 '바로 보임'으로 그린다. 건너뛰기로 막 시작한 것(읽은 흔적 없이 건너뛴 장면만 앞에 있음)이면 닿은 걸음을 처음처럼 연다.
@@ -597,6 +708,8 @@ export function createReader(ctx) {
   ctx.isCurrentBlock = (blockId) => currentStep()?.blockId === blockId; // 문턱 판이 아직 지금 걸음인지 안다(ui/blocks/round.js)
   ctx.proceed = () => proceed(); // 문턱 판의 ‘그래도 계속’이 부른다(ui/blocks/round.js)
   ctx.openScene = openSkippedScene; // '도움 없이 먼저' 자리의 알림 단추가 부른다(ui/blocks/unaided.js)
+  if (typeof ResizeObserver === 'function') new ResizeObserver(() => relayout()).observe(flow); // 창 · 칸 폭이 바뀌면 ▼ 와 화살표를 다시 잰다
+  else window.addEventListener('resize', relayout);
   document.addEventListener('click', onDocumentClick);
   document.addEventListener('keydown', onDocumentKey);
 
@@ -625,7 +738,7 @@ export function createReader(ctx) {
     },
     scrollToCurrent() { stepEls.get(session.progress.step)?.scrollIntoView({ block: 'center' }); },
     currentStepInfo: stepInfo,
-    setActive(value) { active = value; applyView(); updateControls(); },
+    setActive(value) { active = value; flow.dataset.reading = String(value); applyView(); updateControls(); },
     updateControls,
     unitDone: (index) => unitDone.has(index),
     isTyping,

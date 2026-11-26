@@ -19,6 +19,9 @@ export const EVENT_TYPES = {
   unit_revisit: { fromBlockId: 'string', via: 'string?' },             // 앞 내용으로 되돌아가 봄. via: end(끝 화면의 '본문 다시 보기'·기본) | scroll(읽는 위치보다 앞 블록이 화면에 머묾; 이때 이벤트의 block = 다시 본 블록) | scene(장면별로 보기에서 지난 장면을 엶; block = 그 장면의 첫 블록) | fold(접은 설명을 펼침; block = 접은 첫 글 블록)
   explain_fold: { sceneId: 'string', atBlockId: 'string', foldedUnits: 'number', shownUnits: 'number' },
                                                                         // '설명 접고 문항으로'를 눌렀다(K04 A177). atBlockId: 누른 때 읽던 글 블록 · foldedUnits: 접은 글 단위 수 · shownUnits: 그 가운데 이미 다 보였던 수
+  sentence_next: { blockId: 'string', sentence: 'number', via: 'string' },
+                                                                        // 한 글 단위 안에서 한 문장이 끝나 멈춘 뒤 다음 문장으로 넘어갔다(K04 A180). sentence: 방금 끝난 문장 번호(0부터) · via: marker(▼) | continue(조작 줄 · 키) | auto(자동 이어가기)
+                                                                        // 단위의 끝에서 다음 걸음으로 갈 때는 남기지 않는다(그때는 unit_done). 문에서 기다린 시간은 pausedMs 에 넣지 않는다
   // --- 설정(표시 방식·속도는 학습자에게 맞는 값을 찾는 재료)
   setting_change: { key: 'string', from: 'string', to: 'string' },
   // --- 문항

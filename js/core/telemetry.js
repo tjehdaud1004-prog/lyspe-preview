@@ -197,6 +197,8 @@ export function createTelemetry({ mod, store, learnerKey, sessionId, now = Date.
       if (via === 'end' || via === 'scroll' || via === 'scene' || via === 'fold') data.via = via; // 'fold': 접은 설명을 펼침(blockId = 접은 첫 글 블록)
       emit('unit_revisit', data, blockId ?? null);
     },
+    // 한 문장이 끝나 멈춘 자리에서 다음 문장으로 넘어갔다(K04 A180). sentence: 방금 끝난 문장 번호(0부터), via: marker | continue | auto
+    sentenceNext({ blockId, sentence, via }) { emit('sentence_next', { blockId, sentence: int(sentence), via }, blockId); },
     // '설명 접고 문항으로'를 눌렀다(K04 A177).
     explainFold({ sceneId, atBlockId, foldedUnits, shownUnits }) { emit('explain_fold', { sceneId, atBlockId, foldedUnits: int(foldedUnits), shownUnits: int(shownUnits) }, atBlockId); },
 

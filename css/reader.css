@@ -29,7 +29,44 @@
 .resume-text { flex: 1 1 14rem; }
 .resume-actions { display: flex; gap: 4px; }
 
-.flow { margin-bottom: var(--gap-out); }
+.flow { margin-bottom: var(--gap-out); position: relative; }
+/* 읽는 구간 고정(K04 A181): 맨 끝 글에서도 쓰는 줄을 화면 가운데께로 올릴 수 있도록, 읽는 동안 흐름 아래에 빈자리를 둔다(없으면 문서 끝에서 더 올라가지 못한다). */
+.flow[data-reading="true"]::after { content: ""; display: block; height: 45vh; height: 45dvh; }
+/* 문장 끝의 ▼(K04 A180): 읽기 흐름이 가진 요소 하나가 문장 끝 오른쪽 아래로 옮겨 다닌다(js/ui/reader.js placeMarker). 누르는 자리는 44×44, 보이는 ▼ 는 가운데 작게.
+   통통 튀는 ▼ 와, ▼ 를 중심으로 44px 원 안에서 퍼지는 물결 둘(제작 판단, 근거 없음). 움직임 줄이기면 ▼ 만 가만히 선다. */
+.sent-marker {
+  position: absolute; z-index: 5; width: var(--hit); height: var(--hit); padding: 0; border: 0; border-radius: 50%;
+  background: transparent; color: var(--primary); cursor: pointer; display: grid; place-items: center; -webkit-tap-highlight-color: transparent;
+}
+.sent-marker[hidden] { display: none; }
+.sent-marker-glyph { font-size: 0.875rem; line-height: 1; }
+.sent-marker::before, .sent-marker::after {
+  content: ""; position: absolute; inset: 0; border: 1.5px solid currentColor; border-radius: 50%; opacity: 0; transform: scale(0.25); pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sent-marker-glyph { animation: marker-bounce 1.2s ease-in-out infinite; }
+  .sent-marker::before, .sent-marker::after { animation: marker-wave 2.4s ease-out infinite; }
+  .sent-marker::after { animation-delay: 1.2s; }
+}
+@keyframes marker-bounce { 0%, 100% { transform: translateY(-3px); } 50% { transform: translateY(3px); } }
+@keyframes marker-wave { 0% { opacity: 0; transform: scale(0.25); } 15% { opacity: 0.35; } 100% { opacity: 0; transform: scale(1); } }
+/* 낱말에서 위를 가리키는 밑줄 화살표(K04 A179, js/ui/point.js): 읽기 흐름 위에 겹친 SVG 한 장. 눌림을 받지 않고(▼ 누를 자리를 가리지 않는다) 읽는 프로그램에는 숨긴다.
+   색은 있는 강조 토큰 --series-0(밝은 · 어두운 모드 값이 따로 있다). 움직임은 밑줄 0.3초 → 화살표 0.3초 → 화살촉(제작 판단, 근거 없음). --t 는 다시 그려도 이어 보이게 주는 음의 지연. */
+.point-layer { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 4; }
+.point-layer * { pointer-events: none; }
+.point-under, .point-mark, .point-arrow, .point-head { fill: none; stroke: var(--series-0); stroke-width: 2; stroke-linecap: butt; stroke-linejoin: round; }
+.point-under, .point-mark, .point-arrow { stroke-dasharray: 1; animation: point-draw 0.3s ease-out both; animation-delay: var(--t, 0ms); }
+.point-under.is-quiet { opacity: 0.45; }
+.point-mark, .point-arrow { animation-delay: calc(0.3s + var(--t, 0ms)); }
+.point-head { animation: point-show 0.1s linear both; animation-delay: calc(0.58s + var(--t, 0ms)); }
+.point-leave { animation: point-fade 0.25s ease-in forwards; }
+@keyframes point-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes point-show { from { opacity: 0; } to { opacity: 1; } }
+@keyframes point-fade { from { opacity: 1; } to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .point-layer * { animation: none !important; }
+  .point-leave { display: none; }
+}
 .scene { margin-top: 36px; scroll-margin-top: calc(var(--topbar-h) + 12px); }
 .scene:first-child { margin-top: 8px; }
 .scene-head { margin-bottom: 12px; padding-top: 20px; border-top: 1px solid var(--hair); }

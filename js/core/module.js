@@ -13,6 +13,7 @@ import { validateSkip, skipIndex } from './skip.js';
 import { validateReview } from './review.js';
 import { ROUND_MODES, GAP_RANGE, MAX_RANGE, ITEM_RANGE, BUCKET_RANGE, roundIndex } from './round.js';
 import { shuffleFlagErrors } from './shuffle.js';
+import { checkPoints } from './point.js';
 import { WORK_IDS, KNOWLEDGE_IDS, TAGGED_BLOCK_TYPES } from '../data/tags.mjs';
 
 export const BLOCK_TYPES = ['text', 'figure', 'predict', 'check', 'link', 'problem', 'transfer', 'audio', 'lookback', 'round', 'passage'];
@@ -471,6 +472,7 @@ export function validateModule(mod) {
       checkBlock(block, bw, errors, mod, focusOk ? scene.focus : null);
       if (isStr(block?.id)) claim(block.id, bw);
     });
+    checkPoints(scene, mod, sw, errors); // 낱말에서 가리키는 밑줄 화살표(points, K04 A179)
   });
   // 본문 밖에서 도움 없이 푸는 문항 묶음(선택): preCheck(시작 전), delayedCheck(끝낸 뒤 며칠 지나). 문항 id 는 장면·블록 id 와도 겹치면 안 된다.
   validateProbes(mod, errors, { claim, checkAnswer, checkGrading, checkItemTags, idPattern: ID_PATTERN });
