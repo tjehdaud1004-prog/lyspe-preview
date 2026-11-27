@@ -4,7 +4,7 @@
 // 움직임은 CSS 애니메이션이고, 다시 만들어도 이어서 보이도록 처음 나타난 때부터 지난 시간만큼 음의 지연(--t)을 준다.
 import { svg } from './dom.js';
 import { sentencePartsOf } from '../core/sentences.js';
-import { findWord, sentenceAt, arrowPath } from '../core/point.js';
+import { findWord, sentenceAt, arrowPath, sidePath } from '../core/point.js';
 
 const LEAVE_MS = 250; // 사라질 때 옅어지는 시간
 
@@ -31,6 +31,9 @@ function wordRects(p, start, end) {
   return [];
 }
 
+// 그림 부품 대상(점 · 축 · 교점)을 figure.js 가 단 표시로 찾는 선택자(계열 id 는 영문 · 숫자 · - · _ 만 쓰므로 따옴표 안에 그대로 둔다)
+const PART_SELECTOR = (to) => (to.point ? `[data-pt="${to.point[0]}:${to.point[1]}"]` : to.axis ? `[data-axis="${to.axis}"]` : `[data-mark="${to.mark}"]`);
+
 const widest = (rects) => rects.reduce((a, b) => (b.width > a.width ? b : a));
 
 export function createPointer({ flow, mod, steps, stepEls, handles, reading, reducedMotion }) {
@@ -45,6 +48,7 @@ export function createPointer({ flow, mod, steps, stepEls, handles, reading, red
         const to = pt.to;
         const target = to.cell !== undefined
           ? { cell: to.cell, blockId: to.block }
+          : to.text === undefined ? { part: PART_SELECTOR(to), kind: to.axis !== undefined ? 'axis' : 'ring', blockId: to.block } // 그림 속 점 · 축 · 교점 — figure.js 가 단 data-pt · data-axis · data-mark
           : { step: stepOf(to.block, to.unit), at: findWord(scene.blocks.find((b) => b.id === to.block).units[to.unit], to.text, to.nth ?? 1) };
         entries.push({ key: `${block.id}:${i}`, step: stepOf(block.id, pt.unit), at, sentence: sentenceAt(parts, at.start), target });
       }
@@ -66,6 +70,15 @@ export function createPointer({ flow, mod, steps, stepEls, handles, reading, red
       const cell = handles.get(t.blockId)?.el.querySelectorAll('tbody tr')[t.cell[0]]?.children[t.cell[1]];
       const r = cell?.getBoundingClientRect();
       return r && r.width > 0 ? { cell: r, x: (r.left + r.right) / 2, top: r.top, bottom: r.bottom } : null;
+    }
+    if (t.part) { // 그림 부품: 축은 이름 글자 아래 밑줄, 점 · 교점은 둥근 고리(끝은 고리의 가장자리)
+      const r = handles.get(t.blockId)?.el.querySelector(t.part)?.getBoundingClientRect();
+      if (!r || !(r.width > 0)) return null;
+      const x = (r.left + r.right) / 2;
+      if (t.kind === 'axis') return { rects: [r], x, top: r.top, bottom: r.bottom + 1, side: r }; // side: 축 이름에는 옆에서 수평으로 닿는다(아래로 들어가면 눈금 글자 곁을 지난다)
+      const cy = (r.top + r.bottom) / 2;
+      const radius = Math.max(r.width, r.height) / 2 + 4;
+      return { ring: { cx: x, cy, r: radius }, x, top: cy - radius, bottom: cy + radius };
     }
     const p = stepEls.get(t.step);
     const rects = p && !p.hidden ? wordRects(p, t.at.start, t.at.end) : [];
@@ -103,23 +116,37 @@ export function createPointer({ flow, mod, steps, stepEls, handles, reading, red
       const sx = (src.left + src.right) / 2 - box.left;
       const sy = src.bottom - box.top + 1;
       const up = spot.bottom < src.bottom;
-      const ex = spot.x - box.left;
-      const ey = (up ? spot.bottom : spot.top) - box.top;
+      let ex = spot.x - box.left;
+      let ey = (up ? spot.bottom : spot.top) - box.top;
       const view = document.documentElement.clientWidth;
       let left = sx < box.width / 2;
+      if (spot.side) left = (spot.side.left + spot.side.right) / 2 < box.left + box.width / 2; // 축 이름이 있는 쪽의 빈자리로 돈다
       const mk = flow.querySelector('.sent-marker:not([hidden])')?.getBoundingClientRect(); // ▼ 가 가는 쪽에 있으면 반대쪽 빈자리로 나간다(▼ 위를 지나가지 않게)
       const mid = (src.left + src.right) / 2;
       if (mk && mk.bottom > src.top && mk.top < src.bottom + 30 && (left ? mk.right < mid : mk.left > mid)) left = !left;
       const room = left ? box.left : view - box.right; // 글 칸 옆의 빈자리 — 화면 밖으로 나가 가로 스크롤이 생기지 않게
       const push = Math.max(4, Math.min(26, room - 6));
-      const { d, vs } = arrowPath({ sx, sy, ex, ey, bowX: left ? -push : box.width + push });
+      const bowX = left ? -push : box.width + push;
+      let d, vs, head;
+      if (spot.side) { // 옆으로 돌아 축 이름 가운데 높이에서 수평으로 닿는다
+        ex = (left ? spot.side.left - 3 : spot.side.right + 3) - box.left;
+        ey = (spot.side.top + spot.side.bottom) / 2 - box.top;
+        ({ d } = sidePath({ sx, sy, ex, ey, bowX }));
+        const back = left ? -7 : 7;
+        head = `M ${ex + back} ${ey - 4.5} L ${ex} ${ey} L ${ex + back} ${ey + 4.5}`;
+      } else {
+        ({ d, vs } = arrowPath({ sx, sy, ex, ey, bowX }));
+        head = `M ${ex - 4.5} ${ey - vs * 7} L ${ex} ${ey} L ${ex + 4.5} ${ey - vs * 7}`;
+      }
       const t = (el) => timed(el, `a:${e.key}`, now);
       group = svg('g', { class: 'point-arrow-group', 'data-end-x': Math.round(ex), 'data-end-y': Math.round(ey) },
-        spot.cell
+        spot.ring
+          ? t(svg('circle', { class: 'point-mark', pathLength: 1, cx: spot.ring.cx - box.left, cy: spot.ring.cy - box.top, r: spot.ring.r }))
+          : spot.cell
           ? t(svg('rect', { class: 'point-mark', pathLength: 1, x: spot.cell.left - box.left - 1, y: spot.cell.top - box.top - 1, width: spot.cell.width + 2, height: spot.cell.height + 2, rx: 4 }))
           : t(svg('path', { class: 'point-mark', pathLength: 1, d: underPath(spot.rects, box) })),
         t(svg('path', { class: 'point-arrow', pathLength: 1, d })),
-        t(svg('path', { class: 'point-head', d: `M ${ex - 4.5} ${ey - vs * 7} L ${ex} ${ey} L ${ex + 4.5} ${ey - vs * 7}` })));
+        t(svg('path', { class: 'point-head', d: head })));
       kids.push(group);
     }
     if (lastArrow && lastArrow.key !== arrow?.e.key && !reducedMotion.matches) { // 화살표가 바뀌거나 사라졌다 — 앞 것을 옅어지며 지운다

@@ -30,8 +30,8 @@ function drawLines(host, def, alt, labelId, masked = false) {
   }
   kids.push(svg('line', { class: 'chart-axis', x1: plot.x0, x2: plot.x1, y1: plot.y1, y2: plot.y1 }));
   kids.push(svg('line', { class: 'chart-axis', x1: plot.x0, x2: plot.x0, y1: plot.y0, y2: plot.y1 }));
-  kids.push(svg('text', { class: 'chart-label', x: (plot.x0 + plot.x1) / 2, y: height - 10, 'text-anchor': 'middle', text: def.xLabel }));
-  kids.push(svg('text', { class: 'chart-label', x: plot.x0, y: plot.y0 - 12, 'text-anchor': 'start', text: def.yLabel }));
+  kids.push(svg('text', { class: 'chart-label', x: (plot.x0 + plot.x1) / 2, y: height - 10, 'text-anchor': 'middle', 'data-axis': 'x', text: def.xLabel }));
+  kids.push(svg('text', { class: 'chart-label', x: plot.x0, y: plot.y0 - 12, 'text-anchor': 'start', 'data-axis': 'y', text: def.yLabel }));
 
   // 선은 색만으로 구별하지 않는다: 실선/점선으로도 다르게 하고, 위쪽 범례와 선 끝의 글자로 이름을 붙인다.
   g.series.forEach((s, i) => {
@@ -44,15 +44,15 @@ function drawLines(host, def, alt, labelId, masked = false) {
     kids.push(svg('text', { class: `chart-series chart-series-${i}`, x: legendX + 36, y: 19, 'text-anchor': 'start', text: s.label }));
     legendX += 36 + s.label.length * 12 + 14;
   });
-  for (const m of g.marks) {
+  g.marks.forEach((m, mi) => {
     kids.push(svg('line', { class: 'chart-guide', x1: m.px, x2: m.px, y1: m.py, y2: plot.y1 }));
     kids.push(svg('line', { class: 'chart-guide', x1: plot.x0, x2: m.px, y1: m.py, y2: m.py }));
-    kids.push(svg('circle', { class: 'chart-mark', cx: m.px, cy: m.py, r: 6 }));
+    kids.push(svg('circle', { class: 'chart-mark', 'data-mark': mi, cx: m.px, cy: m.py, r: 6 }));
     // 두 줄 글을 교점의 '왼쪽 위'에 둔다: 오른쪽 위로는 가파른 직선이, 왼쪽 아래로는 다른 직선이 지나가지만
     // 왼쪽 위(두 직선 모두의 위쪽)는 비어 있다. 줄을 나눠 좁은 화면에서도 그림 밖으로 나가지 않게 한다.
     const lines = [m.label, markValueText(def, m, masked)]; // masked: 관련 문항을 풀기 전에는 세로 값을 가린다(core/reveal.js)
     lines.forEach((text, i) => kids.push(svg('text', { class: 'chart-mark-label', x: m.px - 12, y: m.py - 32 + i * 18, 'text-anchor': 'end', text })));
-  }
+  });
   const root = svg('svg', { class: 'chart', width, height, viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-labelledby': labelId }, ...kids);
   clear(host).append(root);
 }
@@ -80,12 +80,13 @@ function drawNumberLine(host, def, labelId, width) {
     const s = g.series[i];
     if (s.guide) kids.push(svg('polyline', { class: `chart-guide-line chart-guide-line-${i}`, points: s.points.map((p) => `${p.px},${p.py}`).join(' ') }));
   });
-  g.series.forEach((s, i) => s.points.forEach((p) => {
+  g.series.forEach((s, i) => s.points.forEach((p, j) => {
     const mark = pointMark(s.shape, p.px, p.py, 6, `chart-point chart-point-${i}`);
     mark.append(svg('title', { text: def.hideValues === true ? s.label : `${s.label}: ${p.text}` })); // hideValues: 점의 값을 읽는 문항에서 마우스를 올리거나 길게 눌러 답이 보이지 않게
+    mark.setAttribute('data-pt', `${s.id}:${j}`);
     kids.push(mark);
   }));
-  kids.push(svg('text', { class: 'chart-label', x: (plot.x0 + plot.x1) / 2, y: height - 6, 'text-anchor': 'middle', text: def.x.label }));
+  kids.push(svg('text', { class: 'chart-label', x: (plot.x0 + plot.x1) / 2, y: height - 6, 'text-anchor': 'middle', 'data-axis': 'x', text: def.x.label }));
   clear(host).append(svg('svg', { class: 'chart chart-numberline', width, height, viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-labelledby': labelId }, ...kids));
 }
 
@@ -106,14 +107,15 @@ function drawPoints(host, def, labelId) {
   }
   kids.push(svg('line', { class: 'chart-axis', x1: plot.x0, x2: plot.x1, y1: plot.y1, y2: plot.y1 }));
   kids.push(svg('line', { class: 'chart-axis', x1: plot.x0, x2: plot.x0, y1: plot.y0, y2: plot.y1 }));
-  kids.push(svg('text', { class: 'chart-label', x: (plot.x0 + plot.x1) / 2, y: height - 10, 'text-anchor': 'middle', text: def.x.label }));
-  kids.push(svg('text', { class: 'chart-label', x: plot.x0, y: plot.y0 - 14, 'text-anchor': 'start', text: def.y.label }));
+  kids.push(svg('text', { class: 'chart-label', x: (plot.x0 + plot.x1) / 2, y: height - 10, 'text-anchor': 'middle', 'data-axis': 'x', text: def.x.label }));
+  kids.push(svg('text', { class: 'chart-label', x: plot.x0, y: plot.y0 - 14, 'text-anchor': 'start', 'data-axis': 'y', text: def.y.label }));
   g.series.forEach((s, i) => {
     if (s.guide) kids.push(svg('polyline', { class: `chart-guide-line chart-guide-line-${i}`, points: s.points.map((p) => `${p.px},${p.py}`).join(' ') }));
   });
-  g.series.forEach((s, i) => s.points.forEach((p) => {
+  g.series.forEach((s, i) => s.points.forEach((p, j) => {
     const mark = pointMark(s.shape, p.px, p.py, 5.5, `chart-point chart-point-${i}`);
     mark.append(svg('title', { text: def.hideValues === true ? s.label : `${s.label}: ${p.text}` }));
+    mark.setAttribute('data-pt', `${s.id}:${j}`); // 가리키는 화살표(ui/point.js)가 찾는 표시 — 값은 담지 않는다
     kids.push(mark);
   }));
   clear(host).append(svg('svg', { class: 'chart', width, height, viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-labelledby': labelId }, ...kids));

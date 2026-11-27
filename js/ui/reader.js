@@ -582,15 +582,15 @@ export function createReader(ctx) {
     if (smooth && now - lastLift < FOLLOW_SMOOTH_MS) return; // 올라가는 중
     const top = Math.max(0, document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0);
     const zone = bottom - top;
-    if (line.bottom <= top + zone * FOLLOW_TRIGGER) return;
-    let lift = line.bottom - (top + zone * FOLLOW_TARGET);
+    let lift = line.bottom > top + zone * FOLLOW_TRIGGER ? line.bottom - (top + zone * FOLLOW_TARGET) : 0;
+    // 그림이 글 위에 있고 그림 윗변부터 지금 줄까지 읽는 자리에 함께 들어가면 그림 윗변을 머리 띠 아래(8px)에 둔다 — 올림은 그만큼만, 이미 밀려난 그림은 도로 내린다(음수). 안 들어가면 옛 규칙.
     let room = Infinity;
     for (const fig of typerEl.closest('.scene')?.querySelectorAll('[data-block-type="figure"]') ?? []) {
       const r = fig.getBoundingClientRect();
-      if (r.height > 0 && r.top >= top && r.bottom <= bottom) room = Math.min(room, r.top - top);
+      if (r.height > 0 && r.bottom <= line.top && line.bottom - r.top <= zone - 24) room = Math.min(room, r.top - (top + 8));
     }
     if (room < lift) lift = Math.max(room, line.bottom - (bottom - 24));
-    if (lift < 1) return;
+    if (Math.abs(lift) < 1) return;
     lastLift = now;
     window.scrollBy({ top: lift, behavior: smooth ? 'smooth' : 'auto' });
   }
@@ -710,6 +710,9 @@ export function createReader(ctx) {
   ctx.openScene = openSkippedScene; // '도움 없이 먼저' 자리의 알림 단추가 부른다(ui/blocks/unaided.js)
   if (typeof ResizeObserver === 'function') new ResizeObserver(() => relayout()).observe(flow); // 창 · 칸 폭이 바뀌면 ▼ 와 화살표를 다시 잰다
   else window.addEventListener('resize', relayout);
+  // 대상이 화면 밖이면 화살표를 긋지 않으므로(ui/point.js), 스크롤로 대상이 들어오거나 나가면 다시 잰다 — 한 장면(frame)에 한 번
+  let pointFrame = 0;
+  window.addEventListener('scroll', () => { if (!pointFrame) pointFrame = requestAnimationFrame(() => { pointFrame = 0; points.sync(); }); }, { passive: true });
   document.addEventListener('click', onDocumentClick);
   document.addEventListener('keydown', onDocumentKey);
 
