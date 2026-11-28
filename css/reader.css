@@ -41,7 +41,7 @@
 .sent-marker[hidden] { display: none; }
 .sent-marker-glyph { font-size: 0.875rem; line-height: 1; }
 .sent-marker::before, .sent-marker::after {
-  content: ""; position: absolute; inset: 0; border: 1.5px solid currentColor; border-radius: 50%; opacity: 0; transform: scale(0.25); pointer-events: none;
+  content: ""; position: absolute; inset: 0; border: 8px solid currentColor; /* 두꺼운 띠(U-1128c) — 얇은 고리 1.5px 에서 */ border-radius: 50%; opacity: 0; transform: scale(0.25); pointer-events: none;
 }
 @media (prefers-reduced-motion: no-preference) {
   /* 5초 안에 멈춘다(움직임 카드 c04 · WCAG 2.2.2: 5초 넘게 움직이면 멈출 수단이 있어야 한다). ▼ 는 숨겼다 다시 보일 때마다 처음부터 다시 튄다 — 2026-11-28 메인. */
@@ -50,7 +50,7 @@
   .sent-marker::after { animation-delay: 1.2s; animation-iteration-count: 1; }
 }
 @keyframes marker-bounce { 0%, 100% { transform: translateY(-3px); } 50% { transform: translateY(3px); } }
-@keyframes marker-wave { 0% { opacity: 0; transform: scale(0.25); } 15% { opacity: 0.35; } 100% { opacity: 0; transform: scale(1); } }
+@keyframes marker-wave { 0% { opacity: 0; transform: scale(0.25); } 15% { opacity: 0.25; } 100% { opacity: 0; transform: scale(1); } }
 /* 낱말에서 위를 가리키는 밑줄 화살표(K04 A179, js/ui/point.js): 읽기 흐름 위에 겹친 SVG 한 장. 눌림을 받지 않고(▼ 누를 자리를 가리지 않는다) 읽는 프로그램에는 숨긴다.
    색은 있는 강조 토큰 --series-0(밝은 · 어두운 모드 값이 따로 있다). 움직임은 밑줄 0.3초 → 화살표 0.3초 → 화살촉(제작 판단, 근거 없음). --t 는 다시 그려도 이어 보이게 주는 음의 지연. */
 .point-layer { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 4; }
