@@ -4,9 +4,10 @@
 // 움직임은 CSS 애니메이션이고, 다시 만들어도 이어서 보이도록 처음 나타난 때부터 지난 시간만큼 음의 지연(--t)을 준다.
 import { svg } from './dom.js';
 import { sentencePartsOf } from '../core/sentences.js';
-import { findWord, sentenceAt, arrowPath, sidePath } from '../core/point.js';
+import { findWord, sentenceAt, throughPath } from '../core/point.js';
 
 const LEAVE_MS = 250; // 사라질 때 옅어지는 시간
+const POINT_MS = 700; // 화살표가 그려지는 동안(밑줄 0.3 + 선 0.58 + 화살촉 0.1 은 reader.css) — 이 동안 .flow 에 is-pointing(글이 연해짐)
 
 // 글 단위 p 에서 지금 눈에 보이는 글 노드들(타자 중이면 .typed 안 — 숨은 전체 글 .sr-only 는 건너뛴다).
 function visibleNodes(p) {
@@ -58,6 +59,7 @@ export function createPointer({ flow, mod, steps, stepEls, handles, reading, red
   const dismissed = new Set(); // '걸음:문장' — 다음 문장으로 넘어간 문장의 화살표는 다시 나오지 않는다
   let lastArrow = null;        // { key, group } — 사라질 때 옅어지는 꼴로 잠깐 남긴다
   let ghost = null;       // { node, until }
+  let settleTimer = 0;
 
   const age = (key, now) => { if (!born.has(key)) born.set(key, now); return now - born.get(key); };
   // style 속성을 문자열로 두면 CSP(style-src 'self')가 막는다 — CSSOM(el.style)으로 준다
@@ -75,7 +77,7 @@ export function createPointer({ flow, mod, steps, stepEls, handles, reading, red
       const r = handles.get(t.blockId)?.el.querySelector(t.part)?.getBoundingClientRect();
       if (!r || !(r.width > 0)) return null;
       const x = (r.left + r.right) / 2;
-      if (t.kind === 'axis') return { rects: [r], x, top: r.top, bottom: r.bottom + 1, side: r }; // side: 축 이름에는 옆에서 수평으로 닿는다(아래로 들어가면 눈금 글자 곁을 지난다)
+      if (t.kind === 'axis') return { rects: [r], x, top: r.top, bottom: r.bottom + 1 };
       const cy = (r.top + r.bottom) / 2;
       const radius = Math.max(r.width, r.height) / 2 + 4;
       return { ring: { cx: x, cy, r: radius }, x, top: cy - radius, bottom: cy + radius };
@@ -98,7 +100,10 @@ export function createPointer({ flow, mod, steps, stepEls, handles, reading, red
     for (const e of entries) {
       const p = stepEls.get(e.step);
       const rects = p && !p.hidden ? wordRects(p, e.at.start, e.at.end) : [];
-      if (!rects.length) continue;
+      if (!rects.length) { // 낱말이 화면 글에서 사라졌다(처음부터 · 되돌림) — 다시 나오면 처음처럼 그린다(화면 밖 스크롤은 글이 남아 있어 여기 오지 않는다)
+        born.delete(`u:${e.key}`); born.delete(`a:${e.key}`); dismissed.delete(`${e.step}:${e.sentence}`);
+        continue;
+      }
       shown.push({ e, rects });
       if (e.step !== rd.step || dismissed.has(`${e.step}:${e.sentence}`) || (rd.sentence !== null && rd.sentence !== e.sentence)) continue;
       const spot = targetSpot(e.target);
@@ -115,31 +120,15 @@ export function createPointer({ flow, mod, steps, stepEls, handles, reading, red
       const src = widest(rects);
       const sx = (src.left + src.right) / 2 - box.left;
       const sy = src.bottom - box.top + 1;
-      const up = spot.bottom < src.bottom;
-      let ex = spot.x - box.left;
-      let ey = (up ? spot.bottom : spot.top) - box.top;
-      const view = document.documentElement.clientWidth;
-      let left = sx < box.width / 2;
-      if (spot.side) left = (spot.side.left + spot.side.right) / 2 < box.left + box.width / 2; // 축 이름이 있는 쪽의 빈자리로 돈다
-      const mk = flow.querySelector('.sent-marker:not([hidden])')?.getBoundingClientRect(); // ▼ 가 가는 쪽에 있으면 반대쪽 빈자리로 나간다(▼ 위를 지나가지 않게)
-      const mid = (src.left + src.right) / 2;
-      if (mk && mk.bottom > src.top && mk.top < src.bottom + 30 && (left ? mk.right < mid : mk.left > mid)) left = !left;
-      const room = left ? box.left : view - box.right; // 글 칸 옆의 빈자리 — 화면 밖으로 나가 가로 스크롤이 생기지 않게
-      const push = Math.max(4, Math.min(26, room - 6));
-      const bowX = left ? -push : box.width + push;
-      let d, vs, head;
-      if (spot.side) { // 옆으로 돌아 축 이름 가운데 높이에서 수평으로 닿는다
-        ex = (left ? spot.side.left - 3 : spot.side.right + 3) - box.left;
-        ey = (spot.side.top + spot.side.bottom) / 2 - box.top;
-        ({ d } = sidePath({ sx, sy, ex, ey, bowX }));
-        const back = left ? -7 : 7;
-        head = `M ${ex + back} ${ey - 4.5} L ${ex} ${ey} L ${ex + back} ${ey + 4.5}`;
-      } else {
-        ({ d, vs } = arrowPath({ sx, sy, ex, ey, bowX }));
-        head = `M ${ex - 4.5} ${ey - vs * 7} L ${ex} ${ey} L ${ex + 4.5} ${ey - vs * 7}`;
-      }
+      const rel = (r) => ({ x: (r.left + r.right) / 2 - box.left, top: r.top - box.top, bottom: r.bottom - box.top });
+      const { d, end, dir } = throughPath({
+        src: { ...rel(src), bottom: sy },
+        dst: { x: spot.x - box.left, top: spot.top - box.top, bottom: spot.bottom - box.top, ring: spot.ring && { cx: spot.ring.cx - box.left, cy: spot.ring.cy - box.top, r: spot.ring.r } },
+        side: sx < box.width / 2 ? 1 : -1, // 글 칸 가운데쪽으로 살짝 휜다
+      });
+      const head = `M ${end.x - dir.x * 7 - dir.y * 4.5} ${end.y - dir.y * 7 + dir.x * 4.5} L ${end.x} ${end.y} L ${end.x - dir.x * 7 + dir.y * 4.5} ${end.y - dir.y * 7 - dir.x * 4.5}`;
       const t = (el) => timed(el, `a:${e.key}`, now);
-      group = svg('g', { class: 'point-arrow-group', 'data-end-x': Math.round(ex), 'data-end-y': Math.round(ey) },
+      group = svg('g', { class: 'point-arrow-group', 'data-end-x': Math.round(end.x), 'data-end-y': Math.round(end.y) },
         spot.ring
           ? t(svg('circle', { class: 'point-mark', pathLength: 1, cx: spot.ring.cx - box.left, cy: spot.ring.cy - box.top, r: spot.ring.r }))
           : spot.cell
@@ -158,6 +147,11 @@ export function createPointer({ flow, mod, steps, stepEls, handles, reading, red
     if (ghost && now < ghost.until) { ghost.node.style.animationDelay = `${ghost.until - now - LEAVE_MS}ms`; kids.push(ghost.node); } // 다시 붙여도 옅어지는 움직임이 처음부터 다시 시작하지 않게
     else ghost = null;
     layer.replaceChildren(...kids);
+    // 그리는 동안(처음 나타난 때부터 POINT_MS)만 글을 연하게 — 나이로 가르므로 다시 재도 다시 시작하지 않고, 화살표가 없어지면 이 sync 에서 곧바로 뗀다
+    const left = arrow && !reducedMotion.matches ? POINT_MS - age(`a:${arrow.e.key}`, now) : 0;
+    flow.classList.toggle('is-pointing', left > 0);
+    clearTimeout(settleTimer);
+    if (left > 0) settleTimer = setTimeout(sync, left + 20); // 그리기가 끝나는 때 한 번 더 — ▼ 앞에서 기다리는 동안 아무도 sync 를 부르지 않을 수 있다
   }
 
   // 다음 문장으로 넘어간다 — 그 문장의 화살표는 사라진다(읽는 문장이 바뀌기 전에 곧바로).

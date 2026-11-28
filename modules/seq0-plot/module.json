@@ -333,6 +333,7 @@
     {
       "id": "s2",
       "title": "찍힌 점의 자리 읽기",
+      "figureFirst": true,
       "focus": [
         "attend"
       ],
@@ -342,6 +343,9 @@
           "id": "s2t1",
           "units": [
             "첫째항 10 의 점은 가로 눈금 1, 세로 눈금 10 인 자리에 있어서 (1, 10) 이다."
+          ],
+          "points": [
+            { "unit": 0, "word": "첫째항 10 의 점", "to": { "block": "s2f1", "point": ["base", 0] } }
           ]
         },
         {

@@ -91,37 +91,40 @@ export function checkPoints(scene, mod, sceneWhere, errors) {
   });
 }
 
-// 화살표 길: 낱말 밑줄 가운데(sx, sy)에서 줄 사이 빈틈으로 옆 빈자리(bowX)까지 나가 대상 쪽으로 올라(내려)가고, 대상의 밑줄 아래 빈틈으로 들어와 도착점(ex, ey)에 닿는다.
-// 글줄을 가로지르지 않도록 줄과 줄 사이만 지난다(직선이 글을 가로지르면 읽기를 방해한다 — 제작 판단). 모서리는 둥글게(Q) 이은 선 하나.
-// 돌려주는 값: path 의 d · 끝에서 화살촉이 향하는 y 방향(vs: -1 위, 1 아래). 두 줄이 너무 가까우면(같은 줄 근처) 단순한 굽은 선 하나.
-// 옆으로 닿는 길(축 이름): 낱말 밑줄 아래 → 글 칸 옆 빈자리(bowX) → 대상 가운데 높이(ey) → 수평으로 대상 옆(ex). 둥근 모서리 둘.
-export function sidePath({ sx, sy, ex, ey, bowX, radius = 8, lane = 3 }) {
-  const yS = sy + lane;
-  const vs = ey < yS ? -1 : 1;
-  const dirX = bowX >= sx ? 1 : -1;
-  const r = Math.max(0, Math.min(radius, Math.abs(bowX - sx) / 2, Math.abs(ex - bowX) / 2, Math.abs(ey - yS) / 2));
+// 화살표 길(SPEC_POINT_THROUGH.md, U-1128a): 낱말에서 대상까지 글자를 뚫고 가는 거의 곧은 선 하나. 돌아가지 않는다.
+// src: 낱말 { x(가운데), top, bottom(밑줄) }. dst: 대상 { x, top, bottom, ring? { cx, cy, r } } — 같은 좌표계(보통 .flow 기준). side: 살짝 휘는 쪽(+1 오른쪽 · -1 왼쪽).
+// 시작은 대상이 위면 낱말 윗변 가운데, 아래면 밑줄 가운데. 끝은 낱말 쪽 변의 가운데(위면 아랫변), 고리면 낱말을 향한 가장자리.
+// 같은 줄이거나 바로 옆 줄(둘 사이 틈이 글줄 높이보다 작음)이면 곧은 선이 취소선처럼 읽히므로 위로 둥글게 넘어가는 호 — 윗변에서 윗변으로.
+// 돌려주는 값: d(path) · end { x, y } · dir 끝에서 선이 가는 방향(단위벡터) · arc(호인지). 휘기(가운데, 길이의 12%, 최대 24px)는 제작 판단 — 근거 없음.
+export function throughPath({ src, dst, side = 1 }) {
+  const h = Math.max(1, src.bottom - src.top);
+  const above = dst.bottom <= src.top;
+  const gap = above ? src.top - dst.bottom : dst.top - src.bottom;
+  const arc = gap < h;
+  const sx = src.x;
+  const sy = arc || above ? src.top : src.bottom;
+  let ex = dst.x;
+  let ey = arc || !above ? dst.top : dst.bottom;
+  if (dst.ring) { // 고리는 낱말을 향한 가장자리에서 끝난다
+    const dx = sx - dst.ring.cx, dy = sy - dst.ring.cy, n = Math.hypot(dx, dy) || 1;
+    ex = dst.ring.cx + (dx / n) * dst.ring.r;
+    ey = dst.ring.cy + (dy / n) * dst.ring.r;
+  }
   const f = (n) => Math.round(n * 10) / 10;
-  const d = [
-    `M ${f(sx)} ${f(sy)}`, `V ${f(yS)}`, `H ${f(bowX - dirX * r)}`,
-    `Q ${f(bowX)} ${f(yS)} ${f(bowX)} ${f(yS + vs * r)}`, `V ${f(ey - vs * r)}`,
-    `Q ${f(bowX)} ${f(ey)} ${f(bowX - dirX * r)} ${f(ey)}`, `H ${f(ex)}`,
-  ].join(' ');
-  return { d };
+  let cx, cy;
+  if (arc) { // 두 윗변 위로 솟는 호: 꼭대기가 높이 14~28px
+    const rise = Math.max(14, Math.min(28, Math.abs(ex - sx) * 0.25));
+    cx = (sx + ex) / 2;
+    cy = Math.min(sy, ey) - rise * 2;
+  } else { // 가운데가 곧은 선에서 bend 만큼만 벗어나는 곡선(Q 의 가운데 벗어남은 조절점의 절반)
+    const len = Math.hypot(ex - sx, ey - sy) || 1;
+    const bend = Math.min(len * 0.12, 24);
+    let nx = -(ey - sy) / len, ny = (ex - sx) / len;
+    if (nx * side < 0 || (Math.abs(nx) < 1e-9 && ny < 0)) { nx = -nx; ny = -ny; }
+    cx = (sx + ex) / 2 + nx * bend * 2;
+    cy = (sy + ey) / 2 + ny * bend * 2;
+  }
+  const tx = ex - cx, ty = ey - cy, tn = Math.hypot(tx, ty) || 1;
+  return { d: `M ${f(sx)} ${f(sy)} Q ${f(cx)} ${f(cy)} ${f(ex)} ${f(ey)}`, end: { x: ex, y: ey }, dir: { x: tx / tn, y: ty / tn }, arc };
 }
 
-export function arrowPath({ sx, sy, ex, ey, bowX, radius = 8, lane = 3, approach = 5 }) {
-  const vs = ey < sy ? -1 : 1;
-  const yS = sy + lane;
-  const yE = ey - vs * approach;
-  const dirX = bowX >= sx ? 1 : -1;
-  const r = Math.min(radius, Math.abs(bowX - sx) / 2, Math.abs(bowX - ex) / 2, Math.abs(yE - yS) / 4);
-  if (!(r >= 2)) return { d: `M ${sx} ${sy} Q ${(sx + ex) / 2} ${Math.max(sy, ey) + 24} ${ex} ${ey}`, vs: -1 };
-  const f = (n) => Math.round(n * 10) / 10;
-  const d = [
-    `M ${f(sx)} ${f(sy)}`, `V ${f(yS)}`, `H ${f(bowX - dirX * r)}`,
-    `Q ${f(bowX)} ${f(yS)} ${f(bowX)} ${f(yS + vs * r)}`, `V ${f(yE - vs * r)}`,
-    `Q ${f(bowX)} ${f(yE)} ${f(bowX - dirX * r)} ${f(yE)}`, `H ${f(ex + dirX * r)}`,
-    `Q ${f(ex)} ${f(yE)} ${f(ex)} ${f(yE + vs * Math.min(r, approach - 1))}`, `V ${f(ey)}`,
-  ].join(' ');
-  return { d, vs };
-}

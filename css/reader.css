@@ -44,9 +44,10 @@
   content: ""; position: absolute; inset: 0; border: 1.5px solid currentColor; border-radius: 50%; opacity: 0; transform: scale(0.25); pointer-events: none;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .sent-marker-glyph { animation: marker-bounce 1.2s ease-in-out infinite; }
-  .sent-marker::before, .sent-marker::after { animation: marker-wave 2.4s ease-out infinite; }
-  .sent-marker::after { animation-delay: 1.2s; }
+  /* 5초 안에 멈춘다(움직임 카드 c04 · WCAG 2.2.2: 5초 넘게 움직이면 멈출 수단이 있어야 한다). ▼ 는 숨겼다 다시 보일 때마다 처음부터 다시 튄다 — 2026-11-28 메인. */
+  .sent-marker-glyph { animation: marker-bounce 1.2s ease-in-out 4; }
+  .sent-marker::before, .sent-marker::after { animation: marker-wave 2.4s ease-out 2; }
+  .sent-marker::after { animation-delay: 1.2s; animation-iteration-count: 1; }
 }
 @keyframes marker-bounce { 0%, 100% { transform: translateY(-3px); } 50% { transform: translateY(3px); } }
 @keyframes marker-wave { 0% { opacity: 0; transform: scale(0.25); } 15% { opacity: 0.35; } 100% { opacity: 0; transform: scale(1); } }
@@ -55,16 +56,25 @@
 .point-layer { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 4; }
 .point-layer * { pointer-events: none; }
 .point-under, .point-mark, .point-arrow, .point-head { fill: none; stroke: var(--series-0); stroke-width: 2; stroke-linecap: butt; stroke-linejoin: round; }
-.point-under, .point-mark, .point-arrow { stroke-dasharray: 1; animation: point-draw 0.3s ease-out both; animation-delay: var(--t, 0ms); }
+.point-under, .point-mark { stroke-dasharray: 1; animation: point-draw 0.3s ease-out both; animation-delay: var(--t, 0ms); }
 .point-under.is-quiet { opacity: 0.45; }
-.point-mark, .point-arrow { animation-delay: calc(0.3s + var(--t, 0ms)); }
-.point-head { animation: point-show 0.1s linear both; animation-delay: calc(0.58s + var(--t, 0ms)); }
+.point-mark { animation-delay: calc(0.3s + var(--t, 0ms)); }
+/* 그리는 동안(0.7초, ui/point.js POINT_MS)은 글이 연해지고 화살표가 글 위로 지난다 — U-1128a. 다 그리면 선 · 화살촉이 0.72 로 연해지고(밑줄 · 표시는 그대로) 화살표 층이 글 블록(z 3) 뒤 · 그림 위(z 2)로 간다.
+   0.72 는 글 · 선이 바탕 위에서 3:1 이상 남는 값(밝게 muted 3.22 · 선 3.41, 어둡게 muted 4.18 · 선 4.86 — 구현 메모). 움직임은 제작 판단(근거 없음). */
+.point-arrow { stroke-dasharray: 1; animation: point-draw 0.3s ease-out both, point-settle 0.2s ease-out both; animation-delay: calc(0.3s + var(--t, 0ms)), calc(0.7s + var(--t, 0ms)); }
+.point-head { animation: point-show 0.1s linear both, point-settle 0.2s ease-out both; animation-delay: calc(0.58s + var(--t, 0ms)), calc(0.7s + var(--t, 0ms)); }
 .point-leave { animation: point-fade 0.25s ease-in forwards; }
 @keyframes point-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes point-show { from { opacity: 0; } to { opacity: 1; } }
+@keyframes point-settle { from { stroke-opacity: 1; } to { stroke-opacity: 0.72; } }
 @keyframes point-fade { from { opacity: 1; } to { opacity: 0; } }
+.block-text { position: relative; z-index: 3; transition: opacity 0.2s ease-out; }
+.flow:not(.is-pointing) .point-layer { z-index: 2; }
+/* 그리는 0.7초 동안의 글은 0.4 — 0.72 는 사진에서 연해진 것이 거의 보이지 않았다(메인, 2026-11-28). 이 짧은 동안만 글 대비가 4.5:1 · 3:1 아래로 내려간다(제작 판단: 사용자 U-1128a 가 '연해지게'를 청했고, 다 그리면 곧 돌아온다). */
+.flow.is-pointing .block-text { opacity: 0.4; transition-duration: 0.15s; }
 @media (prefers-reduced-motion: reduce) {
   .point-layer * { animation: none !important; }
+  .point-arrow, .point-head { stroke-opacity: 0.72; }
   .point-leave { display: none; }
 }
 .scene { margin-top: 36px; scroll-margin-top: calc(var(--topbar-h) + 12px); }
